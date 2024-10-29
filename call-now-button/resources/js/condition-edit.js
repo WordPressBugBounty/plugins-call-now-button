@@ -42,7 +42,7 @@ function cnb_condition_type_change_action(element) {
     jQuery('.conditionType_' + value).removeAttr('hidden')
 
     // Ensure the selected item is NOT a hidden item
-    // If it is, select the first non-hiden version
+    // If it is, select the first non-hidden version
     const matchTypeEle = jQuery('#cnb_condition_match_type')
     const selectedMatchType = matchTypeEle.find(":selected")
 

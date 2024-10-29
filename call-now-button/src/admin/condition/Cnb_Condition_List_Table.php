@@ -175,10 +175,27 @@ class Cnb_Condition_List_Table extends WP_List_Table {
                         return 'Page URL contains';
                     case 'REGEX':
                         return 'Page URL matches RegEx';
+	                case 'COUNTRY_CODE':
+		                return 'Country code is';
+	                case 'AGENTS_AVAILABLE':
+		                return 'Agents are available';
+	                default:
+
                 }
 
                 return '<code>' . esc_html( $item->matchType ) . '</code>';
             case 'matchValue':
+				switch ( $item->conditionType ) {
+					case 'URL':
+					case 'GEO':
+						$matchValue = $item->matchValue;
+						if ( $item->matchType === 'REGEX' ) {
+							$matchValue = '<code>' . $matchValue . '</code>';
+						}
+						return ! empty( $matchValue ) ? esc_html( $matchValue ) : '<em>No value</em>';
+					case 'CHAT':
+						return '<em>Not applicable</em>';
+				}
                 return ! empty( $item->matchValue ) ? esc_html( $item->matchValue ) : '<em>No value</em>';
             case 'conditionButton':
                 $url    = admin_url( 'admin.php' );

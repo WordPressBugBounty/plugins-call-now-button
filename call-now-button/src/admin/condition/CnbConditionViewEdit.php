@@ -140,6 +140,14 @@ class CnbConditionViewEdit {
                                 <?php echo esc_html( $condition_match_type_value ) ?>
                             </option>
                         <?php } ?>
+
+	                    <?php
+	                    foreach ( ( new CnbAdminFunctions() )->cnb_get_condition_match_types_chat() as $condition_match_type_key => $condition_match_type_value ) { ?>
+                            <option class="conditionType conditionType_CHAT"
+                                    value="<?php echo esc_attr( $condition_match_type_key ) ?>"<?php selected( $condition_match_type_key, $condition->matchType ) ?>>
+			                    <?php echo esc_html( $condition_match_type_value ) ?>
+                            </option>
+	                    <?php } ?>
                     </select>
                     <?php if ( $cnb_domain->type === 'STARTER' ) { ?>
                         <p class="description">
@@ -150,7 +158,7 @@ class CnbConditionViewEdit {
 
                 </td>
             </tr>
-            <tr>
+            <tr class="conditionType conditionType_URL conditionType_GEO">
                 <th scope="row"><label for="cnb_condition_match_value">Match value</label></th>
                 <td>
                     <input type="text" id="cnb_condition_match_value" class="regular-text"

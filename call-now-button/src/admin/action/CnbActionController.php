@@ -333,10 +333,10 @@ class CnbActionController {
 	 * @return string[]
 	 */
 	function filter_action_types( $action_types ) {
-		/** @type CnbUser|WP_Error|null $cnb_user */
-		global $cnb_user;
-		// remove CHAT key if $cnb_user->roles does not include ROLE_CHAT_USER
-		if ( $cnb_user && ! is_wp_error( $cnb_user ) && ! $cnb_user->has_role( 'ROLE_CHAT_USER' ) ) {
+		$chat_enabled = (new CnbUtils())->is_chat_api_enabled();
+
+		// remove CHAT key if chat is not enabled for this user
+		if ( !$chat_enabled ) {
 			unset( $action_types['CHAT'] );
 		}
 

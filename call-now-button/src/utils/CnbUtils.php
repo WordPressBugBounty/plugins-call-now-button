@@ -5,6 +5,7 @@ namespace cnb\utils;
 // don't load directly
 defined( 'ABSPATH' ) || die( '-1' );
 
+use cnb\admin\models\CnbUser;
 use stdClass;
 use WP_Error;
 
@@ -271,4 +272,17 @@ class CnbUtils {
         $cnb_options = get_option( 'cnb' );
         return ( key_exists( 'error_reporting', $cnb_options ) && $cnb_options['error_reporting'] );
     }
+
+	/**
+	 * Feature flag for the new Chat API
+	 */
+	function is_chat_api_enabled() {
+		/** @type CnbUser|WP_Error|null $cnb_user */
+		global $cnb_user;
+
+		if ( $cnb_user && ! is_wp_error( $cnb_user ) && $cnb_user->has_role( 'ROLE_CHAT_USER' ) ) {
+			return true;
+		}
+		return false;
+	}
 }

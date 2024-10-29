@@ -36,6 +36,7 @@ use cnb\admin\settings\CnbSettingsRouter;
 use cnb\cron\Cron;
 use cnb\notices\CnbAdminNotices;
 use cnb\utils\Cnb_Sentry;
+use cnb\utils\CnbAdminFunctions;
 use cnb\utils\CnbUtils;
 
 class CallNowButton {
@@ -557,6 +558,10 @@ class CallNowButton {
 
 		$action_controller = new CnbActionController();
 		add_filter( 'cnb_get_action_types', array( $action_controller, 'filter_action_types' ) );
+
+	    $admin_functions = new CnbAdminFunctions();
+	    add_filter( 'cnb_get_condition_types', array( $admin_functions, 'filter_condition_types' ) );
+
     }
 
     public function register_header_and_footer() {

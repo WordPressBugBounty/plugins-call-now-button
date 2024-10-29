@@ -97,7 +97,9 @@ class CnbAdminFunctions {
     }
 
     function cnb_get_condition_types() {
-        return array(
+		//TODO Check the ROLE_CHAT_USER and only include the chat condition if the user has the role
+
+        $all_types = array(
             'URL' => array(
                 'name' => 'Page URL',
                 'proOnly' => false,
@@ -106,8 +108,31 @@ class CnbAdminFunctions {
                 'name' => 'Visitor location',
                 'proOnly' => true,
                 ),
+            'CHAT' => array(
+	            'name' => 'Chat',
+	            'proOnly' => true,
+            ),
         );
+		return apply_filters('cnb_get_condition_types', $all_types);
     }
+
+	/**
+	 * Only users with the CHAT_USER role can create CHAT conditions
+	 *
+	 * @param array $condition_types
+	 *
+	 * @return array
+	 */
+	function filter_condition_types( $condition_types ) {
+		$chat_enabled = (new CnbUtils())->is_chat_api_enabled();
+
+		// remove CHAT key if chat is not enabled for this user
+		if ( !$chat_enabled ) {
+			unset( $condition_types['CHAT'] );
+		}
+
+		return $condition_types;
+	}
 
     /**
      * These apply to URL only
@@ -145,6 +170,16 @@ class CnbAdminFunctions {
         );
     }
 
+	/**
+	 * These apply to GEO only
+	 *
+	 * @return string[]
+	 */
+	function cnb_get_condition_match_types_chat() {
+		return array(
+			'AGENTS_AVAILABLE'    => 'Agents are available',
+		);
+	}
     /**
      * @param array $original Array of "daysOfWeek", index 0 == Monday, values should be strings and contain "true"
      * in order to be evaulated correctly.
