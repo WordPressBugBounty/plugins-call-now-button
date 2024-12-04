@@ -312,8 +312,9 @@ class CnbProfileController {
             $redirect_link =
                 add_query_arg(
                     array(
-                        'page' => CNB_SLUG . '-profile',
-                        'tid'  => $transient_id,
+                        'page'     => CNB_SLUG . '-profile',
+                        'tid'      => $transient_id,
+                        '_wpnonce' => wp_create_nonce( $transient_id ),
                     ),
                     $url );
             $redirect_url  = esc_url_raw( $redirect_link );

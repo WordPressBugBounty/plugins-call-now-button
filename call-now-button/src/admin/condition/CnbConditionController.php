@@ -70,8 +70,9 @@ class CnbConditionController {
 		$redirect_link =
 			add_query_arg(
 				array(
-					'page' => 'call-now-button-conditions',
-					'tid'  => $transient_id,
+					'page'     => 'call-now-button-conditions',
+					'tid'      => $transient_id,
+					'_wpnonce' => wp_create_nonce( $transient_id ),
 				),
 				admin_url( 'admin.php' ) );
 		$redirect_url  = esc_url_raw( $redirect_link );
@@ -120,22 +121,24 @@ class CnbConditionController {
             $redirect_link =
                 add_query_arg(
                     array(
-                        'page'   => 'call-now-button',
-                        'action' => 'edit',
-                        'id'     => $bid,
-                        'tid'    => $transient_id,
-                        'tab'    => 'visibility',
+                        'page'     => 'call-now-button',
+                        'action'   => 'edit',
+                        'id'       => $bid,
+                        'tid'      => $transient_id,
+                        'tab'      => 'visibility',
+                        '_wpnonce' => wp_create_nonce( $transient_id ),
                     ),
                     $url );
         } else {
             $redirect_link =
                 add_query_arg(
                     array(
-                        'page'   => 'call-now-button-conditions',
-                        'action' => 'edit',
-                        'id'     => $conditions[0]->id,
-                        'tid'    => $transient_id,
-                        'bid'    => $bid,
+                        'page'     => 'call-now-button-conditions',
+                        'action'   => 'edit',
+                        'id'       => $conditions[0]->id,
+                        'tid'      => $transient_id,
+                        'bid'      => $bid,
+                        '_wpnonce' => wp_create_nonce( $transient_id ),
                     ),
                     $url );
         }
@@ -281,8 +284,9 @@ class CnbConditionController {
                 $redirect_link =
                     add_query_arg(
                         array(
-                            'page' => 'call-now-button-conditions',
-                            'tid'  => $transient_id,
+                            'page'     => 'call-now-button-conditions',
+                            'tid'      => $transient_id,
+                            '_wpnonce' => wp_create_nonce( $transient_id ),
                         ),
                         $url );
                 $redirect_url  = esc_url_raw( $redirect_link );

@@ -93,8 +93,9 @@ class CnbActionController {
 		$redirect_link =
 			add_query_arg(
 				array(
-					'page' => 'call-now-button-actions',
-					'tid'  => $transient_id,
+					'page'     => 'call-now-button-actions',
+					'tid'      => $transient_id,
+					'_wpnonce' => wp_create_nonce( $transient_id ),
 				),
 				admin_url( 'admin.php' ) );
 		$redirect_url  = esc_url_raw( $redirect_link );
@@ -153,10 +154,11 @@ class CnbActionController {
                 $redirect_link =
                     add_query_arg(
                         array(
-                            'page'   => 'call-now-button',
-                            'action' => 'edit',
-                            'id'     => $bid,
-                            'tid'    => $transient_id,
+                            'page'      => 'call-now-button',
+                            'action'    => 'edit',
+                            'id'        => $bid,
+                            'tid'       => $transient_id,
+	                        '_wpnonce' => wp_create_nonce( $transient_id ),
                         ),
                         $url );
             } else {
@@ -168,6 +170,7 @@ class CnbActionController {
                             'id'     => $new_action_id,
                             'tid'    => $transient_id,
                             'bid'    => $bid,
+                            '_wpnonce' => wp_create_nonce( $transient_id ),
                         ),
                         $url );
             }
@@ -221,21 +224,23 @@ class CnbActionController {
                 $redirect_link =
                     add_query_arg(
                         array(
-                            'page'   => 'call-now-button',
-                            'action' => 'edit',
-                            'id'     => $bid,
-                            'tid'    => $transient_id,
+                            'page'     => 'call-now-button',
+                            'action'   => 'edit',
+                            'id'       => $bid,
+                            'tid'      => $transient_id,
+                            '_wpnonce' => wp_create_nonce( $transient_id ),
                         ),
                         $url );
             } else {
                 $redirect_link =
                     add_query_arg(
                         array(
-                            'page'   => CNB_SLUG . '-actions',
-                            'action' => 'edit',
-                            'id'     => $result->id,
-                            'tid'    => $transient_id,
-                            'bid'    => $bid,
+                            'page'     => CNB_SLUG . '-actions',
+                            'action'   => 'edit',
+                            'id'       => $result->id,
+                            'tid'      => $transient_id,
+                            'bid'      => $bid,
+                            '_wpnonce' => wp_create_nonce( $transient_id ),
                         ),
                         $url );
             }
@@ -292,8 +297,9 @@ class CnbActionController {
                 $redirect_link =
                     add_query_arg(
                         array(
-                            'page' => 'call-now-button-actions',
-                            'tid'  => $transient_id,
+                            'page'     => 'call-now-button-actions',
+                            'tid'      => $transient_id,
+                            '_wpnonce' => wp_create_nonce( $transient_id ),
                         ),
                         $url );
                 $redirect_url  = esc_url_raw( $redirect_link );

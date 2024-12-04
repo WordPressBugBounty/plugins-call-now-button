@@ -328,7 +328,7 @@ class CnbLegacyUpgrade {
                 <th class="cnb-prod-cnb" style="border-radius:5px 5px 0 0;"><h3>No account<br><span class="cnb-not-on-mobile" style="font-weight:normal;">(Currently active)</span></h3></th>
                 <th class="cnb-prod-nb" style="border-radius:5px 5px 0 0;"><h3>With account<br><span style="font-weight:normal;">(NowButtons.com)</span></h3></th>
                 </tr>
-                <tr class="font-18">
+                <tr class="font-16">
                 <th style="border-radius: 5px 0 0 5px;"></th>
                 <th><h4>Free</h4></th>
                 <th><h4>Free</h4></th>

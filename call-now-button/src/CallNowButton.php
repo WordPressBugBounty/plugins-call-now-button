@@ -7,6 +7,7 @@ defined( 'ABSPATH' ) || die( '-1' );
 
 use cnb\admin\action\CnbActionController;
 use cnb\admin\action\CnbActionRouter;
+use cnb\admin\agency\CnbAgencyRouter;
 use cnb\admin\api\CnbAppRemote;
 use cnb\admin\api\CnbUserController;
 use cnb\admin\apikey\CnbApiKeyController;
@@ -131,6 +132,12 @@ class CallNowButton {
             $action_router = new CnbActionRouter();
             $condition_router = new CnbConditionRouter();
             $profile_router = new CnbProfileRouter();
+
+            $agency_router = new CnbAgencyRouter();
+            if ( $utils->get_query_val( 'page' ) === 'call-now-button-agency' && $utils->get_query_val( 'action' ) === 'upgrade' ) {
+                add_submenu_page( CNB_SLUG, $plugin_title, 'Agency plan', 'manage_options', CNB_SLUG . '-agency', array( $agency_router, 'render' ) );
+            }
+
             if ( CnbSettingsController::is_advanced_view() ) {
                 // Domain overview
                 add_submenu_page( CNB_SLUG, $plugin_title, 'Domains', 'manage_options', CNB_SLUG . '-domains', array( $domain_router, 'render' ) );
@@ -635,9 +642,11 @@ class CallNowButton {
         add_action( 'wp_ajax_cnb_time_format', array( $ajax_controller, 'time_format' ) );
         add_action( 'wp_ajax_cnb_settings_profile_save', array( $ajax_controller, 'settings_profile_save' ) );
         add_action( 'wp_ajax_cnb_get_checkout', array( $ajax_controller, 'domain_upgrade_get_checkout' ) );
+        add_action( 'wp_ajax_cnb_get_agency_checkout', array( $ajax_controller, 'agency_upgrade_get_checkout' ) );
         add_action( 'wp_ajax_cnb_email_activation', array( $ajax_controller, 'cnb_email_activation' ) );
         add_action( 'wp_ajax_cnb_get_plans', array( $ajax_controller, 'get_plans' ) );
-	    add_action( 'wp_ajax_cnb_get_billing_portal', array( $ajax_controller, 'get_billing_portal' ) );
+        add_action( 'wp_ajax_cnb_get_billing_portal', array( $ajax_controller, 'get_billing_portal' ) );
+        add_action( 'wp_ajax_cnb_request_billing_portal', array( $ajax_controller, 'request_billing_portal' ) );
 	    add_action( 'wp_ajax_cnb_get_domain_status', array( $ajax_controller, 'get_domain_status' ) );
 
         $action_controller = new CnbActionController();

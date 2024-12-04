@@ -44,8 +44,9 @@ class CnbApiKeyController {
             $redirect_link =
                 add_query_arg(
                     array(
-                        'page' => 'call-now-button-apikeys',
-                        'tid'  => $transient_id,
+                        'page'     => 'call-now-button-apikeys',
+                        'tid'      => $transient_id,
+                        '_wpnonce' => wp_create_nonce( $transient_id ),
                     ),
                     $url );
             $redirect_url  = esc_url_raw( $redirect_link );
@@ -112,8 +113,9 @@ class CnbApiKeyController {
 		$redirect_link =
 			add_query_arg(
 				array(
-					'page' => 'call-now-button-settings',
-					'tid'  => $transient_id,
+					'page'     => 'call-now-button-settings',
+					'tid'      => $transient_id,
+					'_wpnonce' => wp_create_nonce( $transient_id ),
 				),
 				$url );
 		$redirect_url  = esc_url_raw( $redirect_link );
@@ -202,8 +204,9 @@ class CnbApiKeyController {
 				$redirect_link =
 					add_query_arg(
 						array(
-							'page' => 'call-now-button-apikeys',
-							'tid'  => $transient_id,
+							'page'     => 'call-now-button-apikeys',
+							'tid'      => $transient_id,
+							'_wpnonce' => wp_create_nonce( $transient_id ),
 						),
 						$url );
 				$redirect_url  = esc_url_raw( $redirect_link );

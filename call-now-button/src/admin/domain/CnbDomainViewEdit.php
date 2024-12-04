@@ -6,6 +6,7 @@ namespace cnb\admin\domain;
 defined( 'ABSPATH' ) || die( '-1' );
 
 use cnb\admin\api\CnbAppRemote;
+use cnb\admin\models\CnbUser;
 use cnb\admin\settings\CnbSettingsController;
 use cnb\utils\CnbUtils;
 
@@ -72,6 +73,8 @@ class CnbDomainViewEdit {
      */
     function render_form_plan_details( $domain ) {
 	    global $cnb_subscription_data;
+        /** @var CnbUser $cnb_user */
+        global $cnb_user;
         $url          = admin_url( 'admin.php' );
         $upgrade_link =
             add_query_arg( array(
@@ -96,6 +99,9 @@ class CnbDomainViewEdit {
                 if ( $domain->type === 'PRO' && $domain->status === 'TRIALING' ) {
                     echo ' (Free trial)';
                 }
+                if ( $cnb_user->is_pro_user() ) {
+                    echo '(via PRO account)';
+                }
                 if ( $cnb_subscription_data && $cnb_subscription_data->invoiceUrl ) {
 	                echo '⚠️<p class="description"><span class="cnb-alert-text"><a class="button button-primary" href="' . esc_url( $payment_link ) . '">Pay now</a> to reactivate Pro features.</span><br>(You have an outstanding invoice. Pro features are disabled until payment is received.)</p> ';
                 } else if ( $domain->type !== 'PRO' && ! empty( $domain->id ) ) {
@@ -118,7 +124,15 @@ class CnbDomainViewEdit {
                     } ?>
             </td>
         </tr>
-        <?php if ( $domain->type === 'PRO' && $domain->status === 'ACTIVE' ) { ?>
+        <?php if ( $cnb_user->is_pro_user() ) { ?>
+            <tr>
+            <th scope="row">
+                Status
+            </th>
+                <td>This domain is managed via a PRO account. Contact the account owner for changes.</td>
+            </tr>
+        <?php } ?>
+        <?php if ( $domain->type === 'PRO' && $domain->status === 'ACTIVE' && !$cnb_user->is_pro_user() ) { ?>
             <tr>
                 <th scope="row">
                     Auto renew

@@ -22,9 +22,10 @@ class CnbAdminAjax {
         do_action( 'cnb_init', __METHOD__ );
         $planId   = filter_input( INPUT_POST, 'planId', @FILTER_SANITIZE_STRING );
         $domainId = filter_input( INPUT_POST, 'domainId', @FILTER_SANITIZE_STRING );
+        $cnb_subscription_api = new CnbAppRemotePayment();
 
         $url             = admin_url( 'admin.php' );
-        $redirect_link   =
+        $callbackUri   = esc_url_raw(
             add_query_arg(
                 array(
                     'page'    => 'call-now-button-domains',
@@ -32,10 +33,44 @@ class CnbAdminAjax {
                     'id'      => $domainId,
                     'upgrade' => 'success',
                 ),
-                $url );
-        $callbackUri     = esc_url_raw( $redirect_link );
-        $checkoutSession = CnbAppRemotePayment::cnb_remote_post_subscription( $planId, $domainId, $callbackUri );
+                $url )
+        );
+        $checkoutSession = $cnb_subscription_api->cnb_remote_post_subscription( $planId, $domainId, $callbackUri );
+        $this->handle_checkout_session( $checkoutSession );
 
+        do_action( 'cnb_finish' );
+        wp_die();
+    }
+
+    /**
+     * part of domain-upgrade
+     *
+     * @return void
+     */
+    public function agency_upgrade_get_checkout() {
+        do_action( 'cnb_init', __METHOD__ );
+        $planId   = filter_input( INPUT_POST, 'planId', @FILTER_SANITIZE_STRING );
+        $cnb_subscription_api = new CnbAppRemotePayment();
+
+        $url             = admin_url( 'admin.php' );
+        $callbackUri   = esc_url_raw(
+            add_query_arg(
+                array(
+                    'page'    => 'call-now-button-agency',
+                    'action'  => 'upgrade',
+                    'upgrade' => 'success',
+                ),
+                $url )
+        );
+        $checkoutSession = $cnb_subscription_api->cnb_remote_post_agency_subscription( $planId, $callbackUri );
+
+        $this->handle_checkout_session( $checkoutSession );
+
+        do_action( 'cnb_finish' );
+        wp_die();
+    }
+
+    private function handle_checkout_session( $checkoutSession ) {
         if ( is_wp_error( $checkoutSession ) ) {
             $custom_message_data = $checkoutSession->get_error_data( 'CNB_ERROR' );
             if ( ! empty( $custom_message_data ) ) {
@@ -64,8 +99,6 @@ class CnbAdminAjax {
                 'url' => $checkoutSession->url,
             ) );
         }
-        do_action( 'cnb_finish' );
-        wp_die();
     }
 
     /**
@@ -198,6 +231,13 @@ class CnbAdminAjax {
         wp_die();
     }
 
+    public function request_billing_portal() {
+        do_action( 'cnb_init', __METHOD__ );
+        $cnb_remote = new CnbAppRemote();
+        wp_send_json( $cnb_remote->request_billing_portal() );
+        do_action( 'cnb_finish' );
+        wp_die();
+    }
 	public function get_domain_status() {
 		$domainId = trim( filter_input( INPUT_POST, 'domainId', @FILTER_SANITIZE_STRING ) );
 		do_action( 'cnb_init', __METHOD__ );

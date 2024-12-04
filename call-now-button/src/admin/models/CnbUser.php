@@ -73,6 +73,10 @@ class CnbUser implements JsonSerializable {
 		return in_array( $role, $this->roles );
 	}
 
+    public function is_pro_user() {
+        return $this->has_role( 'ROLE_PRO_USER' );
+    }
+
 	/**
      * If a stdClass is passed, it is transformed into a CnbUser.
      * a WP_Error is ignored and returned immediately

@@ -38,10 +38,11 @@ class CnbHeaderNotices {
      * @return CnbNotice[]|string[]
      */
     public function get_notices() {
-        $transient_id = filter_input( INPUT_GET, 'tid', @FILTER_SANITIZE_STRING );
+        $transient_id = sanitize_key( filter_input( INPUT_GET, 'tid' ) );
 
         $notices = array();
-        if ( $transient_id && strpos( $transient_id, $this->cnb_notice_prefix ) === 0 ) {
+
+        if ( $transient_id && check_admin_referer( $transient_id ) && strpos( $transient_id, $this->cnb_notice_prefix ) === 0 ) {
             $notices_cloud = get_transient( $transient_id );
             if ( is_array( $notices_cloud ) ) {
                 $notices = array_merge( $notices, $notices_cloud );

@@ -46,8 +46,9 @@ class CnbDomainController {
 
 				$redirect_link = add_query_arg(
 					array(
-						'page' => CNB_SLUG . '-domains',
-						'tid'  => $transient_id,
+						'page'     => CNB_SLUG . '-domains',
+						'tid'      => $transient_id,
+						'_wpnonce' => wp_create_nonce( $transient_id ),
 					),
 					$url );
 				$redirect_url = esc_url_raw( $redirect_link );
@@ -98,10 +99,11 @@ class CnbDomainController {
             $redirect_link =
                 add_query_arg(
                     array(
-                        'page'   => CNB_SLUG . '-domains',
-                        'action' => 'edit',
-                        'id'     => $result->id,
-                        'tid'    => $transient_id,
+                        'page'     => CNB_SLUG . '-domains',
+                        'action'   => 'edit',
+                        'id'       => $result->id,
+                        'tid'      => $transient_id,
+                        '_wpnonce' => wp_create_nonce( $transient_id ),
                     ),
                     $url );
             $redirect_url  = esc_url_raw( $redirect_link );
@@ -159,8 +161,9 @@ class CnbDomainController {
                 $redirect_link =
                     add_query_arg(
                         array(
-                            'page' => 'call-now-button-domains',
-                            'tid'  => $transient_id,
+                            'page'     => 'call-now-button-domains',
+                            'tid'      => $transient_id,
+                            '_wpnonce' => wp_create_nonce( $transient_id ),
                         ),
                         $url );
                 $redirect_url  = esc_url_raw( $redirect_link );
@@ -278,8 +281,9 @@ class CnbDomainController {
 		$redirect_link =
 			add_query_arg(
 				array(
-					'page' => 'call-now-button-domains',
-					'tid'  => $transient_id,
+					'page'     => 'call-now-button-domains',
+					'tid'      => $transient_id,
+					'_wpnonce' => wp_create_nonce( $transient_id ),
 				),
 				admin_url( 'admin.php' ) );
 		$redirect_url  = esc_url_raw( $redirect_link );

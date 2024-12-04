@@ -11,10 +11,12 @@ use cnb\admin\button\CnbButton;
 use cnb\admin\condition\CnbCondition;
 use cnb\admin\domain\CnbDomain;
 use cnb\admin\domain\SubscriptionStatus;
+use cnb\admin\models\CnbAgencyPlan;
 use cnb\admin\models\CnbPlan;
 use cnb\admin\models\CnbUser;
 use cnb\admin\models\ValidationMessageWithId;
 use cnb\admin\settings\StripeBillingPortal;
+use cnb\admin\settings\StripeRequestBillingPortalResponse;
 use cnb\admin\settings\UrlSettings;
 use cnb\admin\user\CnbUserCache;
 use cnb\coupons\CnbPromotionCode;
@@ -408,6 +410,7 @@ class CnbAppRemote {
 	 * @global CnbDomain[]|null $cnb_domains the Domains corresponding to the current User
 	 * @global CnbPromotionCode|null $cnb_coupon the Coupon currently active
 	 * @global CnbPlan[]|null $cnb_plans the Plans currently active
+     * @global CnbAgencyPlan[]|null $cnb_agency_plans the Agency Plans currently active
 	 * @global ValidationMessageWithId[]|null $cnb_validation_messages all Validation messages for this account
 	 * @global SubscriptionStatus|null $cnb_subscription_data Subscription status for the current domain
 	 */
@@ -419,6 +422,7 @@ class CnbAppRemote {
 		$cnb_domains,
 		$cnb_coupon,
 		$cnb_plans,
+        $cnb_agency_plans,
 		$cnb_validation_messages,
 		$cnb_subscription_data,
 		$cnb_settings;
@@ -437,6 +441,7 @@ class CnbAppRemote {
 		$cnb_buttons             = CnbButton::fromObjects( $data->buttons );
 		$cnb_coupon              = CnbPromotionCode::fromObject( $data->coupon );
 		$cnb_plans               = CnbPlan::fromObjects( $data->plans );
+        $cnb_agency_plans        = CnbAgencyPlan::fromObjects( $data->agencyPlans );
 		$cnb_validation_messages = ValidationMessageWithId::fromObjects( $data->validationMessages );
 		$cnb_settings            = UrlSettings::fromObject($data->settings);
 		// This might not be available in each API call, depending on environment settings
@@ -979,6 +984,15 @@ class CnbAppRemote {
 
 		return StripeBillingPortal::fromObject( self::cnb_remote_post( $rest_endpoint, $body ) );
 	}
+
+    /**
+     * @return StripeRequestBillingPortalResponse
+     */
+    public function request_billing_portal() {
+        $rest_endpoint = '/v1/stripe/requestBillingPortal';
+
+        return StripeRequestBillingPortalResponse::fromObject( self::cnb_remote_post( $rest_endpoint ) );
+    }
 
 	/**
 	 * Data model:

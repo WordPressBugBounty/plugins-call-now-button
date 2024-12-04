@@ -37,7 +37,7 @@ class CnbDomainViewUpgradeOverview {
 	    wp_enqueue_script( CNB_SLUG . '-tally' );
 	    wp_enqueue_script( CNB_SLUG . '-settings' );
 
-        global $cnb_plans;
+        global $cnb_plans, $cnb_user;
 
         $cnb_utils = new CnbUtils();
         if ( $domain->type === 'PRO' ) {
@@ -104,13 +104,11 @@ class CnbDomainViewUpgradeOverview {
             $this->render_upgrade_form( $domain, '-comparison-bottom' );
             ?>
         </div>
-        <div id="domain_bundle" class="cnb-welcome-blocks">
-            <h1>Get a PRO Account</h1>
-            <p>For power users that need buttons on a large number of websites.</p>
-            <h2><span class="dashicons dashicons-yes"></span> Includes <u>20 PRO websites</u></h2>
-            <br>
-            <?php $this->render_pro_account_links(); ?>
-        </div>
+        <?php
+        $active_currency = $this->get_active_currency( $cnb_user );
+        $pro_account_blocks = new CnbProAccountBlocks( $active_currency );
+        $pro_account_blocks->render_pro_account_block();
+        ?>
         <br><br>
         <div class="cnb-message notice"><p class="cnb-error-message"></p></div>
         <?php
@@ -153,7 +151,7 @@ class CnbDomainViewUpgradeOverview {
                 <h2 class="cnb-left">Payment cancelled</h2>
                 <p class="cnb-left">Please let us know if you have any questions or if there's anything we should add or improve.</p>
                 <iframe data-tally-src="https://tally.so/embed/mBEj51?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1" loading="lazy" width="100%" height="233" frameborder="0" marginheight="0" marginwidth="0" title="Abandoned checkout"></iframe>
-                <script>cnb_show_tally_abandoned_checkout()</script>
+                <script>jQuery(function () {cnb_show_tally_abandoned_checkout()})</script>
             </div>
         <?php }
     }
@@ -166,81 +164,6 @@ class CnbDomainViewUpgradeOverview {
             echo "jQuery(() => { jQuery('.nav-tab-wrapper').hide(); })";
             echo '</script>';
         }
-    }
-
-    /**
-     *
-     * @return void
-     */
-    public function render_pro_account_links() {
-        global $cnb_user;
-        $this->render_js_to_hide_currency( $cnb_user );
-        $active_currency = $this->get_active_currency( $cnb_user );
-        $accountProEUR_M = 'https://buy.stripe.com/14kdU34GY5C91LGcMO';
-        $accountProUSD_M = 'https://buy.stripe.com/eVaeY76P60hPduodQQ';
-        $accountProEUR_Y = 'https://buy.stripe.com/eVa17h3CU4y59e89AD';
-        $accountProUSD_Y = 'https://buy.stripe.com/3cs17hgpG3u19e86op';
-        ?>
-
-        <?php if ( ! $active_currency ) { ?>
-            <div class="cnb-currency-toggle">
-                <span class="cnb_currency_active cnb_currency_active_eur" style="font-weight:bold">EUR</span>
-                <input id="cnb-currency-toggle-proAccount"
-                        class="cnb-currency-toggle-cb cnb_toggle_checkbox" name="currency" type="checkbox"
-                        value="usd"/>
-                <label for="cnb-currency-toggle-proAccount" class="cnb_toggle_label">Toggle</label>
-                <span style="display: inline-block; margin-left: 4px;"
-                        class="cnb_currency_active cnb_currency_active_usd">USD</span>
-            </div>
-        <?php } ?>
-
-        <div class="cnb-price-plans">
-            <div class="currency-box currency-box-eur cnb-flexbox" style="<?php if ( $active_currency === 'usd' ) {
-                echo 'display:none';
-            } ?>">
-
-                <div class="cnb-pricebox cnb-currency-box currency-box-active">
-                    <h3 class="cnb-price-usd">PRO Account</h3>
-
-                    <div class="plan-amount"><span class="currency">&euro;</span><span
-                                class="euros">49</span><span
-                                class="cents">.90</span><span class="timeframe">/month</span>
-                    </div>
-                    <div class="billingprice">
-                        VAT may apply
-                    </div>
-
-                    <a class="button button-primary" href="<?php echo esc_html( $accountProEUR_M ) ?>">Purchase</a>
-                </div>
-
-            </div>
-            <div class="currency-box currency-box-usd cnb-flexbox"
-                style="<?php if ( $active_currency !== 'usd' ) { ?>display:none<?php } ?>">
-
-                <div class="cnb-pricebox cnb-currency-box currency-box-active">
-                    <h3 class="cnb-price-usd">PRO Account</h3>
-
-                    <div class="plan-amount"><span class="currency">$</span><span
-                                class="euros">49</span><span
-                                class="cents">.90</span><span class="timeframe">/month</span>
-                    </div>
-                    <div class="billingprice">
-                        VAT may apply
-                    </div>
-
-                    <a class="button button-primary" href="<?php echo esc_html( $accountProUSD_M ) ?>">Purchase</a>
-                </div>
-
-            </div>
-        </div>
-        <p class="billingprice">
-            <b>Please allow up to 24 hours for your account to be set up.</b>
-        </p>
-        <p class="billingprice">
-            A PRO Account holds up to 20 domains (included in price). <br>The PRO Account subscription enables PRO features
-            on every domain in the account.
-        </p>
-        <?php
     }
 
     /**

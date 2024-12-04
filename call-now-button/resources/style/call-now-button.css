@@ -25,6 +25,9 @@ Universal CNB admin styling options
 .cnb_font_thin {
     font-weight: 100;
 }
+.cnb_font_light {
+    font-weight: 300;
+}
 
 .cnb_font_80 {
     font-size: 80%;
@@ -81,6 +84,21 @@ Universal CNB admin styling options
     border-radius: 3px;
     margin-left: 5px;
     padding: 0 3px;
+}
+
+.cnb-list {
+    padding-left:2.5em;
+    list-style: circle;
+}
+.cnb-list.cnb-checklist {
+    list-style: none;
+}
+.cnb-list.cnb-checklist strong {
+    font-size: inherit;
+    color: #3c434A;
+}
+.cnb-list.cnb-checklist li:before {
+    color:#00aa00;
 }
 
 /*
@@ -968,6 +986,11 @@ input[type=checkbox].cnb_day_selector:checked + label.cnb_day_selector {
     border-color: #009900;
 }
 
+.button.button-primary.button-green.button-large.font-16 {
+    font-size: 16px;
+    padding: 5px 30px;
+}
+
 .button.button-green:hover,
 .button.button-green:active,
 .cnb-promobox.cnb-promobox-green .button-primary:hover,
@@ -1787,7 +1810,8 @@ span.cnb-pro-badge {
 }
 
 .cnb-welcome-blocks .button.button-primary,
-.notice-blackfriday .button.button-primary {
+.notice-blackfriday .button.button-primary,
+.button.button-primary.button-green {
     background: #009900;
     border-color: #009900;
     font-size: 16px;
@@ -1947,15 +1971,33 @@ span.cnb-pro-badge {
     color: #fff;
 }
 
-.cnb-nb-plans tbody,
-.font-18,
-#cnb_upgrade_box .font-18 {
+
+
+.font-16,
+p.font-16,
+ul.font-16
+ {
     font-size: 16px;
+    line-height: 1.6;
+}
+.cnb-nb-plans tbody {
+    font-size: 16px;
+}
+
+.font-18,
+p.font-18,
+ul.font-18 {
+    font-size: 18px;
+    line-height: 1.8;    
 }
 
 .font-22,
 #cnb_upgrade_box .font-22 {
     font-size: 22px;
+}
+
+.font-italic {
+    font-style: italic;
 }
 
 .cnb-nb-plans thead tr:last-child {

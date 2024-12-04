@@ -115,6 +115,24 @@ class CnbSettingsViewEdit {
                         <code id="cnb_user_id"><?php echo esc_html( $cnb_user->id ) ?></code>
                     </td>
                 </tr>
+                <?php if ($cnb_user->is_pro_user()) { ?>
+                    <tr>
+                        <th scope="row">Account status</th>
+                        <td>
+                            This domain is managed via a PRO account. Contact the account owner for changes.
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Invoices</th>
+                        <td class="cnb-request-billing-portal">
+                            <a href="#" onclick="return cnb_request_billing_portal()">Billing portal</a>
+                            <div class="notice notice-success inline hidden cnb-request-billing-portal-result">
+                                <p>A personal Billing Portal Link has been sent to the account owner.</p>
+                            </div>
+
+                        </td>
+                    </tr>
+                <?php  }else { ?>
                 <tr>
                     <th scope="row">Invoices</th>
                     <td><a href="#" onclick="return cnb_goto_billing_portal()">Billing portal</a>
@@ -137,6 +155,7 @@ class CnbSettingsViewEdit {
                             them.</p>
                     </td>
                 </tr>
+                <?php } ?>
             <?php } ?>
             <tr>
                 <th scope="row">API key</th>

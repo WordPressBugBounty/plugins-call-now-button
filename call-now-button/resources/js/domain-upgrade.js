@@ -62,6 +62,24 @@ function cnb_get_checkout(planId) {
     });
 }
 
+/**
+ * Request a Stripe Checkout Session ID for a given domain and a selected plan
+ *
+ * Used on the Domain upgrade page.
+ * @param planId
+ */
+function cnb_get_agency_checkout(planId) {
+    cnb_stripe_show_message('warning', 'Processing your agency account request, please wait...')
+
+    const data = {
+        'action': 'cnb_get_agency_checkout',
+        'planId': planId,
+    };
+
+    jQuery.post(ajaxurl, data, function (response) {
+        cnb_goto_checkout(response)
+    });
+}
 
 /**
  * The callback function once an API response for a Stripe Checkout Session ID is received.

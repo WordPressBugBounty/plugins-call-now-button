@@ -55,12 +55,13 @@ class CnbButtonController {
             $redirect_link =
                 add_query_arg(
                     array(
-                        'page'   => 'call-now-button',
-                        'action' => 'edit',
-                        'type'   => $new_button_type,
-                        'id'     => $new_button_id,
-                        'tid'    => $transient_id,
-                        'tab'    => $tab,
+                        'page'     => 'call-now-button',
+                        'action'   => 'edit',
+                        'type'     => $new_button_type,
+                        'id'       => $new_button_id,
+                        'tid'      => $transient_id,
+                        'tab'      => $tab,
+                        '_wpnonce' => wp_create_nonce( $transient_id ),
                     ),
                     $url );
             $redirect_url  = esc_url_raw( $redirect_link );
@@ -110,12 +111,13 @@ class CnbButtonController {
 			$redirect_link =
 				add_query_arg(
 					array(
-						'page'   => 'call-now-button',
-						'action' => 'edit',
-						'type'   => $new_button_type,
-						'id'     => $new_button_id,
-						'tid'    => $transient_id,
-						'tab'    => $tab,
+						'page'     => 'call-now-button',
+						'action'   => 'edit',
+						'type'     => $new_button_type,
+						'id'       => $new_button_id,
+						'tid'      => $transient_id,
+						'tab'      => $tab,
+						'_wpnonce' => wp_create_nonce( $transient_id ),
 					),
 					$url );
 			do_action( 'cnb_finish' );
@@ -154,12 +156,13 @@ class CnbButtonController {
             $redirect_link =
                 add_query_arg(
                     array(
-                        'page'   => 'call-now-button',
-                        'action' => 'edit',
-                        'type'   => strtolower( $button->type ),
-                        'id'     => $button->id,
-                        'tid'    => $transient_id,
-                        'tab'    => $tab,
+                        'page'     => 'call-now-button',
+                        'action'   => 'edit',
+                        'type'     => strtolower( $button->type ),
+                        'id'       => $button->id,
+                        'tid'      => $transient_id,
+                        'tab'      => $tab,
+                        '_wpnonce' => wp_create_nonce( $transient_id ),
                     ),
                     $url );
             $redirect_url  = esc_url_raw( $redirect_link );
@@ -294,8 +297,9 @@ class CnbButtonController {
             $redirect_link =
                 add_query_arg(
                     array(
-                        'page' => 'call-now-button',
-                        'tid'  => $transient_id,
+                        'page'     => 'call-now-button',
+                        'tid'      => $transient_id,
+                        '_wpnonce' => wp_create_nonce( $transient_id ),
                     ),
                     $url );
             $redirect_url  = esc_url_raw( $redirect_link );
@@ -381,8 +385,9 @@ class CnbButtonController {
 		$redirect_link =
 			add_query_arg(
 				array(
-					'page' => 'call-now-button',
-					'tid'  => $transient_id,
+					'page'     => 'call-now-button',
+					'tid'      => $transient_id,
+					'_wpnonce' => wp_create_nonce( $transient_id ),
 				),
 				admin_url( 'admin.php' ) );
 		$redirect_url  = esc_url_raw( $redirect_link );

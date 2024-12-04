@@ -37,9 +37,10 @@ class CnbDomainViewUpgrade {
     private function get_upgrade_notice( $domain ) {
         $upgradeStatus     = filter_input( INPUT_GET, 'upgrade', @FILTER_SANITIZE_STRING );
         $checkoutSessionId = filter_input( INPUT_GET, 'checkout_session_id', @FILTER_SANITIZE_STRING );
+        $remote_payment_api = new CnbAppRemotePayment();
         if ( $upgradeStatus === 'success?payment=success' ) {
             // Get checkout Session Details
-            $session = CnbAppRemotePayment::cnb_remote_get_subscription_session( $checkoutSessionId );
+            $session = $remote_payment_api->cnb_remote_get_subscription_session( $checkoutSessionId );
             if ( ! is_wp_error( $session ) ) {
                 // This increases the cache ID if needed, since the Domain cache might have changed
                 CnbAppRemote::cnb_incr_transient_base();

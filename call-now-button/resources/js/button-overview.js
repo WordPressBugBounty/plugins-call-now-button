@@ -40,7 +40,17 @@ jQuery( window ).on( 'resize', function() {
     cnb_tb_position();
 });
 
-jQuery( document ).on('DOMNodeInserted', '#TB_window', () => {
-    // Small timeout to wait for thickbox to do its initial thing
-    setTimeout(cnb_tb_position, 50)
-})
+const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+        if (mutation.addedNodes.length) {
+            const tbWindow = mutation.addedNodes[0];
+            if (tbWindow.id === 'TB_overlay') {
+                cnb_tb_position();
+            }
+        }
+    });
+});
+
+observer.observe(document.body, {
+    childList: true
+});
