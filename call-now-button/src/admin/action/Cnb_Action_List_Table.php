@@ -175,7 +175,7 @@ class Cnb_Action_List_Table extends WP_List_Table {
             case 'draggable':
                 return '<svg height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>';
             case 'actionValue':
-                return ! empty( $item->actionValue ) ? esc_html( $item->actionValue ) : '<em>No value</em>';
+                return $this->get_action_value( $item );
             case 'labelText':
                 return ! empty( $item->labelText ) ? esc_html( $item->labelText ) : '<em>No value</em>';
             case 'actionButton':
@@ -201,8 +201,17 @@ class Cnb_Action_List_Table extends WP_List_Table {
         }
     }
 
+	/**
+	 * @param $action CnbAction
+	 *
+	 * @return string
+	 */
+	private function get_action_value( $action ) {
+		if ($action->actionType === 'CHAT' ) return ' -';
+		return ! empty( $action->actionValue ) ? esc_html( $action->actionValue ) : '<em>No value</em>';
+	}
+
     private function get_data() {
-        $cnb_options = get_option( 'cnb' );
         $cnb_remote = new CnbAppRemote();
         $actions     = array();
         if ( $this->button === null ) {

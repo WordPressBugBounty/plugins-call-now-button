@@ -104,6 +104,9 @@ class ActionIconPicker {
                 array( 'type' => 'FONT', 'text' => 'call3' ),
                 array( 'type' => 'FONT', 'text' => 'chat' ),
 		        array( 'type' => 'FONT', 'text' => 'conversation' ),
+                array( 'type' => 'FONT', 'text' => 'chat_2' ),
+                array( 'type' => 'FONT', 'text' => 'chat_3' ),
+                array( 'type' => 'FONT', 'text' => 'chat_4' ),
 		        array( 'type' => 'FONT', 'text' => 'more_info' ),
 		        array( 'type' => 'FONT', 'text' => 'call_back' ),
 		        array( 'type' => 'FONT', 'text' => 'donate' ),
@@ -145,6 +148,9 @@ class ActionIconPicker {
 	        new ActionIcon('CHAT', array(
                 array( 'type' => 'FONT', 'text' => 'conversation' ),
 		        array( 'type' => 'FONT', 'text' => 'chat' ),
+                array( 'type' => 'FONT', 'text' => 'chat_2' ),
+                array( 'type' => 'FONT', 'text' => 'chat_3' ),
+                array( 'type' => 'FONT', 'text' => 'chat_4' ),
 	        )),
         );
     }

@@ -122,7 +122,7 @@ class CallNowButton {
 			$chat_controller = new CnbChatController();
 			if ($chat_controller->has_chat_enabled()) {
 				$chat_router = new CnbChatRouter();
-				add_submenu_page( CNB_SLUG, $plugin_title, 'Chat', 'manage_options', $chat_router->get_slug(), array(
+				add_submenu_page( CNB_SLUG, $plugin_title, 'Live Chat', 'manage_options', $chat_router->get_slug(), array(
 					$chat_router,
 					'render',
 				) );
@@ -513,12 +513,18 @@ class CallNowButton {
 	    wp_register_script(
 		    CNB_SLUG . '-templates-react-compiled',
 		    plugins_url('build/index.js', CNB_PLUGINS_URL_BASE ),
-		    array( 'wp-element' ), // wp-element for React
+		    array(
+				'wp-element', // wp-element for React
+			    // 'react',
+			    'wp-block-editor', // wp-block-editor for @wordpress/components
+			    // 'wp-blocks',
+			    // 'wp-i18n',
+		    ),
 		    CNB_VERSION,
 		    true );
 
 	    wp_register_script(
-		    CNB_SLUG . '-templates',
+		    (new Template_Controller())->get_slug(),
 		    plugins_url('resources/js/templates.js', CNB_PLUGINS_URL_BASE ),
 		    array( CNB_SLUG . '-templates-react-compiled' ),
 		    CNB_VERSION,

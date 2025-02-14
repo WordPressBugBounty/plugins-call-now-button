@@ -2,9 +2,9 @@ import {Template} from "../../types/types";
 import {ACTION_TYPE} from "../../types/cnb-web-types";
 import {ActionTypes, DisplayModes} from "../../types/aux-types";
 
-interface TemplateCardProps {
+type TemplateCardProps = {
     template: Template
-    handleSelect: Function
+    handleSelect: (template: Template) => void
     types: ActionTypes
     displayModes: DisplayModes
 }
@@ -36,6 +36,7 @@ const TemplateCard = ({template, handleSelect, types, displayModes}: TemplateCar
                 <h3>{template.name}</h3>
                 <p>{template.description}</p>
                 <p>{template.button.actions.map(a => <span
+                  key={a.id}
                     className="cnb-feature-label">{getTypeName(a.actionType, types)}</span>)}</p>
             </div>
         </section>

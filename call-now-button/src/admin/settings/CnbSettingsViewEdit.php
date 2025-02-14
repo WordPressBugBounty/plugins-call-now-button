@@ -403,7 +403,8 @@ class CnbSettingsViewEdit {
                         <p>
                             JS Location: <code><?php echo esc_html($cnb_settings->get_js_location())?></code><br />
                             CSS Location: <code><?php echo esc_html($cnb_settings->get_css_location())?></code><br />
-                            Static Root: <code><?php echo esc_html($cnb_settings->get_static_root())?></code>
+                            Static Root: <code><?php echo esc_html($cnb_settings->get_static_root())?></code><br />
+                            Chat Root: <code><?php echo esc_html($cnb_settings->get_chat_root())?></code>
                         </p>
                         <p class="description">Snippet locations</p>
 

@@ -12,16 +12,18 @@ class UrlSettings {
 	private $js_location;
 	private $user_root;
 	private $static_root;
+	private $chat_root;
 	/**
 	 * @var string One of GCS, R2
 	 */
 	private $storage_type;
 
-	public function __construct( $css_location, $js_location, $user_root, $static_root, $storage_type ) {
+	public function __construct( $css_location, $js_location, $user_root, $static_root, $chat_root, $storage_type ) {
 		$this->css_location  = $css_location;
 		$this->js_location   = $js_location;
 		$this->user_root     = $user_root;
 		$this->static_root   = $static_root;
+		$this->chat_root     = $chat_root;
 		$this->storage_type  = $storage_type;
 	}
 
@@ -41,6 +43,10 @@ class UrlSettings {
 		return $this->static_root;
 	}
 
+	public function get_chat_root() {
+		return $this->chat_root;
+	}
+
 	public function get_storage_type() {
 		return $this->storage_type;
 	}
@@ -55,6 +61,7 @@ class UrlSettings {
 			CnbUtils::getPropertyOrNull( $object, 'jsLocation' ),
 			CnbUtils::getPropertyOrNull( $object, 'userRoot' ),
 			CnbUtils::getPropertyOrNull( $object, 'staticRoot' ),
+			CnbUtils::getPropertyOrNull( $object, 'chatRoot' ),
 			CnbUtils::getPropertyOrNull( $object, 'storageType' )
 		);
 	}
@@ -64,6 +71,7 @@ class UrlSettings {
 		update_option('cnb_js_location', $this->js_location);
 		update_option('cnb_user_root', $this->user_root);
 		update_option('cnb_static_root', $this->static_root);
+		update_option('cnb_chat_root', $this->chat_root);
 		update_option('cnb_storage_type', $this->storage_type);
 	}
 
@@ -75,6 +83,7 @@ class UrlSettings {
 			get_option('cnb_js_location'),
 			get_option('cnb_user_root'),
 			get_option('cnb_static_root'),
+			get_option('cnb_chat_root'),
 			get_option('cnb_storage_type')
 		);
 	}

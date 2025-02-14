@@ -125,6 +125,18 @@ class Button_Icon_Picker {
                         <i class="cnb-font-icon" data-icon-type="FONT" data-icon-text="conversation">conversation</i>
                     </div>
                     <div class="cnb-button-icon">
+                        <i class="cnb-font-icon" data-icon-type="FONT" data-icon-text="conversation">chat</i>
+                    </div>
+                    <div class="cnb-button-icon">
+                        <i class="cnb-font-icon" data-icon-type="FONT" data-icon-text="conversation">chat_2</i>
+                    </div>
+                    <div class="cnb-button-icon">
+                        <i class="cnb-font-icon" data-icon-type="FONT" data-icon-text="conversation">chat_3</i>
+                    </div>
+                    <div class="cnb-button-icon">
+                        <i class="cnb-font-icon" data-icon-type="FONT" data-icon-text="conversation">chat_4</i>
+                    </div>
+                    <div class="cnb-button-icon">
                         <i class="cnb-font-icon" data-icon-type="FONT" data-icon-text="call3">call3</i>
                     </div>
                     <div class="cnb-button-icon">

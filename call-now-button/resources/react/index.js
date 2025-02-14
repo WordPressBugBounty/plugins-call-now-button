@@ -1,4 +1,8 @@
-import App from "./components/App";
-import { render } from '@wordpress/element';
+import domReady from '@wordpress/dom-ready';
+import { createRoot } from '@wordpress/element';
+import InitialRouting from "./components/routing/InitialRouting";
 
-render(<App />, document.getElementById('call-now-button-app'));
+domReady(() => {
+    createRoot(document.getElementById('call-now-button-app'))
+        .render(<InitialRouting />);
+});

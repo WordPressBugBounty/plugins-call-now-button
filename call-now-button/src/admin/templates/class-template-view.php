@@ -32,11 +32,12 @@ class Template_View {
 	public function render() {
 		global $cnb_domain;
 		$admin_functions = new CnbAdminFunctions();
+		$templates_slug = (new Template_Controller())->get_slug();
 		// Register CSS/JS
-		wp_enqueue_script( CNB_SLUG . '-templates' );
+		wp_enqueue_script( $templates_slug );
 		if ( $this->templates && ! is_wp_error( $this->templates ) ) {
-			wp_localize_script( CNB_SLUG . '-templates', 'cnb_templates_data', $this->templates );
-			wp_localize_script( CNB_SLUG . '-templates', 'cnb_templates_ajax_data',
+			wp_localize_script( $templates_slug, 'cnb_templates_data', $this->templates );
+			wp_localize_script( $templates_slug, 'cnb_templates_ajax_data',
                 array(
                         'ajaxUrl' => admin_url( 'admin-ajax.php' ),
                         'nonce' => wp_create_nonce( 'cnb-button-edit' ),

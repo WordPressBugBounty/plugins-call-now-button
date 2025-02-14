@@ -22,12 +22,29 @@ class CnbFooter {
     }
 
     public function render() {
-        $this->cnb_show_feedback_collection();
-        $this->cnb_show_api_traces();
-        $this->add_usage_details();
-        $this->print_user_info();
-        echo '</div> <!-- /wrap -->'; // This is started in CnbHeader::renderHeader
+	    if (apply_filters('cnb_show_footer', true)) {
+		    $this->render_footer_content();
+	    }
+        echo '</div>'; // This is started in CnbHeader::renderHeader
     }
+
+	private function render_footer_content() {
+		if (apply_filters('cnb_show_feedback_collection', true)) {
+			$this->cnb_show_feedback_collection();
+		}
+
+		if (apply_filters('cnb_show_api_traces', true)) {
+			$this->cnb_show_api_traces();
+		}
+
+		if (apply_filters('cnb_show_usage_details', true)) {
+			$this->add_usage_details();
+		}
+
+		if (apply_filters('cnb_show_user_info', true)) {
+			$this->print_user_info();
+		}
+	}
 
     private function cnb_show_feedback_collection() {
         $cnb_options = get_option( 'cnb' );

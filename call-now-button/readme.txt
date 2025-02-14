@@ -5,7 +5,7 @@ Tags: call button, click to call, convert, call now button, contact button
 Requires at least: 4.1
 Requires PHP: 5.4
 Tested up to: 6.7
-Stable tag: 1.4.14
+Stable tag: 1.4.15
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -137,6 +137,10 @@ Yes, you can connect the plugin to our cloud service NowButtons.com. That alread
 
 
 == Changelog ==
+= 1.4.15 =
+* Added new icons to Multibutton and Content Window
+* Small bugfixes and improvements
+
 = 1.4.14 =
 * Added PRO Account checkout
 * Small bugfixes and improvements

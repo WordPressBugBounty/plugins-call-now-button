@@ -1988,7 +1988,7 @@ ul.font-16
 p.font-18,
 ul.font-18 {
     font-size: 18px;
-    line-height: 1.8;    
+    line-height: 1.8;
 }
 
 .font-22,
@@ -2386,6 +2386,52 @@ ul.font-18 {
 table.cnb-chat-legal-values th.cnb-legal-tokens {
     max-width: 80px;
 }
+
 table.cnb-chat-legal-values tbody td {
     padding-left: 0;
+}
+
+/** remove padding for chat **/
+#wpbody-content:has(.cnb-chat-window) {
+    padding-bottom: 0;
+}
+
+/** Ensure chat takes up remaining height/width of the WordPress screen **/
+@media screen and (max-width: 782px) {
+
+    .auto-fold #wpcontent:has(.cnb-chat-window) {
+        padding-left: 0;
+    }
+
+    .cnb-chat-window {
+        margin-left: 0;
+        width: 100%;
+    }
+
+}
+
+@media screen and (min-width: 783px) {
+
+    .cnb-chat-window {
+        margin-left: -20px;
+        width: calc(100% + 20px);
+    }
+
+}
+
+.cnb-chat-window {
+    display: block;
+    overflow: hidden;
+    /*noinspection CssUnresolvedCustomProperty*/
+    height: calc(100vh - var(--wp-admin--admin-bar--height)); /*32px for normale, 46px for small screens */
+    background-color: #FFF;
+}
+
+#adminmenu a[href*="call-now-button-chat"],
+#adminmenu li.current a[href*="call-now-button-chat"] {
+    color: #12ce11;
+    font-weight: bold;
+}
+#adminmenu a[href*="call-now-button-chat"]:hover {
+    color: #1ef11e;
 }

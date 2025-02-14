@@ -1,4 +1,4 @@
-export interface ActionType {
+export type ActionType = {
     type: string
     name: string
     plans: string[]

@@ -58,7 +58,8 @@ class CnbAdminFunctions {
     function cnb_get_action_types() {
         $all_types = array(
             'PHONE'    => new CnbActionType('PHONE', '💬 Phone', array( 'STARTER', 'PRO', 'FREE' )),
-            'EMAIL'    => new CnbActionType('EMAIL', '💬 Email', array( 'STARTER', 'PRO', 'FREE' )),
+            'CHAT'     => new CnbActionType('CHAT', '💬 Live chat', array( 'PRO' )),
+            'EMAIL'    => new CnbActionType('EMAIL', '✉️ Email', array( 'STARTER', 'PRO', 'FREE' )),
             'SMS'      => new CnbActionType('SMS', '💬 SMS/Text', array( 'STARTER', 'PRO', 'FREE' )),
             'WHATSAPP' => new CnbActionType('WHATSAPP', '💬 WhatsApp', array( 'STARTER', 'PRO', 'FREE' )),
             'FACEBOOK' => new CnbActionType('FACEBOOK', '💬 Messenger', array( 'STARTER', 'PRO', 'FREE' )),
@@ -75,7 +76,6 @@ class CnbAdminFunctions {
             'VIBER'    => new CnbActionType('VIBER', '💬 Viber', array( 'STARTER', 'PRO', 'FREE' )),
             'LINE'     => new CnbActionType('LINE', '💬 Line', array( 'STARTER', 'PRO', 'FREE' )),
             'WECHAT'   => new CnbActionType('WECHAT', '💬 WeChat', array( 'STARTER', 'PRO', 'FREE' )),
-            'CHAT'     => new CnbActionType('CHAT', '💬 Live chat', array( 'PRO' )),
         );
 
 		return apply_filters('cnb_get_action_types', $all_types);

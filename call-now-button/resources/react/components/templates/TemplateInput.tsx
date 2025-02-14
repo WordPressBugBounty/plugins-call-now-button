@@ -4,7 +4,7 @@ import TemplateCard from "./TemplateCard";
 import {ActionTypes, DisplayModes} from "../../types/aux-types";
 import {CnbDomain} from "../../types/cnb-web-types";
 
-function removeEmpty(obj) {
+const removeEmpty = (obj) => {
     if (!obj) return obj
     return Object.fromEntries(
         Object.entries(obj)
@@ -13,9 +13,9 @@ function removeEmpty(obj) {
     );
 }
 
-interface TemplateInputPros {
+type TemplateInputPros = {
     template: Template
-    setTemplate: Function
+    setTemplate: (template: Template) => void
     nonce: string,
     ajaxUrl: string
     types: ActionTypes

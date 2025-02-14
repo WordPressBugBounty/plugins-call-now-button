@@ -352,6 +352,8 @@ class CnbMultiButtonOptions implements JsonSerializable {
     public $labelBackgroundColorClose;
     public $labelTextColorClose;
 
+	public $defaultState;
+
     public function toArray() {
         return array(
             'id'                  => ! empty( $this->id ) ? $this->id : null,
@@ -374,11 +376,13 @@ class CnbMultiButtonOptions implements JsonSerializable {
 
             'labelTextOpen'            => $this->labelTextOpen, // PRO only
             'labelBackgroundColorOpen' => $this->labelBackgroundColorOpen, // PRO only
-            'labelTextColorOpen' => $this->labelTextColorOpen, // PRO only
+            'labelTextColorOpen'       => $this->labelTextColorOpen, // PRO only
 
             'labelTextClose'            => $this->labelTextClose, // PRO only
             'labelBackgroundColorClose' => $this->labelBackgroundColorClose, // PRO only
-            'labelTextColorClose' => $this->labelTextColorClose, // PRO only,
+            'labelTextColorClose'       => $this->labelTextColorClose, // PRO only,
+
+	        'defaultState'              => $this->defaultState, // PRO only,
         );
     }
 
@@ -410,9 +414,17 @@ class CnbMultiButtonOptions implements JsonSerializable {
         $options->labelBackgroundColorClose = CnbUtils::getPropertyOrNull( $object, 'labelBackgroundColorClose' );
         $options->labelTextColorClose = CnbUtils::getPropertyOrNull( $object, 'labelTextColorClose' );
 
+		$options->defaultState = CnbUtils::getPropertyOrNull( $object, 'defaultState' );
+
         return $options;
     }
 
+	public static function getDefaultStates() {
+		return array(
+			'CLOSED'   => 'Closed (default)',
+			'EXPANDED' => 'Expanded',
+		);
+	}
 	/** @noinspection PhpLanguageLevelInspection */
 	#[\ReturnTypeWillChange]
     public function jsonSerialize() {

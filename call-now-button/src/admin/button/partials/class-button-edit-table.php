@@ -525,6 +525,26 @@ class Button_Edit_Table {
                     </td>
                 </tr>
             <?php } ?>
+	        <?php if ( $button->type === 'MULTI' ) { ?>
+                <tr>
+                    <th scope="row"><label for="multi_button_options_default_state">Default state</label>
+				        <?php if ( $button->domain->type !== 'PRO' ) { ?>
+                            <a href="<?php echo esc_url( $upgrade_link ) ?>"><span class="cnb-pro-badge">Pro</span></a>
+				        <?php } ?>
+                    </th>
+                    <td>
+                        <select
+                                name="button[multiButtonOptions][defaultState]"
+                                id="multi_button_options_default_state"
+						        <?php if ( $button->domain->type !== 'PRO' ) { ?>disabled="disabled"<?php } ?>
+                        >
+					        <?php foreach ( CnbMultiButtonOptions::getDefaultStates() as $default_state_key => $default_state_value ) {?>
+                                <option value="<?php echo esc_attr( $default_state_key ) ?>"<?php selected( $default_state_key, $button->multiButtonOptions->defaultState ) ?>><?php echo esc_html( $default_state_value ) ?></option>
+					        <?php } ?>
+                        </select>
+                    </td>
+                </tr>
+	        <?php } ?>
             <tr class="cnb_advanced_view">
                 <th scope="row"><label for="button_options_css_classes">CSS Classes</label>
 			        <?php if ( $button->domain->type !== 'PRO' ) { ?>

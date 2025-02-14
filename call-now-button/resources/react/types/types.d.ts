@@ -1,6 +1,6 @@
 import {CnbButton} from "./cnb-web-types"
 
-export interface Template {
+export type Template = {
     /**
      * @var string
      */
@@ -44,7 +44,7 @@ export interface Template {
     metadata: TemplateMetadata[]
 }
 
-interface TemplateMetadata {
+type TemplateMetadata = {
     /**
      * ID (or: Field name / selector), should be unique across all buttons/actions
      *
@@ -65,7 +65,7 @@ interface TemplateMetadata {
     fields: TemplateMetadataField[]
 }
 
-interface TemplateMetadataField {
+type TemplateMetadataField = {
     /**
      * name of the field ("actionValue",etc)
      * @var string

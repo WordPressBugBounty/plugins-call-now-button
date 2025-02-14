@@ -5,8 +5,6 @@ namespace cnb\admin\action;
 // don't load directly
 defined( 'ABSPATH' ) || die( '-1' );
 
-use cnb\utils\CnbUtils;
-
 class ActionSettingsChat {
     /**
      * @param CnbAction $action
@@ -66,6 +64,25 @@ class ActionSettingsChat {
     function render_options( $action ) {
         ?>
         <table class="cnb-settings-section-table cnb-settings-section-chat">
+
+            <tr class="cnb-action-properties cnb-action-properties-CHAT cnb-action-properties-chatmodal">
+                <th scope="row"><label for="cnb-action-chat-show-notification-count">Show unread messages badge</label></th>
+                <td class="appearance">
+                    <input type="hidden"
+                            name="actions[<?php echo esc_attr( $action->id ) ?>][properties][show-notification-count]"
+                            value=""/>
+                    <input id="cnb-action-chat-show-notification-count" class="cnb_toggle_checkbox" type="checkbox"
+                            name="actions[<?php echo esc_attr( $action->id ) ?>][properties][show-notification-count]"
+                            value="true"
+				        <?php checked( true, isset( $action->properties ) && isset( $action->properties->{'show-notification-count'} ) && $action->properties->{'show-notification-count'} ); ?> />
+                    <label for="cnb-action-chat-show-notification-count" class="cnb_toggle_label">Toggle</label>
+                    <span data-cnb_toggle_state_label="cnb-action-show-notification-count"
+                            class="cnb_toggle_state cnb_toggle_false">(Off)</span>
+                    <span data-cnb_toggle_state_label="cnb-action-show-notification-count"
+                            class="cnb_toggle_state cnb_toggle_true">Yes</span>
+                </td>
+            </tr>
+
             <tr class="cnb-action-properties cnb-action-properties-CHAT cnb-action-properties-chatmodal">
                 <th scope="row"><label for="actionChatmodalWelcomeMessage">Welcome message</label></th>
                 <td>

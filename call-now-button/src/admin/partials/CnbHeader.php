@@ -24,10 +24,12 @@ class CnbHeader {
 
         do_action( 'cnb_admin_notices' );
 
-        echo '<h1>';
-        do_action( 'cnb_header_name' );
-        do_action( 'cnb_after_header' );
-        echo '</h1>';
+	    if (has_action('cnb_header_name') || has_action('cnb_after_header')) {
+		    echo '<h1>';
+		    do_action( 'cnb_header_name' );
+		    do_action( 'cnb_after_header' );
+		    echo '</h1>';
+	    }
     }
 
     private function preHeader() {
@@ -48,8 +50,12 @@ class CnbHeader {
     }
 
     private function renderHeader() {
+	    $default_classes = array( 'wrap', 'call-now-button-plugin' );
+	    $classes = apply_filters('cnb_header_wrapper_classes', $default_classes);
+	    // Convert array to space-separated string and escape
+	    $class_string = esc_attr(implode(' ', array_filter($classes)));
 
-        echo '<div class="wrap call-now-button-plugin">'; // This is closed in CnbFooter::render
+	    echo '<div class="' . esc_attr($class_string) . '">'; // This is closed in CnbFooter::render
 
         $noticeHandler = new CnbHeaderNotices();
 

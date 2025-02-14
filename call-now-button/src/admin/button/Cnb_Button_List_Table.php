@@ -9,6 +9,7 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
     require_once ABSPATH . 'wp-admin/includes/class-wp-list-table.php';
 }
 
+use cnb\admin\action\CnbAction;
 use cnb\admin\api\CnbAdminCloud;
 use cnb\admin\models\ValidationMessage;
 use cnb\admin\settings\CnbSettingsController;
@@ -228,8 +229,6 @@ class Cnb_Button_List_Table extends WP_List_Table {
      * @noinspection PhpUnused
      */
     function column_actions( $item ) {
-        $cnb_options = get_option( 'cnb' );
-
         $items     = '';
         $domain    = '';
         $actionMsg = '';
@@ -247,7 +246,6 @@ class Cnb_Button_List_Table extends WP_List_Table {
         // Action detail
         $actions = CnbAdminCloud::cnb_wp_get_actions_for_button( $item );
         foreach ( $actions as $action ) {
-            $actionValue = ! empty( $action->actionValue ) ? esc_html( $action->actionValue ) : '<em>No value</em>';
             $actionTypes = ( new CnbAdminFunctions() )->cnb_get_action_types();
 			// In case the action type is not found, display an error message
             if ( !array_key_exists($action->actionType, $actionTypes) ) {
@@ -255,7 +253,7 @@ class Cnb_Button_List_Table extends WP_List_Table {
 				continue;
             }
             $actionType  = $actionTypes[ $action->actionType ];
-            $actionMsg   .= esc_html($actionType->name) . ' (' . esc_html($actionValue) . ')<br />';
+            $actionMsg   .= esc_html($actionType->name) . $this->get_action_value( $action ) . '<br />';
         }
         $diff = $count - count( $actions );
         if ( $diff > 0 ) {
@@ -269,6 +267,18 @@ class Cnb_Button_List_Table extends WP_List_Table {
 
         return "$items$actionMsg$domain";
     }
+
+	/**
+	 * @param $action CnbAction
+	 *
+	 * @return string
+	 */
+	private function get_action_value( $action ) {
+		if ($action->actionType === 'CHAT') return '';
+
+		$actionValue = ! empty( $action->actionValue ) ? esc_html( $action->actionValue ) : '<em>No value</em>';
+		return ' (' . $actionValue . ')';
+	}
 
     /**
      * @return CnbButton[]|WP_Error

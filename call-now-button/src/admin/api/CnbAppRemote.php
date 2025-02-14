@@ -156,6 +156,22 @@ class CnbAppRemote {
 	}
 
 	/**
+	 * @return string usually "https://chat.nowbuttons.com"
+	 */
+	public function get_chat_url() {
+		UrlSettings::restoreFromOptions();
+		/** @type UrlSettings $cnb_settings */
+		global $cnb_settings;
+
+		if ($cnb_settings && $cnb_settings->get_chat_root()) {
+			return $cnb_settings->get_chat_root();
+		}
+
+		// This needs to /only/ be the fallback
+		return str_replace( 'api', 'chat', CnbAppRemote::cnb_get_api_base() );
+	}
+
+	/**
 	 * @return int|false false if not found, otherwise the current cache key
 	 */
 	public static function cnb__get_transient_base() {
