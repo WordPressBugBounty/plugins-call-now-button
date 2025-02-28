@@ -152,10 +152,9 @@ class Cnb_Condition_List_Table extends WP_List_Table {
         switch ( $column_name ) {
             case 'id':
                 // Also add the ID input
-                $id    = '<input type="hidden" name="conditions[][id]" value="' . esc_attr( $item->id ) . '" />';
                 $value = ! empty( $item->id ) ? esc_html( $item->id ) : '<em>No value</em>';
 
-                return $id . $value;
+                return $value;
             case 'filterType':
                 $actions  = $this->get_quick_actions( $item );
                 $edit_url = $this->get_edit_link( $item );

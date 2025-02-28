@@ -1862,7 +1862,7 @@ span.cnb-pro-badge {
     width: 100%;
 }
 
-.cnb-body-content form.cnb-container input[type=text] {
+.cnb-body-content form.cnb-container input[type=text]:not(.tablenav-pages *) {
     width: 100%;
     max-width: 232px;
 }

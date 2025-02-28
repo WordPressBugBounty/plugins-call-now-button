@@ -647,6 +647,16 @@ class Button_Edit_Table {
             echo 'style="display:none"';
         } ?>>
             <?php
+
+            // Add hidden inputs for all condition IDs, regardless of pagination
+            if ($button && isset($button->conditions) && is_array($button->conditions)) {
+	            foreach ($button->conditions as $condition) {
+		            if (isset($condition->id) && $condition->id !== 'new') {
+			            echo '<input type="hidden" name="conditions[][id]" value="' . esc_attr( $condition->id ) . '" />';
+		            }
+	            }
+            }
+
             $view = new CnbConditionView();
             $view->renderTable( $button );
             ?>
