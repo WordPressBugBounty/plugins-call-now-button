@@ -67,7 +67,13 @@ class CnbHeader {
         $noticeHandler->upgrade_notice( $cnb_cloud_notifications );
         $noticeHandler->cnb_show_advanced( $cnb_cloud_notifications );
 
-        // Add the notifications after updating the cloud
-        CnbAdminNotices::get_instance()->notices( $cnb_cloud_notifications );
+	    $filtered_notices = array();
+	    foreach ( $cnb_cloud_notifications as $notice ) {
+		    $filtered_notice = apply_filters( 'cnb_admin_notice_filter', $notice );
+			if ( $filtered_notice ) $filtered_notices[] = $filtered_notice;
+	    }
+
+	    // Add the notifications after updating the cloud
+        CnbAdminNotices::get_instance()->notices( $filtered_notices );
     }
 }

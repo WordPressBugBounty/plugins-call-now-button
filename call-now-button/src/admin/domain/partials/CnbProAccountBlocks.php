@@ -3,7 +3,7 @@
 namespace cnb\admin\domain;
 
 use cnb\admin\models\CnbAgencyPlan;
-use cnb\admin\models\CnbPlan;
+use cnb\utils\CnbUtils;
 
 // don't load directly
 defined( 'ABSPATH' ) || die( '-1' );
@@ -22,8 +22,8 @@ class CnbProAccountBlocks {
     public function render_pro_account_block() {
         ?>
         <div id="domain_bundle" class="cnb-welcome-blocks">
-            <h1><strong>Domain bundle discount</strong></h1>
-            <p>For agencies and power users that need buttons on a large number of websites.</p>
+            <h1><strong>Agency Account</strong></h1>
+            <h3>Domain bundle at a discounted price for web agencies and power users that need buttons on a large number of websites.</h3>
             <h2><span class="dashicons dashicons-yes"></span> Includes <u>20 PRO websites</u></h2>
             <br>
             <?php
@@ -40,12 +40,19 @@ class CnbProAccountBlocks {
         /** @var CnbAgencyPlan[] $cnb_agency_plans */
         global $cnb_agency_plans;
 
-        $agency_20_plans = array_filter($cnb_agency_plans, function ($plan) {
+	    $cnb_utils = new CnbUtils();
+
+        $agency_20_monthly_plans = array_filter($cnb_agency_plans, function ($plan) {
             return $plan->seats === 20 && $plan->interval === 'monthly';
         });
-        $agency_20_plan = array_shift($agency_20_plans);
+        $agency_20_monthly_plan = array_shift($agency_20_monthly_plans);
 
-        ?>
+	    $agency_20_yearly_plans = array_filter($cnb_agency_plans, function ($plan) {
+		    return $plan->seats === 20 && $plan->interval === 'yearly';
+	    });
+	    $agency_20_yearly_plan = array_shift($agency_20_yearly_plans);
+
+	    ?>
 
         <?php if ( ! $this->active_currency ) { ?>
             <div class="cnb-currency-toggle">
@@ -65,7 +72,22 @@ class CnbProAccountBlocks {
             } ?>">
 
                 <div class="cnb-pricebox cnb-currency-box currency-box-active">
-                    <h3 class="cnb-price-usd">PRO Account</h3>
+                    <h3 class="cnb-price-eur">Agency Annual</h3>
+
+                    <div class="plan-amount"><span class="currency">&euro;</span><span
+                                class="euros">499</span><span class="timeframe">/year</span>
+                    </div>
+                    <div class="billingprice">
+                        VAT may apply
+                    </div>
+
+                    <a class="button button-primary"
+                        onclick="cnb_get_agency_checkout('<?php echo esc_js( $agency_20_yearly_plan->id ) ?>', 'eur')"
+                        href="#"
+                    >Purchase</a>
+                </div>
+                <div class="cnb-pricebox cnb-currency-box currency-box-active">
+                    <h3 class="cnb-price-usd">Agency Monthly</h3>
 
                     <div class="plan-amount"><span class="currency">&euro;</span><span
                                 class="euros">49</span><span
@@ -76,7 +98,7 @@ class CnbProAccountBlocks {
                     </div>
 
                     <a class="button button-primary"
-                        onclick="cnb_get_agency_checkout('<?php echo esc_js( $agency_20_plan->id ) ?>')"
+                        onclick="cnb_get_agency_checkout('<?php echo esc_js( $agency_20_monthly_plan->id ) ?>', 'eur')"
                         href="#"
                     >Purchase</a>
                 </div>
@@ -85,7 +107,22 @@ class CnbProAccountBlocks {
                 style="<?php if ( $this->active_currency !== 'usd' ) { ?>display:none<?php } ?>">
 
                 <div class="cnb-pricebox cnb-currency-box currency-box-active">
-                    <h3 class="cnb-price-usd">PRO Account</h3>
+                    <h3 class="cnb-price-eur">Agency Annual</h3>
+
+                    <div class="plan-amount"><span class="currency">$</span><span
+                                class="euros">499</span><span class="timeframe">/month</span>
+                    </div>
+                    <div class="billingprice">
+                        VAT may apply
+                    </div>
+
+                    <a class="button button-primary"
+                        onclick="cnb_get_agency_checkout('<?php echo esc_js( $agency_20_yearly_plan->id ) ?>', 'usd')"
+                        href="#"
+                    >Purchase</a>
+                </div>
+                <div class="cnb-pricebox cnb-currency-box currency-box-active">
+                    <h3 class="cnb-price-usd">Agency Monthly</h3>
 
                     <div class="plan-amount"><span class="currency">$</span><span
                                 class="euros">49</span><span
@@ -96,7 +133,7 @@ class CnbProAccountBlocks {
                     </div>
 
                     <a class="button button-primary"
-                        onclick="cnb_get_agency_checkout('<?php echo esc_js( $agency_20_plan->id ) ?>')"
+                        onclick="cnb_get_agency_checkout('<?php echo esc_js( $agency_20_monthly_plan->id ) ?>', 'usd')"
                         href="#"
                     >Purchase</a>
                 </div>
@@ -104,11 +141,8 @@ class CnbProAccountBlocks {
             </div>
         </div>
         <p class="billingprice">
-            <b>Please allow up to 24 hours for your account to be set up.</b>
-        </p>
-        <p class="billingprice">
-            A PRO Account holds up to 20 domains (included in price). <br>The PRO Account subscription enables PRO features
-            on every domain in the account.
+            An agency account holds up to 20 domains (included in price). <br>The PRO Account subscription enables PRO features
+            on every domain in the account.<br><a href="<?php echo esc_url( $cnb_utils->get_support_url( 'contact/contact-sales/', 'upgrade-page', 'bigger-bundle' ) ) ?>" target="_blank">Contact sales</a> if you need a bigger bundle.
         </p>
         <?php
     }

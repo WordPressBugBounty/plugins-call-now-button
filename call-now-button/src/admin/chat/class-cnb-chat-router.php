@@ -18,6 +18,13 @@ class CnbChatRouter {
 		do_action( 'cnb_finish' );
 	}
 
+	public function render_marketing() {
+		do_action( 'cnb_init', __METHOD__ );
+		$view = new CnbChatMarketingView();
+		$view->render();
+		do_action( 'cnb_finish' );
+	}
+
 	public function get_slug() {
 		return CNB_SLUG . '-chat';
 	}

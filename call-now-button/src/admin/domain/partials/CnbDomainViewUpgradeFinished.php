@@ -128,7 +128,14 @@ class CnbDomainViewUpgradeFinished {
             $this->render_lets_go();
             echo  '<br><br><br>';
             add_filter('admin_footer_text', array( $this, 'render_confetti_image_credits' ));
+            return;
         }
+
+        // This is in case this page is called without a Notice (which happens on a direct call, but not as a redirect from the Upgrade page itself)
+	    if($domain->type == 'PRO') {
+		    echo '<p>Your domain <strong>' . esc_html( $domain->name ) . '</strong> ';
+		    echo 'is already on the <code>' . esc_html( $domain->type ) . '</code> cloud plan.</p>';
+	    }
     }
 
     /**

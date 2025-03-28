@@ -11,9 +11,9 @@ use cnb\admin\models\CnbUser;
 class CnbUserCache {
 	/**
 	 * @var string The name of the transient that stores the CnbUser data.
-
 	 */
 	private $cache_name = 'cnb_user_cache';
+	private static $expiration = DAY_IN_SECONDS;
 
 	/**
 	 * Stores the CnbUser to a local (transient) store, so that #get_subscription_data
@@ -25,7 +25,7 @@ class CnbUserCache {
 	 */
 	public function save_user_data($cnb_user_data) {
 		if ( $cnb_user_data && !is_wp_error($cnb_user_data)) {
-			set_transient( $this->cache_name, $cnb_user_data, DAY_IN_SECONDS );
+			set_transient( $this->cache_name, $cnb_user_data, self::$expiration );
 		}
 	}
 

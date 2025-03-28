@@ -22,6 +22,9 @@ use cnb\admin\user\CnbUserCache;
 use cnb\coupons\CnbPromotionCode;
 use cnb\cron\Cron;
 use cnb\utils\CnbUtils;
+use cnb\admin\dashboard\CnbDashboardCache;
+use cnb\admin\domain\CnbDomainCache;
+use cnb\admin\subscription\CnbSubscriptionCache;
 use JsonSerializable;
 use WP_Error;
 
@@ -461,13 +464,30 @@ class CnbAppRemote {
 		$cnb_validation_messages = ValidationMessageWithId::fromObjects( $data->validationMessages );
 		$cnb_settings            = UrlSettings::fromObject($data->settings);
 		// This might not be available in each API call, depending on environment settings
-		if ( isset( $data->subscriptionStatusData ) ) {
-			$cnb_subscription_data = SubscriptionStatus::from_object( $data->subscriptionStatusData );
-			$this->save_subscription_data($cnb_subscription_data);
-		}
+		$cnb_subscription_data   = SubscriptionStatus::from_object( $data->subscriptionStatusData );
+
+		// Store user data in cache
 		if ( isset( $cnb_user ) && ! is_wp_error( $cnb_user ) ) {
 			$cnb_user_cache = new CnbUserCache();
 			$cnb_user_cache->save_user_data( $cnb_user );
+		}
+
+		// Store domain data in cache
+		if ( isset( $cnb_domain ) && ! is_wp_error( $cnb_domain ) ) {
+			$cnb_domain_cache = new CnbDomainCache();
+			$cnb_domain_cache->save_domain_data( $cnb_domain );
+		}
+
+		// Store subscription data in cache
+		if ($cnb_subscription_data instanceof SubscriptionStatus) {
+			$cnb_subscription_cache = new CnbSubscriptionCache();
+			$cnb_subscription_cache->save_subscription_data( $cnb_subscription_data );
+		}
+
+		// Store button and action counts in cache
+		if (isset($cnb_buttons)) {
+			$cnb_dashboard_cache = new CnbDashboardCache();
+			$cnb_dashboard_cache->store_counts($cnb_buttons);
 		}
 
 		// This updates the internal options, so that the new settings (if any) can be rendered on the front-end
@@ -1047,5 +1067,54 @@ class CnbAppRemote {
 		$rest_endpoint = '/v1/user/settings/storage/' . $storage_type;
 		$body = '';
 		return self::cnb_remote_post( $rest_endpoint, $body );
+	}
+
+	/**
+	 * Enables live chat abilities for the current user
+	 *
+	 * @return object|WP_Error Response containing success status and user ID
+	 */
+	public function enable_chat() {
+		$rest_endpoint = '/v1/chat/user/enable';
+		$result = self::cnb_remote_post( $rest_endpoint );
+
+		// To ensure cache is refreshed immediately, call get_wp_info
+		$this->get_wp_info();
+
+		return $result;
+	}
+
+	/**
+	 * Disabled live chat abilities for the current user
+	 *
+	 * @return object|WP_Error Response containing success status and user ID
+	 */
+	public function disable_chat() {
+		$rest_endpoint = '/v1/chat/user/enable';
+		$result = self::cnb_remote_delete( $rest_endpoint );
+
+		// To ensure cache is refreshed immediately, call get_wp_info
+		$this->get_wp_info();
+
+		return $result;
+	}
+
+	/**
+	 * Reponse looks like this:
+	 * ```json
+	 * {
+	 * "success": false,
+	 * "message": "Subscription is already on a yearly billing cycle",
+	 * "subscriptionId": "sub_1R7By2Dv7Yg6silY3jExEVlJ"
+	 * }
+	 * ```
+	 *
+	 * @param $subscriptionId string The ID of the subscription to upgrade
+	 *
+	 * @return mixed|WP_Error
+	 */
+	public function upgrade_subscription_to_yearly( $subscriptionId ) {
+		$rest_endpoint = '/v1/user/subscription/' . $subscriptionId . '/upgrade-to-yearly';
+		return self::cnb_remote_post( $rest_endpoint );
 	}
 }

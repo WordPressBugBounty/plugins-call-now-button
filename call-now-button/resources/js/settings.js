@@ -134,6 +134,49 @@ function cnb_add_domain_alias() {
     })
 }
 
+function cnb_setup_switch_to_yearly() {
+    // Handle upgrade to yearly button click
+    jQuery('#cnb-upgrade-to-yearly').on('click', function() {
+        const $button = jQuery(this);
+        const $result = jQuery('.cnb-upgrade-to-yearly-result');
+        const subscriptionId = $button.data('subscription-id');
+
+        // Show confirmation dialog
+        if (!confirm('Switch to annual billing?\n\n' +
+            '• You will be charged immediately\n' +
+            '• Remaining days from your monthly plan will be credited\n' +
+            '• Please ensure your payment method is up to date with sufficient funds to avoind service disruption\n\n' +
+            'Do you want to proceed?')) {
+            return;
+        }
+
+        // Disable button and show loading state
+        $button.prop('disabled', true).val('Upgrading...');
+        $result.removeClass('hidden notice-success notice-error').addClass('notice-info')
+            .html('<p>Processing your switch to yearly billing...</p>');
+
+        // Make AJAX call
+        jQuery.post(ajaxurl, {
+            action: 'cnb_upgrade_to_yearly',
+            subscriptionId: subscriptionId
+        }, function(response) {
+            if (response.success === true) {
+                $result.removeClass('notice-info').addClass('notice-success')
+                    .html('<p>Your subscription was successfully switched to the annual plan!</p>');
+                $button.hide();
+            } else {
+                $result.removeClass('notice-info').addClass('notice-error')
+                    .html('<p>Error: ' + (response.data.message || 'Failed to switch to yearly billing. Please try again.') + '</p>');
+                $button.prop('disabled', false).val('Switch to Yearly Billing');
+            }
+        }).fail(function() {
+            $result.removeClass('notice-info').addClass('notice-error')
+                .html('<p>Error: Failed to communicate with the server. Please try again.</p>');
+            $button.prop('disabled', false).val('Switch to Yearly Billing');
+        });
+    });
+}
+
 jQuery(() => {
     init_settings();
     cnb_disable_api_key_when_cloud_hosting_is_disabled()
@@ -141,4 +184,5 @@ jQuery(() => {
     cnb_show_tips_when_deactivating()
     add_onclick_cnb_user_storage_type()
     cnb_add_domain_alias()
+    cnb_setup_switch_to_yearly()
 })

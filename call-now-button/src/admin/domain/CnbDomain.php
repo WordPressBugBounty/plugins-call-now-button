@@ -194,6 +194,10 @@ class CnbDomain implements JsonSerializable {
     public function jsonSerialize() {
         return $this->toArray();
     }
+
+	public function is_pro() {
+		return $this->type === 'PRO';
+	}
 }
 
 class CnbDomainProperties implements JsonSerializable {

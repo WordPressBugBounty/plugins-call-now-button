@@ -4,8 +4,8 @@ Donate link: https://callnowbutton.com/donate/
 Tags: call button, click to call, convert, call now button, contact button
 Requires at least: 4.1
 Requires PHP: 5.4
-Tested up to: 6.7
-Stable tag: 1.4.16
+Tested up to: 6.8
+Stable tag: 1.5.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -49,6 +49,7 @@ The PRO plan offers the following extras:
 * 🧳 Create 100 unique buttons
 * 🤹🏽 Multiple buttons on a page
 * 🌼 Button templates
+* 💬 Live chat (beta)
 * 💬 WhatsApp chat window
 * 💬 Messenger Chat Widget
 * 🗂️ Multi action buttons
@@ -137,6 +138,10 @@ Yes, you can connect the plugin to our cloud service NowButtons.com. That alread
 
 
 == Changelog ==
+= 1.5.0 =
+* Live chat beta release for PRO customers
+* Option to switch from monthly to annual plan
+
 = 1.4.16 =
 * Bugfix for 20+ Display Rules on a single button
 * Fixed the pagination styling for Display Rules

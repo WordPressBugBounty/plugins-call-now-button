@@ -74,7 +74,7 @@ class CnbFooter {
                 <a href="<?php echo esc_url( $cnb_utils->get_support_url( 'wordpress/', 'footer-links', 'support' ) ) ?>"
                     target="_blank"
                     title="Support">Support</a> &middot;
-                <a href="<?php echo esc_url( $cnb_utils->get_support_url( 'feature-request/', 'footer-links', 'suggestions' ) ) ?>"
+                <a href="<?php echo esc_url( $cnb_utils->get_support_url( 'contact/feature-request/', 'footer-links', 'suggestions' ) ) ?>"
                     target="_blank" title="Feature Requests">Suggestions</a>
                 <?php if ( ! $cnb_utils->isCloudActive( $cnb_options ) ) { ?>
                     &middot; <strong><a href="<?php echo esc_url( $upgrade_link ) ?>"

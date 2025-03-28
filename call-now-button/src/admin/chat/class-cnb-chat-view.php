@@ -15,6 +15,13 @@ class CnbChatView {
 			return array_diff($classes, array( 'wrap' ));
 		});
 
+		// Remove the notice, this payment page will explain it further
+		add_filter( 'cnb_admin_notice_filter', function ( $notice ) {
+			if ( $notice && $notice->name === 'cnb-show-advanced-notice' ) return null;
+			if ( $notice && $notice->name === 'cnb-pro-chat-notice' ) return null;
+			return $notice;
+		} );
+
 		do_action( 'cnb_header' );
 
 		wp_enqueue_script( CNB_SLUG . '-chat' );

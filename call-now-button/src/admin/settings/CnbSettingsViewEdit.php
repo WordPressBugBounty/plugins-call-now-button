@@ -200,7 +200,7 @@ class CnbSettingsViewEdit {
 
                         <input type="hidden" name="cnb[api_key]" id="cnb_api_key" value="delete_me"
                                 disabled="disabled"/>
-                    <?php } ?>
+                    <?php } ?>                    
                 </td>
             </tr>
         </table>
@@ -221,6 +221,7 @@ class CnbSettingsViewEdit {
 
         $adminFunctions     = new CnbAdminFunctions();
         $cnbAppRemote       = new CnbAppRemote();
+	    $cnb_utils          = new CnbUtils();
         $cnb_clean_site_url = $cnbAppRemote->cnb_clean_site_url();
         $status             = CnbSettingsController::getStatus( $cnb_options );
 
@@ -424,6 +425,24 @@ class CnbSettingsViewEdit {
                         </div>
                     </td>
                 </tr>
+                <?php if ($cnb_utils->is_chat_api_enabled()) { ?>
+                <tr>
+                    <th><label>Chat functionality</label></th>
+                    <td>
+                        <p>Chat functionality is currently enabled for this account.</p>
+                        <div>
+                            <input
+                                    class="cnb-disable-chat button button-secondary"
+                                    type="button"
+                                    data-wpnonce="<?php echo esc_attr($user_nonce) ?>"
+                                    value="Disable Chat"
+                            />
+                            <div class="notice inline hidden cnb-disable-chat-result"><p></p></div>
+                        </div>
+                        <p class="description">This will remove your chat abilities. You can re-enable chat at any time from the Chat settings page.</p>
+                    </td>
+                </tr>
+                <?php } ?>
             <?php } // end of cloud check ?>
         </table>
         <?php
@@ -569,7 +588,7 @@ class CnbSettingsViewEdit {
 
                 <?php if ( $cnb_options['cloud_enabled'] == 1 && $cloud_successful ) {
                     ?>
-                    
+
                     <div id="cnb_not_working_tips" class="cnb_inpage_notice">
                         <h3>👋 Plugin not playing nice?</h3>
                         <p>No worries—we've got your back. Before you hit that off switch, let's try a couple of quick fixes:</p>
@@ -602,9 +621,10 @@ class CnbSettingsViewEdit {
         wp_enqueue_script( CNB_SLUG . '-settings' );
         wp_enqueue_script( CNB_SLUG . '-premium-activation' );
         wp_enqueue_script( CNB_SLUG . '-timezone-picker-fix' );
-	    wp_enqueue_script( CNB_SLUG . '-tally' );
-	    wp_enqueue_script( CNB_SLUG . '-domain-upgrade' );
-	    wp_enqueue_script( CNB_SLUG . '-billing-portal' );
+        wp_enqueue_script( CNB_SLUG . '-tally' );
+        wp_enqueue_script( CNB_SLUG . '-domain-upgrade' );
+        wp_enqueue_script( CNB_SLUG . '-billing-portal' );
+        wp_enqueue_script( CNB_SLUG . '-chat-marketing' );
 
         add_action( 'cnb_header_name', array( $this, 'header' ) );
 
@@ -669,6 +689,7 @@ class CnbSettingsViewEdit {
             </div>
             <?php $this->render_promos( $use_cloud, $cnb_domain, $status ); ?>
         </div>
+
 
         <?php
         do_action( 'cnb_footer' );

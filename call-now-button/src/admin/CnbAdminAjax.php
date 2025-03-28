@@ -49,7 +49,8 @@ class CnbAdminAjax {
      */
     public function agency_upgrade_get_checkout() {
         do_action( 'cnb_init', __METHOD__ );
-        $planId   = filter_input( INPUT_POST, 'planId', @FILTER_SANITIZE_STRING );
+	    $planId   = filter_input( INPUT_POST, 'planId', @FILTER_SANITIZE_STRING );
+	    $currency = filter_input( INPUT_POST, 'currency', @FILTER_SANITIZE_STRING );
         $cnb_subscription_api = new CnbAppRemotePayment();
 
         $url             = admin_url( 'admin.php' );
@@ -62,7 +63,7 @@ class CnbAdminAjax {
                 ),
                 $url )
         );
-        $checkoutSession = $cnb_subscription_api->cnb_remote_post_agency_subscription( $planId, $callbackUri );
+        $checkoutSession = $cnb_subscription_api->cnb_remote_post_agency_subscription( $planId, $callbackUri, $currency );
 
         $this->handle_checkout_session( $checkoutSession );
 
@@ -238,12 +239,27 @@ class CnbAdminAjax {
         do_action( 'cnb_finish' );
         wp_die();
     }
-	public function get_domain_status() {
-		$domainId = trim( filter_input( INPUT_POST, 'domainId', @FILTER_SANITIZE_STRING ) );
-		do_action( 'cnb_init', __METHOD__ );
-		$cnb_remote = new CnbAppRemote();
-		wp_send_json( $cnb_remote->get_subscription_status( $domainId ) );
-		do_action( 'cnb_finish' );
-		wp_die();
-	}
+
+    public function get_domain_status() {
+        $domainId = trim( filter_input( INPUT_POST, 'domainId', @FILTER_SANITIZE_STRING ) );
+        do_action( 'cnb_init', __METHOD__ );
+        $cnb_remote = new CnbAppRemote();
+        wp_send_json( $cnb_remote->get_subscription_status( $domainId ) );
+        do_action( 'cnb_finish' );
+        wp_die();
+    }
+
+    public function upgrade_to_yearly() {
+        do_action( 'cnb_init', __METHOD__ );
+        $subscriptionId = trim( filter_input( INPUT_POST, 'subscriptionId', @FILTER_SANITIZE_STRING ) );
+        $cnb_remote = new CnbAppRemote();
+		$result = $cnb_remote->upgrade_subscription_to_yearly( $subscriptionId );
+		if ( ! is_wp_error( $result ) && $result->success === true ) {
+			wp_send_json_success( $result );
+		} else {
+			wp_send_json_error( $result );
+		}
+        do_action( 'cnb_finish' );
+        wp_die();
+    }
 }

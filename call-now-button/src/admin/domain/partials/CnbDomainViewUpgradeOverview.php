@@ -200,8 +200,8 @@ class CnbDomainViewUpgradeOverview {
                     <?php
                     $plan_year         = $this->get_plan( $cnb_plans, 'powered-by-eur-yearly' );
                     $plan_year_monthly = $plan_year->price / 12;
-                    $plan_x            = floor( $plan_year_monthly );
-                    $plan_y            = round( ( $plan_year_monthly ) - floor( $plan_year_monthly ), 2 ) * 100;
+                    $plan_x            = floor( $plan_year->price );
+                    $plan_y            = round( ( $plan_year->price ) - floor( $plan_year->price ), 2 ) * 100;
                     ?>
 
                     <div class="cnb-pricebox cnb-currency-box currency-box-active">
@@ -210,10 +210,10 @@ class CnbDomainViewUpgradeOverview {
 
                         <div class="plan-amount"><span class="currency">€</span><span
                                     class="euros"><?php echo esc_html( $plan_x ) ?></span><span
-                                    class="cents">.<?php echo esc_html( $plan_y ) ?></span><span class="timeframe">/month</span>
+                                    class="cents">.<?php echo esc_html( $plan_y ) ?></span><span class="timeframe">/year</span>
                         </div>
                         <div class="billingprice">
-                            <span class=""><b>Billed &euro;<?php echo esc_html( number_format( $plan_year->price, 2, '.', '' ) ); ?> every 12 months</b><br>Subscription applies to current website.<br>VAT may apply</span>
+                            <span class="">Subscription applies to current website.<br>VAT may apply</span>
                         </div>
 
                         <?php if ( $plan_year->trialPeriodDays && $plan_year->trialPeriodDays > 0 ) { ?>
@@ -238,7 +238,7 @@ class CnbDomainViewUpgradeOverview {
                                     class="cents">.<?php echo esc_html( $plan_y ) ?></span><span class="timeframe">/month</span>
                         </div>
                         <div class="billingprice">
-                            <span class="">Billed monthly.<br>Subscription applies to current website.<br>VAT may apply</span>
+                            <span class="">Subscription applies to current website.<br>VAT may apply</span>
                         </div>
 
                         <?php if ( $plan_year->trialPeriodDays && $plan_year->trialPeriodDays > 0 ) { ?>
@@ -257,8 +257,8 @@ class CnbDomainViewUpgradeOverview {
                     <?php
                     $plan_year         = $this->get_plan( $cnb_plans, 'powered-by-usd-yearly' );
                     $plan_year_monthly = $plan_year->price / 12;
-                    $plan_x            = floor( $plan_year_monthly );
-                    $plan_y            = round( ( $plan_year_monthly ) - floor( $plan_year_monthly ), 2 ) * 100;
+                    $plan_x            = floor( $plan_year->price );
+                    $plan_y            = round( ( $plan_year->price ) - floor( $plan_year->price ), 2 ) * 100;
                     ?>
 
                     <div class="cnb-pricebox cnb-currency-box currency-box-active">
@@ -266,10 +266,10 @@ class CnbDomainViewUpgradeOverview {
 
                         <div class="plan-amount"><span class="currency">$</span><span
                                     class="euros"><?php echo esc_html( $plan_x ) ?></span><span
-                                    class="cents">.<?php echo esc_html( $plan_y ) ?></span><span class="timeframe">/month</span>
+                                    class="cents">.<?php echo esc_html( $plan_y ) ?></span><span class="timeframe">/year</span>
                         </div>
                         <div class="billingprice">
-                            <span>Billed $<?php echo esc_html( number_format( $plan_year->price, 2, '.', '' ) ); ?> every 12 months.<br>Subscription applies to current website.<br>VAT may apply</span>
+                            <span>Subscription applies to current website.<br>VAT may apply</span>
                         </div>
 
                         <?php if ( $plan_year->trialPeriodDays && $plan_year->trialPeriodDays > 0 ) { ?>
@@ -295,7 +295,7 @@ class CnbDomainViewUpgradeOverview {
                                     class="cents">.<?php echo esc_html( $plan_y ) ?></span><span class="timeframe">/month</span>
                         </div>
                         <div class="billingprice">
-                            <span class="">Billed monthly.<br>Subscription applies to current website.<br>VAT may apply</span>
+                            <span>Subscription applies to current website.<br>VAT may apply</span>
                         </div>
 
                         <?php if ( $plan_year->trialPeriodDays && $plan_year->trialPeriodDays > 0 ) { ?>
@@ -395,6 +395,10 @@ class CnbDomainViewUpgradeOverview {
         <div class="cnb-block">
             <h2>Plus...</h2>
             <div class="cnb-center">
+                <div class="cnb-pro-tile">
+                    <h3>💬 Live chat</h3>
+                    <p>Engage with visitors directly on your website with a customizable chat window that keeps them on your page.</p>
+                </div>
                 <div class="cnb-pro-tile">
                     <h3>👋 Button animations</h3>
                     <p>Add an extra animation effect to your button to draw more attention to it.</p>
@@ -761,6 +765,18 @@ class CnbDomainViewUpgradeOverview {
                     <td>&nbsp;</td>
                     <td class="cnb-starter"></td>
                     <td></td>
+                </tr>
+                <tr>
+                    <th>Live Chat (beta)
+                        <span class="cnb-tooltip-icon">?</span>
+                        <div class="cnb-tooltip-text">
+                        A button that opens a live chat window directly on your website where you can interact with visitors 
+                        in real-time. You can set up automated welcome messages that appear in sequence. <br>Visitors can start 
+                        chatting immediately without leaving your site or installing any app.
+                        </div>
+                    </th>
+                    <td class="cnb-starter">𐄂</td>
+                    <td class="yes">✓</td>
                 </tr>
                 <tr>
                     <th>WhatsApp Chat window

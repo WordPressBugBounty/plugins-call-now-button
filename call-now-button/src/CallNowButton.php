@@ -16,11 +16,14 @@ use cnb\admin\apikey\OttController;
 use cnb\admin\button\CnbButtonController;
 use cnb\admin\button\CnbButtonRouter;
 use cnb\admin\chat\CnbChatController;
+use cnb\admin\chat\CnbChatMarketingView;
 use cnb\admin\chat\CnbChatRouter;
+use cnb\admin\chat\CnbChatAjaxHandler;
 use cnb\admin\CnbAdminAjax;
 use cnb\admin\condition\CnbConditionController;
 use cnb\admin\condition\CnbConditionRouter;
 use cnb\admin\deactivation\Activation;
+use cnb\admin\domain\CnbDomainCache;
 use cnb\admin\domain\CnbDomainController;
 use cnb\admin\domain\CnbDomainRouter;
 use cnb\admin\templates\Template_Controller;
@@ -48,6 +51,9 @@ class CallNowButton {
     public function register_admin_pages() {
         global $wp_version;
 
+		$cnb_domain_cache = new CnbDomainCache();
+		$cnb_domain = $cnb_domain_cache->get_domain_data();
+
         $cnb_options       = get_option( 'cnb' );
         $utils             = new CnbUtils();
         $cnb_cloud_hosting = $utils->isCloudActive( $cnb_options );
@@ -71,7 +77,9 @@ class CallNowButton {
         if ($has_changelog && !$is_dismissed) $counter++;
 
         // Detect errors (specific, - Premium enabled, but API key is not present yet)
-        if ( $cnb_cloud_hosting && ! array_key_exists( 'api_key', $cnb_options ) ) {
+	    $cnb_cloud_hosting_not_yet_setup = $cnb_cloud_hosting && ( !array_key_exists( 'api_key', $cnb_options ) || $cnb_options['api_key'] === '' );
+
+	    if ( $cnb_cloud_hosting_not_yet_setup ) {
             $counter = '!';
         }
 
@@ -108,24 +116,33 @@ class CallNowButton {
 
 	        add_submenu_page( CNB_SLUG, $plugin_title, 'Add New', 'manage_options', CNB_SLUG . '&action=new', array( $button_router, 'render' ) );
 
-	        // Only for WordPress 5.2 and higher (Gutenberg + React 16.8)
-	        $has_gutenberg = version_compare( $wp_version, '5.2.0', '>=' );
-			if ($has_gutenberg) {
-				$template_router = new Template_Router();
-				$template_controller = new Template_Controller();
-				add_submenu_page( CNB_SLUG, $plugin_title, 'Templates', 'manage_options', $template_controller->get_slug(), array(
-					$template_router,
-					'render',
-				) );
-			}
+			if ( ! $cnb_cloud_hosting_not_yet_setup ) {
+				// Only for WordPress 5.2 and higher (Gutenberg + React 16.8)
+				$has_gutenberg = version_compare( $wp_version, '5.2.0', '>=' );
+				if ( $has_gutenberg ) {
+					$template_router     = new Template_Router();
+					$template_controller = new Template_Controller();
+					add_submenu_page( CNB_SLUG, $plugin_title, 'Templates', 'manage_options', $template_controller->get_slug(), array(
+						$template_router,
+						'render',
+					) );
+				}
 
-			$chat_controller = new CnbChatController();
-			if ($chat_controller->has_chat_enabled()) {
-				$chat_router = new CnbChatRouter();
-				add_submenu_page( CNB_SLUG, $plugin_title, 'Live Chat', 'manage_options', $chat_router->get_slug(), array(
-					$chat_router,
-					'render',
-				) );
+				// Add Chat Marketing page for PRO users without chat enabled
+				$chat_controller = new CnbChatController();
+				if ( ! $chat_controller->has_chat_enabled() || ( $cnb_domain && ! $cnb_domain->is_pro() ) ) {
+					$chat_router = new CnbChatRouter();
+					add_submenu_page( CNB_SLUG, $plugin_title, 'Live Chat', 'manage_options', CNB_SLUG . '-marketing-chat', array(
+						$chat_router,
+						'render_marketing',
+					) );
+				} else {
+					$chat_router = new CnbChatRouter();
+					add_submenu_page( CNB_SLUG, $plugin_title, 'Live Chat', 'manage_options', $chat_router->get_slug(), array(
+						$chat_router,
+						'render',
+					) );
+				}
 			}
 
             $domain_router = new CnbDomainRouter();
@@ -394,7 +411,14 @@ class CallNowButton {
 		    plugins_url('resources/js/button-overview.js', CNB_PLUGINS_URL_BASE ),
 		    array( CNB_SLUG . '-call-now-button' ),
 		    CNB_VERSION,
-		    true );        wp_register_script(
+		    true );
+        wp_register_script(
+            CNB_SLUG . '-chat-marketing',
+            plugins_url('resources/js/chat-marketing.js', CNB_PLUGINS_URL_BASE ),
+            array( 'jquery' ),
+            CNB_VERSION,
+            true );
+        wp_register_script(
             CNB_SLUG . '-action-edit-scheduler',
             plugins_url('resources/js/action-edit-scheduler.js', CNB_PLUGINS_URL_BASE ),
             array( CNB_SLUG . '-call-now-button' ),
@@ -654,6 +678,7 @@ class CallNowButton {
         add_action( 'wp_ajax_cnb_get_billing_portal', array( $ajax_controller, 'get_billing_portal' ) );
         add_action( 'wp_ajax_cnb_request_billing_portal', array( $ajax_controller, 'request_billing_portal' ) );
 	    add_action( 'wp_ajax_cnb_get_domain_status', array( $ajax_controller, 'get_domain_status' ) );
+        add_action( 'wp_ajax_cnb_upgrade_to_yearly', array( $ajax_controller, 'upgrade_to_yearly' ) );
 
         $action_controller = new CnbActionController();
         add_action( 'wp_ajax_cnb_delete_action', array( $action_controller, 'delete_ajax' ) );
@@ -675,6 +700,10 @@ class CallNowButton {
 
 		$chat_controller = new CnbChatController();
 	    add_action( 'wp_ajax_cnb_create_chat_token', array( $chat_controller, 'create_chat_token_ajax' ) );
+
+        // Register chat enable handler
+        $chat_ajax_handler = new CnbChatAjaxHandler();
+        $chat_ajax_handler->register();
     }
 
 	/**

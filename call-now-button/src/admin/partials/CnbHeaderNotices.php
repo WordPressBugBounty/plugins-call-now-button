@@ -6,6 +6,7 @@ namespace cnb;
 defined( 'ABSPATH' ) || die( '-1' );
 
 use cnb\admin\api\CnbAdminCloud;
+use cnb\admin\chat\CnbChatController;
 use cnb\admin\domain\CnbDomain;
 use cnb\admin\domain\SubscriptionStatus;
 use cnb\admin\models\CnbPlan;
@@ -87,13 +88,15 @@ class CnbHeaderNotices {
             $this->render_is_timezone_missing( $cnb_domain );
             $this->render_is_timezone_valid( $cnb_domain );
             $this->render_is_debug_mode_enabled( $cnb_domain );
-			$this->render_outstanding_invoice( $cnb_subscription_data );
+            $this->render_outstanding_invoice( $cnb_subscription_data );
+	        $this->render_pro_chat_notice( $cnb_user, $cnb_domain );
+	        $this->render_starter_chat_notice( $cnb_user, $cnb_domain );
+
         }
     }
 
     private function cnb_settings_get_account_missing_notice() {
         $cnb_utils    = new CnbUtils();
-        $register_url = $cnb_utils->get_app_url( 'register', 'upgrade-to-premium-options', 'callnowbutton.com' );
         $url          = $cnb_utils->get_app_url( '', 'manual_activation', 'sign-up-for-api' );
 
         $message = '<h3 class="title cnb-remove-add-new">Account missing</h3>';
@@ -320,7 +323,7 @@ class CnbHeaderNotices {
         }
 
         $message   = '<p>Click <a onclick="return cnb_enable_advanced_view(this)" style="cursor: pointer">here</a> to reveal more advanced fields</p>';
-        $notices[] = new CnbNotice( 'info', $message );
+        $notices[] = new CnbNotice( 'info', $message, false, false, 'cnb-show-advanced-notice' );
     }
 
     public function warn_about_caching_plugins( &$notices ) {
@@ -517,4 +520,76 @@ class CnbHeaderNotices {
         $adminNotices = CnbAdminNotices::get_instance();
         $adminNotices->warning( $message );
     }
+
+    /**
+     * Show a notice for PRO domains about the Chat feature availability
+     * 
+     * @param $cnb_user CnbUser|WP_Error
+     * @param $cnb_domain CnbDomain|WP_Error
+     */
+    private function render_pro_chat_notice( $cnb_user, $cnb_domain ) {
+	    // Check if chat is already enabled using the controller
+	    $chat_controller = new CnbChatController();
+
+        if ( is_wp_error( $cnb_user ) || is_wp_error( $cnb_domain ) ) {
+            return;
+        }
+
+		// If this domain already has chat enabled, don't show the notice
+        if ( $chat_controller->has_chat_enabled() ) {
+            return;
+        }
+
+	    // Check if domain is PRO (if not, don't show the notice)
+	    if ( ! $cnb_domain->is_pro() ) {
+		    return;
+	    }
+
+		// Check if this domain type is allowed for chat
+	    if ( ! $chat_controller->is_domain_allowed_for_chat( $cnb_domain ) ) {
+		    return;
+	    }
+
+        $message = '<p><span class="dashicons dashicons-format-chat"></span> ';
+        $message .= 'Try <strong>NowChats beta</strong>, our live chat feature now available for testing. ';
+	    $message .= '<a href="' . esc_url( admin_url( 'admin.php?page=' . CNB_SLUG . '-marketing-chat' ) ) . '">Enable it</a> to access all features during this beta phase!</p>';
+        
+        CnbAdminNotices::get_instance()->info( $message, true, 'cnb-pro-chat-notice' );
+    }
+
+	/**
+	 * Show a notice for FREE / STARTER domains about the Chat feature availability
+	 *
+	 * @param $cnb_user CnbUser|WP_Error
+	 * @param $cnb_domain CnbDomain|WP_Error
+	 */
+	private function render_starter_chat_notice( $cnb_user, $cnb_domain ) {
+		// Check if chat is already enabled using the controller
+		$chat_controller = new CnbChatController();
+
+		if ( is_wp_error( $cnb_user ) || is_wp_error( $cnb_domain ) ) {
+			return;
+		}
+
+		// If this domain already has chat enabled, don't show the notice
+		if ( $chat_controller->has_chat_enabled() ) {
+			return;
+		}
+
+		// Check if domain is STARTER or FREE (if not, don't show the notice)
+		if ( $cnb_domain->is_pro() ) {
+			return;
+		}
+
+		// Check if this domain type is allowed for chat
+		if ( ! $chat_controller->is_domain_allowed_for_chat( $cnb_domain ) ) {
+			return;
+		}
+
+		$message = '<p><span class="dashicons dashicons-format-chat"></span> ';
+		$message .= 'Great news! NowButtons now supports <strong>Live Chat</strong> features! ';
+		$message .= 'Read more about it on the <a href="' . esc_url( admin_url( 'admin.php?page=' . CNB_SLUG . '-chat-marketing' ) ) . '">Chat page</a></p>';
+
+		CnbAdminNotices::get_instance()->info( $message, true, 'cnb-starter-chat-notice' );
+	}
 }

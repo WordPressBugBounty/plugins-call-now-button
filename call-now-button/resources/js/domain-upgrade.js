@@ -66,14 +66,16 @@ function cnb_get_checkout(planId) {
  * Request a Stripe Checkout Session ID for a given domain and a selected plan
  *
  * Used on the Domain upgrade page.
- * @param planId
+ * @param planId Stripe ID of the price Plan
+ * @param currency usd or eur
  */
-function cnb_get_agency_checkout(planId) {
+function cnb_get_agency_checkout(planId, currency) {
     cnb_stripe_show_message('warning', 'Processing your agency account request, please wait...')
 
     const data = {
         'action': 'cnb_get_agency_checkout',
         'planId': planId,
+        'currency': currency,
     };
 
     jQuery.post(ajaxurl, data, function (response) {

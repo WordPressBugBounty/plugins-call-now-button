@@ -72,7 +72,7 @@ class CnbDomainViewEdit {
      * @return void
      */
     function render_form_plan_details( $domain ) {
-	    global $cnb_subscription_data;
+	    global $cnb_subscription_data, $cnb_domain;
         /** @var CnbUser $cnb_user */
         global $cnb_user;
         $url          = admin_url( 'admin.php' );
@@ -93,7 +93,7 @@ class CnbDomainViewEdit {
         <tr>
             <th>Plan</th>
             <td>
-                <code><?php echo esc_html( $domain->type ) ?></code>
+                <code><?php echo esc_html( $domain->type ) ?> <?php echo esc_html( $domain->interval ) ?></code>
                 <input name="domain[renew]" type="hidden" value="<?php echo $domain->renew ? 'true' : 'false' ?>"/>
                 <?php
                 if ( $domain->type === 'PRO' && $domain->status === 'TRIALING' ) {
@@ -124,6 +124,26 @@ class CnbDomainViewEdit {
                     } ?>
             </td>
         </tr>
+        <?php
+	    if ( isset( $cnb_subscription_data ) && isset( $cnb_domain ) &&
+			! is_wp_error( $cnb_subscription_data ) && ! is_wp_error( $cnb_domain ) &&
+			$cnb_subscription_data->interval === 'monthly' &&
+			$cnb_domain->type === 'PRO' ) { ?>
+            <tr>
+                <th scope="row">Change plan</th>
+                <td>
+
+                    <input type="button"
+                            class="button button-primary"
+                            id="cnb-upgrade-to-yearly"
+                            value="Switch to Yearly Billing"
+                            data-subscription-id="<?php echo esc_attr($cnb_subscription_data->subscriptionId) ?>"
+                    />
+                    <div class="notice inline hidden cnb-upgrade-to-yearly-result"></div>
+                </td>
+            </tr>
+	    <?php } ?>
+
         <?php if ( $cnb_user->is_pro_user() ) { ?>
             <tr>
             <th scope="row">
@@ -155,7 +175,7 @@ class CnbDomainViewEdit {
                 </td>
             </tr>
         <?php }
-        }
+    }
 
     function render_form_tracking( $domain ) {
         $cnb_utils = new CnbUtils();

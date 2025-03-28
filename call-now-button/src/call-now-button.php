@@ -3,6 +3,7 @@
 // don't load directly
 use cnb\CallNowButton;
 use cnb\cron\Cron;
+use cnb\admin\dashboard\CnbDashboardWidget;
 
 defined( 'ABSPATH' ) || die( '-1' );
 
@@ -30,6 +31,10 @@ function cnb_add_actions() {
 
 	$cnb_cron = new Cron();
 	add_action( $cnb_cron->get_hook_name(), array( $cnb_cron, 'do_hook' ) );
+
+	// Add dashboard widget
+	new CnbDashboardWidget();
+
 }
 
 cnb_add_actions();

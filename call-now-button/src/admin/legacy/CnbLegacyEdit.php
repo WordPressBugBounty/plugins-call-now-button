@@ -204,6 +204,7 @@ class CnbLegacyEdit {
                                 <td>
                                     <select>
                                         <option selected="selected">Phone</option>
+                                        <option disabled>* Live Chat</option>
                                         <option disabled>* Email</option>
                                         <option disabled>* SMS/Text</option>
                                         <option disabled>* WhatsApp</option>
@@ -494,6 +495,7 @@ class CnbLegacyEdit {
                         '<p><b>PRO includes:</b></p>
                 <p>🏗️ 99 unique buttons<br>
                 ⏰ Button scheduler<br>
+                💬 Live Chat (beta)<br>
                 💬 WhatsApp Chat module<br>
                 🗂️ Multi-action buttons<br>
                 🖼️ Slide-in content windows<br>

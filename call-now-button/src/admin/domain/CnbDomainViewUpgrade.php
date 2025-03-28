@@ -19,14 +19,17 @@ class CnbDomainViewUpgrade {
      * @return CnbDomain
      */
     private function get_domain() {
+		global $cnb_domain;
         $cnb_remote = new CnbAppRemote();
         $domain_id = filter_input( INPUT_GET, 'id', @FILTER_SANITIZE_STRING );
-        $domain    = new CnbDomain();
-        if ( strlen( $domain_id ) > 0 && $domain_id != 'new' ) {
-            $domain = $cnb_remote->get_domain( $domain_id );
+        if ( $domain_id !== null && strlen( $domain_id ) > 0 && $domain_id != 'new' ) {
+            return $cnb_remote->get_domain( $domain_id );
         }
-
-        return $domain;
+		// The fallback is to use the global (current_ domain if none is provided
+		if ($cnb_domain !== null) {
+			return $cnb_domain;
+		}
+		return null;
     }
 
     /**
@@ -58,7 +61,7 @@ class CnbDomainViewUpgrade {
         $domain = CnbDomain::setSaneDefault( $this->get_domain() );
 
         // Bail out in case of error
-        if ( is_wp_error( $domain ) ) {
+        if ( $domain == null || is_wp_error( $domain ) ) {
             return;
         }
 
@@ -77,10 +80,10 @@ class CnbDomainViewUpgrade {
 	    if ( SubscriptionStatus::has_outstanding_payment_for_domain( $domain ) ) {
 			// We bail out of the upgrade and go to payment if there is an outstanding payment
 		    (new PaymentView())->render_content();
-	    } else if ( $notice && $domain->type != 'PRO' ) {
+	    } else if ( $notice && !$domain->is_pro() ) {
             // Probably upgraded, but not reflected yet on the API side. Warn about this
             ( new CnbDomainViewUpgradeInProgress() )->render( $domain );
-        } else if ( $domain->type == 'PRO' ) {
+        } else if ( $domain->is_pro() ) {
             ( new CnbDomainViewUpgradeFinished() )->render( $domain, $notice );
         } else {
             ( new CnbDomainViewUpgradeOverview() )->render( $domain );

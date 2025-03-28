@@ -24,7 +24,7 @@ class CnbAppRemotePayment {
     }
 
 
-    public function cnb_remote_post_agency_subscription( $planId, $callbackUri = null ) {
+    public function cnb_remote_post_agency_subscription( $planId, $callbackUri = null, $currency = null ) {
         $callbackUri = $callbackUri === null
             ? get_site_url()
             : $callbackUri;
@@ -32,6 +32,7 @@ class CnbAppRemotePayment {
         $body = array(
             'plan'        => $planId,
             'callbackUri' => $callbackUri,
+	        'currency'    => $currency,
         );
 
         $rest_endpoint = '/v1/subscription/proAccount';

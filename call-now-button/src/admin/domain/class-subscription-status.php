@@ -16,6 +16,10 @@ class SubscriptionStatus {
 	 */
 	public $domainId;
 	/**
+	 * @var string
+	 */
+	public $subscriptionId;
+	/**
 	 * @var boolean
 	 */
 	public $existingSubscriptions;
@@ -77,6 +81,7 @@ class SubscriptionStatus {
 				admin_url( 'admin.php' ) );
 		$domain_status = new SubscriptionStatus();
 		$domain_status->domainId = CnbUtils::getPropertyOrNull( $object, 'domainId' );
+		$domain_status->subscriptionId = CnbUtils::getPropertyOrNull( $object, 'subscriptionId' );
 		$domain_status->existingSubscriptions = CnbUtils::getPropertyOrNull( $object, 'existingSubscriptions' );
 		$domain_status->activeTrial = CnbUtils::getPropertyOrNull( $object, 'activeTrial' );
 		$domain_status->activeSubscription = CnbUtils::getPropertyOrNull( $object, 'activeSubscription' );
