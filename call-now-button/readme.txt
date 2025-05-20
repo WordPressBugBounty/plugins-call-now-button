@@ -5,7 +5,7 @@ Tags: call button, click to call, convert, call now button, contact button
 Requires at least: 4.1
 Requires PHP: 5.4
 Tested up to: 6.8
-Stable tag: 1.5.0
+Stable tag: 1.5.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -138,6 +138,9 @@ Yes, you can connect the plugin to our cloud service NowButtons.com. That alread
 
 
 == Changelog ==
+= 1.5.1 =
+* Update to the Live chat beta window
+
 = 1.5.0 =
 * Live chat beta release for PRO customers
 * Option to switch from monthly to annual plan

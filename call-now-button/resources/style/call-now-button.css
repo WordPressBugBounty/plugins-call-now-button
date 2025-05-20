@@ -1832,7 +1832,7 @@ span.cnb-pro-badge {
     }
 }
 
-.cnb-chat-cta .button.button-primary,
+.cnb-chat-marketing .button.button-primary,
 .cnb-welcome-blocks .button.button-primary,
 .notice-blackfriday .button.button-primary,
 .button.button-primary.button-green {
@@ -2472,7 +2472,7 @@ table.cnb-chat-legal-values tbody td {
 .cnb-chat-hero, .cnb-chat-feature, .cnb-chat-cta {
     text-align: center;
     background: #ffffffbb;
-    border-radius: 4px;
+    border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
@@ -2480,17 +2480,34 @@ table.cnb-chat-legal-values tbody td {
     text-align: center;
     padding: 40px 0;
     margin-bottom: 40px;
+    background: linear-gradient(135deg, #e0f7e5 0%, #fff 100%);
+}
+
+.cnb-hero-badge {
+    display: inline-block;
+    background-color: #0a9e31;
+    color: white;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .cnb-chat-hero h1 {
-    font-size: 2.5em;
+    font-size: 32px;
     margin-bottom: 20px;
-    color: #1d2327;
+    color: #222;
+    font-weight: 600;
 }
 
 .cnb-chat-subtitle {
     font-size: 1.2em;
-    color: #50575e;
+    color: #616161;
+    max-width:600px;
+    margin: 0 auto
 }
 
 .cnb-chat-features {
@@ -2500,9 +2517,22 @@ table.cnb-chat-legal-values tbody td {
     margin-bottom: 40px;
 }
 
+.cnb-feature-icon {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 16px;
+    color: #0a9e31;
+}
+
 .cnb-chat-feature {
     padding: 20px;
     background: #ffffff;
+    transition: all 0.2s ease;
+}
+
+.cnb-chat-feature:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
 }
 
 .cnb-chat-feature .dashicons {
@@ -2529,13 +2559,16 @@ table.cnb-chat-legal-values tbody td {
 }
 
 .cnb-chat-cta h2 {
-    margin-bottom: 20px;
-    color: #1d2327;
+    font-size: 24px;
+    margin-bottom: 24px;
+    color: #222;
 }
 
 .cnb-chat-cta p {
-    margin-bottom: 30px;
-    color: #50575e;
+    font-size: 16px;
+    max-width: 700px;
+    margin: 0 auto 32px;
+    color: #616161;
 }
 
 .cnb-chat-cta .button {
@@ -2558,21 +2591,52 @@ table.cnb-chat-legal-values tbody td {
     border: 1px solid #f5c6cb;
 }
 
+
 .cnb-privacy-policy-acceptance {
-    margin-bottom: 20px;
-}
-.cnb-privacy-policy-acceptance label {
-    display: flex;
-    align-items: flex-start;
-    gap: 8px;
-    max-width: 650px;
-    margin: 0 auto;
+    background-color: #f5f5f5;
+    border-radius: 8px;
+    padding: 24px;
+    text-align: left;
+    border: 1px solid #e0e0e0;
+    max-width: 800px;
+    margin: 0 auto 24px;
 }
 .cnb-checkbox-container {
-    width: max-content;
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 16px;
 }
+
+.cnb-checkbox-container label {
+    font-size: 14px;
+    color: #222;
+}
+.cnb-checkbox-container label ul {
+    list-style: initial;
+}
+.cnb-remember-container input[type="checkbox"],
 .cnb-privacy-policy-acceptance input[type="checkbox"] {
-    margin-top: 4px;
+    margin-top: 5px;
+    margin-right: 16px;
+}
+
+.cnb-remember-container input[type="checkbox"] {
+    margin-top: 2px;
+    margin-right: 8px;
+}
+
+
+p.cnb-privacy-note {
+    font-size: 14px;
+    color: #616161;
+    margin-left: calc(16px + 18px);
+}
+.cnb-remember-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 16px;
+    margin-bottom: 16px;
 }
 .cnb-privacy-policy-acceptance a {
     color: #2271b1;

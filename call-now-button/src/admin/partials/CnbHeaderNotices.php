@@ -550,11 +550,10 @@ class CnbHeaderNotices {
 		    return;
 	    }
 
-        $message = '<p><span class="dashicons dashicons-format-chat"></span> ';
-        $message .= 'Try <strong>NowChats beta</strong>, our live chat feature now available for testing. ';
-	    $message .= '<a href="' . esc_url( admin_url( 'admin.php?page=' . CNB_SLUG . '-marketing-chat' ) ) . '">Enable it</a> to access all features during this beta phase!</p>';
+        $message = '<p>✨ <strong>NEW:</strong> Try the Live Chat action while it\'s in beta! Connect with visitors in real-time, right on your website. ';
+	    $message .= '<a href="' . esc_url( admin_url( 'admin.php?page=' . CNB_SLUG . '-marketing-chat' ) ) . '">Enable Live Chat</a></p>';
         
-        CnbAdminNotices::get_instance()->info( $message, true, 'cnb-pro-chat-notice' );
+        CnbAdminNotices::get_instance()->success( $message, true, 'cnb-pro-chat-notice' );
     }
 
 	/**
