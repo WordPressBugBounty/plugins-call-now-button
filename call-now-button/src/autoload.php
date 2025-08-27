@@ -9,6 +9,7 @@ spl_autoload_register(
             $classes = array(
                 'cnb\\admin\\action\\actionicon' => '/admin/action/partials/class-action-icon-picker.php',
                 'cnb\\admin\\action\\actioniconpicker' => '/admin/action/partials/class-action-icon-picker.php',
+                'cnb\\admin\\action\\actionsettingsbooking' => '/admin/action/partials/class-action-settings-booking.php',
                 'cnb\\admin\\action\\actionsettingschat' => '/admin/action/partials/class-action-settings-chat.php',
                 'cnb\\admin\\action\\actionsettingsemail' => '/admin/action/partials/class-action-settings-email.php',
                 'cnb\\admin\\action\\actionsettingsfacebook' => '/admin/action/partials/class-action-settings-facebook.php',

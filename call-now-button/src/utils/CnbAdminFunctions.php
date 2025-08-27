@@ -57,7 +57,9 @@ class CnbAdminFunctions {
      */
     function cnb_get_action_types() {
         $all_types = array(
-            'PHONE'    => new CnbActionType('PHONE', '💬 Phone', array( 'STARTER', 'PRO', 'FREE' )),
+	        'PHONE'    => new CnbActionType('PHONE', '💬 Phone', array( 'STARTER', 'PRO', 'FREE' )),
+			// Disable until launch
+	        // 'BOOKING'  => new CnbActionType('BOOKING', '💬 Booking slots', array( 'PRO' )),
             'CHAT'     => new CnbActionType('CHAT', '💬 Live chat', array( 'PRO' )),
             'EMAIL'    => new CnbActionType('EMAIL', '✉️ Email', array( 'STARTER', 'PRO', 'FREE' )),
             'SMS'      => new CnbActionType('SMS', '💬 SMS/Text', array( 'STARTER', 'PRO', 'FREE' )),

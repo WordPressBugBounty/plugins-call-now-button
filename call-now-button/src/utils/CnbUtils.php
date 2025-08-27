@@ -85,7 +85,8 @@ class CnbUtils {
      */
     function cnb_actiontype_to_icontext( $actionType ) {
         switch ( $actionType ) {
-            case 'ANCHOR': return 'anchor';
+	        case 'ANCHOR': return 'anchor';
+	        case 'BOOKING': return 'calendar';
 	        case 'CHAT': return 'chat';
             case 'EMAIL': return 'email';
             case 'HOURS': return 'access_time';

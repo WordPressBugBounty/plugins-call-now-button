@@ -37,6 +37,12 @@ class ActionIconPicker {
 		        array( 'type' => 'FONT', 'text' => 'close_down' ),
 		        array( 'type' => 'FONT', 'text' => 'anchor_up' ),
 	        )),
+            new ActionIcon('BOOKING', array(
+                    array( 'type' => 'FONT', 'text' => 'calendar' ),
+                    array( 'type' => 'FONT', 'text' => 'chat' ),
+                    array( 'type' => 'FONT', 'text' => 'communicate' ),
+                    array( 'type' => 'FONT', 'text' => 'conversation' ),
+            )),
 	        new ActionIcon('EMAIL', array(
 		        array( 'type' => 'FONT', 'text' => 'email' ),
 		        array( 'type' => 'FONT', 'text' => 'mail2' ),

@@ -187,6 +187,7 @@ function cnb_action_update_appearance(value) {
             valueTextEle.attr("required", "required")
             break
         case 'CHAT':
+        case 'BOOKING':
             valueLabelEle.text('Action value')
             valueTextEle.removeAttr("required", "required")
             valueEle.hide()

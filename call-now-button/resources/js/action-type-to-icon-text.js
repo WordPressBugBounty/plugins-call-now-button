@@ -10,6 +10,7 @@
 function cnbActiontypeToIcontext($actionType) {
     switch ( $actionType ) {
         case 'ANCHOR': return 'anchor';
+        case 'BOOKING': return 'calendar';
         case 'CHAT': return 'chat';
         case 'EMAIL': return 'email';
         case 'HOURS': return 'access_time';
@@ -28,7 +29,6 @@ function cnbActiontypeToIcontext($actionType) {
         case 'VIBER': return 'viber';
         case 'LINE': return 'line';
         case 'WECHAT': return 'wechat';
-        case 'CHAT': return 'conversation';
 
         case 'PHONE':
         default:

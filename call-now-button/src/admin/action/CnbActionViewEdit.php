@@ -14,7 +14,6 @@ use cnb\utils\CnbAdminFunctions;
 use cnb\CnbHeaderNotices;
 use cnb\notices\CnbAdminNotices;
 use cnb\utils\CnbUtils;
-use stdClass;
 use WP_Locale;
 
 class CnbActionViewEdit {
@@ -427,7 +426,8 @@ class CnbActionViewEdit {
 	    (new ActionSettingsViber())->render($action);
 	    (new ActionSettingsLine())->render($action);
 	    (new ActionSettingsWeChat())->render($action);
-	    (new ActionSettingsChat())->render( $action );
+        (new ActionSettingsChat())->render( $action );
+        (new ActionSettingsBooking())->render( $action, $button );
     }
     /**
      * previously cnb_admin_page_action_edit_render_main
