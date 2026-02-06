@@ -53,13 +53,12 @@ class CnbAdminFunctions {
      * - This is NOT in alphabetical order, but rather in order of
      *   what feels more likely to be chosen
      *
-     * @return CnbActionType[] array of ActionType to their nice names
+     * @return array<string, CnbActionType> of ActionType to their nice names
      */
-    function cnb_get_action_types() {
+    function cnb_get_action_types(): array {
         $all_types = array(
 	        'PHONE'    => new CnbActionType('PHONE', '💬 Phone', array( 'STARTER', 'PRO', 'FREE' )),
-			// Disable until launch
-	        // 'BOOKING'  => new CnbActionType('BOOKING', '💬 Booking slots', array( 'PRO' )),
+	        'BOOKING'  => new CnbActionType('BOOKING', '💬 Booking slots', array( 'PRO' )),
             'CHAT'     => new CnbActionType('CHAT', '💬 Live chat', array( 'PRO' )),
             'EMAIL'    => new CnbActionType('EMAIL', '✉️ Email', array( 'STARTER', 'PRO', 'FREE' )),
             'SMS'      => new CnbActionType('SMS', '💬 SMS/Text', array( 'STARTER', 'PRO', 'FREE' )),
@@ -211,66 +210,49 @@ class CnbAdminFunctions {
      *
      * <p><strong>NOTE: $body and $cta_pretext are NOT escaped and are assumed to be pre-escaped (or contain no User input)</strong></p>
      *
+     * @param $cta_button_text string
      * @param $color string
      * @param $headline string Assumed to be pre-escaped HTML (or static HTML), so this will not be (re)escaped
      * @param $body string Assumed to be pre-escaped HTML, so this will not be (re)escaped
      * @param $icon string
      * @param $cta_pretext string Assumed to be pre-escaped HTML, so this will not be (re)escaped
-     * @param $cta_button_text string
+     * @param $cta_pretext_big string Assumed to be pre-escaped HTML, so this will not be (re)escaped
      * @param $cta_button_link string URL
-     * @param $cta_footer_notice
      *
      * @return void It <code>echo</code>s html output of the promobox
      */
-    function cnb_promobox( $color, $headline, $body, $icon = 'flag', $cta_pretext = null, $cta_button_text = 'Let\'s go', $cta_button_link = null, $cta_footer_notice = null ) {
-        echo '
-        <div id="cnb_upgrade_box" class="cnb-promobox cnb-promobox-' . esc_attr( $color ) . '">
-            <div class="cnb-promobox-header cnb-promobox-header-' . esc_attr( $color ) . '">
-                <span class="dashicons dashicons-' . esc_attr( $icon ) . '"></span>
-                <h2 class="hndle">' .
-             // phpcs:ignore WordPress.Security
-                $headline
-            . '</h2>
-            </div>
-            <div class="inside">
-                <div class="cnb-promobox-copy">
-                    <div class="cnb_promobox_item">' .
-             // phpcs:ignore WordPress.Security
-            $body
-            . '</div>
-                    <div class="clear"></div>';
-        if ( ! is_null( $cta_button_link ) || $cta_button_text == 'none' ) {
-            echo '
-                    <div class="cnb-promobox-action">
-                        <div class="cnb-promobox-action-left">' .
-                 // phpcs:ignore WordPress.Security
-                $cta_pretext
-                . '</div>';
-            if ( $cta_button_text != 'none' && $cta_button_link != 'disabled' ) {
-                echo '
-                        <div class="cnb-promobox-action-right">
-                            <a class="button button-primary button-large" style="user-select: none;" href="' . esc_url( $cta_button_link ) . '">' . esc_html( $cta_button_text ) . '</a>
-                        </div>';
-            } elseif ( $cta_button_link == 'disabled' ) {
-                echo '
-                        <div class="cnb-promobox-action-right">
-                            <button class="button button-primary button-large" disabled>' . esc_html( $cta_button_text ) . '</a>
-                        </div>';
-            }
-            echo '
-                        <div class="clear"></div>';
-            if ( ! is_null( $cta_footer_notice ) ) {
-                echo '<div class="nonessential" style="padding-top: 5px;">' . esc_html( $cta_footer_notice ) . '</div>';
-            }
-            echo '
-                    </div>
-                    ';
-        }
-        echo '
+    function cnb_promobox( $tag, $color, $headline, $body, $icon = '✨', $cta_pretext = null, $cta_pretext_big = null, $cta_button_text = 'Upgrade Now', $cta_button_link = null ) {
+
+        echo '<div class="cnb-promobox-container cnb-promobox-' . esc_attr( $color ) . '">
+            <div class="cnb-promobox-content">
+                <div class="cnb-promobox-header">
+                    <div class="cnb-promobox-icon">' . esc_attr( $icon ) . '</div>
+                    <div class="cnb-promobox-header-text">' . esc_attr( $tag ) . '</div>
+                </div>
+
+                <div class="cnb-promobox-headline">' .
+                // phpcs:ignore WordPress.Security
+                    $headline
+                . '</div>
+
+                <div class="cnb-promobox-features">' .
+                    // phpcs:ignore WordPress.Security
+                    $body
+                . '</div>
+
+                <div class="cnb-promobox-cta-section">
+                    <div class="cnb-promobox-trial-text">' .
+                    // phpcs:ignore WordPress.Security
+                    $cta_pretext
+                    . '</div>
+                    <div class="cnb-promobox-trial-days">' .
+                    // phpcs:ignore WordPress.Security
+                    $cta_pretext_big
+                    . '</div>
+                    <a href="' . esc_url( $cta_button_link ) . '" class="cnb-promobox-upgrade-btn">' . esc_html( $cta_button_text ) . '</a>
                 </div>
             </div>
-        </div>
-    ';
+        </div>';
     }
 
     /**

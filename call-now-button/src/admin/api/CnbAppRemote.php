@@ -19,12 +19,23 @@ use cnb\admin\settings\StripeBillingPortal;
 use cnb\admin\settings\StripeRequestBillingPortalResponse;
 use cnb\admin\settings\UrlSettings;
 use cnb\admin\user\CnbUserCache;
+use cnb\api\Api\MeetApi;
+use cnb\api\Api\WordPressApi;
+use cnb\api\Configuration;
+use cnb\api\Model\Workspace;
+use cnb\api\ObjectSerializer;
+use Exception;
+use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
+use GuzzleHttp\HandlerStack;
 use cnb\coupons\CnbPromotionCode;
 use cnb\cron\Cron;
 use cnb\utils\CnbUtils;
 use cnb\admin\dashboard\CnbDashboardCache;
 use cnb\admin\domain\CnbDomainCache;
 use cnb\admin\subscription\CnbSubscriptionCache;
+use GuzzleHttp\Promise\Create;
+use GuzzleHttp\RequestOptions;
 use JsonSerializable;
 use WP_Error;
 
@@ -102,7 +113,7 @@ class CnbAppRemote {
 		/** @type UrlSettings $cnb_settings */
 		global $cnb_settings;
 
-		if ($cnb_settings && $cnb_settings->get_user_root()) {
+		if ( $cnb_settings && $cnb_settings->get_user_root() ) {
 			return $cnb_settings->get_user_root();
 		}
 
@@ -118,7 +129,7 @@ class CnbAppRemote {
 		/** @type UrlSettings $cnb_settings */
 		global $cnb_settings;
 
-		if ($cnb_settings && $cnb_settings->get_static_root()) {
+		if ( $cnb_settings && $cnb_settings->get_static_root() ) {
 			return $cnb_settings->get_static_root();
 		}
 
@@ -134,7 +145,7 @@ class CnbAppRemote {
 		/** @type UrlSettings $cnb_settings */
 		global $cnb_settings;
 
-		if ($cnb_settings && $cnb_settings->get_js_location()) {
+		if ( $cnb_settings && $cnb_settings->get_js_location() ) {
 			return $cnb_settings->get_js_location();
 		}
 
@@ -150,7 +161,7 @@ class CnbAppRemote {
 		/** @type UrlSettings $cnb_settings */
 		global $cnb_settings;
 
-		if ($cnb_settings && $cnb_settings->get_css_location()) {
+		if ( $cnb_settings && $cnb_settings->get_css_location() ) {
 			return $cnb_settings->get_css_location();
 		}
 
@@ -166,7 +177,7 @@ class CnbAppRemote {
 		/** @type UrlSettings $cnb_settings */
 		global $cnb_settings;
 
-		if ($cnb_settings && $cnb_settings->get_chat_root()) {
+		if ( $cnb_settings && $cnb_settings->get_chat_root() ) {
 			return $cnb_settings->get_chat_root();
 		}
 
@@ -197,11 +208,7 @@ class CnbAppRemote {
 		set_transient( self::$transient_prefix . self::cnb_get_api_base(), $value );
 	}
 
-	public static function cnb_get_transient_base() {
-		return self::cnb__get_transient_base() . self::cnb_get_api_base();
-	}
-
-	private static function cnb_remote_get_args( $authenticated = true ) {
+	private static function get_api_key() {
 		global $cnb_api_key;
 		$cnb_options = get_option( 'cnb' );
 		$api_key     = isset( $cnb_options['api_key'] ) ? $cnb_options['api_key'] : false;
@@ -211,6 +218,12 @@ class CnbAppRemote {
 		if ( isset( $cnb_api_key ) && ! empty( $cnb_api_key ) ) {
 			$api_key = $cnb_api_key;
 		}
+
+		return $api_key;
+	}
+
+	private static function cnb_remote_get_args( $authenticated = true ) {
+		$api_key = self::get_api_key();
 
 		$headers = array(
 			'Content-Type'         => 'application/json',
@@ -247,7 +260,7 @@ class CnbAppRemote {
 		$response_code = wp_remote_retrieve_response_code( $response );
 		if ( $response_code == 403 ) {
 			$response_message = wp_remote_retrieve_response_message( $response );
-			if ( $response_message == 'Forbidden' && str_contains( wp_remote_retrieve_body ( $response ), 'Access Denied' ) ) {
+			if ( $response_message == 'Forbidden' && str_contains( wp_remote_retrieve_body( $response ), 'Access Denied' ) ) {
 				return new WP_Error( 'CNB_API_KEY_INVALID', $response_message );
 			}
 		}
@@ -261,10 +274,10 @@ class CnbAppRemote {
 			return new WP_Error( 'CNB_PAYMENT_REQUIRED', wp_remote_retrieve_response_message( $response ), $body->message );
 		}
 		if ( $response_code != 200 ) {
-			return new WP_Error( 'CNB_ERROR', wp_remote_retrieve_response_message( $response ), wp_remote_retrieve_body ( $response ) );
+			return new WP_Error( 'CNB_ERROR', wp_remote_retrieve_response_message( $response ), wp_remote_retrieve_body( $response ) );
 		}
 
-		return json_decode( wp_remote_retrieve_body ( $response ) );
+		return json_decode( wp_remote_retrieve_body( $response ) );
 	}
 
 	/**
@@ -382,12 +395,13 @@ class CnbAppRemote {
 
 	public static function cnb_remote_get( $rest_endpoint, $authenticated = true ) {
 		$cnb_remote = new CnbAppRemote();
-		$url      = self::cnb_get_api_base() . $rest_endpoint;
-		return $cnb_remote->cnb_get($url, $authenticated);
+		$url        = self::cnb_get_api_base() . $rest_endpoint;
+
+		return $cnb_remote->cnb_get( $url, $authenticated );
 	}
 
 	public function cnb_get( $rest_endpoint, $authenticated = true ) {
-		$cnb_get_cache = new CnbGet();
+		$cnb_get = new CnbGet();
 		$args          = self::cnb_remote_get_args( $authenticated );
 		if ( $args instanceof WP_Error ) {
 			return $args;
@@ -395,8 +409,7 @@ class CnbAppRemote {
 
 		$url      = $rest_endpoint;
 		$timer    = new RemoteTrace( $url, __METHOD__ );
-		$response = $cnb_get_cache->get( $url, $args );
-		$timer->setCacheHit( $cnb_get_cache->isLastCallCached() );
+		$response = $cnb_get->get( $url, $args );
 		$timer->end();
 
 		return self::cnb_remote_handle_response( $response );
@@ -418,6 +431,123 @@ class CnbAppRemote {
 		$this->get_wp_info();
 	}
 
+	/// START new API
+	private static function get_api_config(): Configuration {
+		// We also want to add PHP version
+		$user_agent = apply_filters( 'http_headers_useragent',
+			'WordPress/'
+			. get_bloginfo( 'version' )
+			. '/'
+			. PHP_VERSION_ID
+			. '; ' . get_bloginfo( 'url' ) );
+
+		return Configuration::getDefaultConfiguration()
+		                    ->setApiKey( 'x-cnb-api-key', CnbAppRemote::get_api_key() )
+		                    ->setHost( CnbAppRemote::cnb_get_api_base() )
+		                    ->setUserAgent( $user_agent );
+	}
+
+	/**
+	 * Build a Guzzle client for the OpenAPI-generated APIs that injects
+	 * the Call Now Button plugin version header on every request.
+	 */
+	private static function get_api_client(): ClientInterface {
+		// Create a handler stack so we can add middleware to inject headers
+		$stack = HandlerStack::create();
+
+		// Middleware to add the x-cnb-plugin-version header to every request
+		$stack->push(
+			function ( callable $handler ) {
+				return function ( $request, array $options ) use ( $handler ) {
+					$request = $request->withHeader( 'x-cnb-plugin-version', CNB_VERSION );
+
+					return $handler( $request, $options );
+				};
+			},
+			'cnb-plugin-version-header'
+		);
+
+		// Middleware to ensure Accept-Encoding header is present and aligned with capabilities
+		// WordPress typically advertises: gzip, deflate, br (when available).
+		$stack->push(
+			function ( callable $handler ) {
+				return function ( $request, array $options ) use ( $handler ) {
+					// Only add the header if it's not already set on the request
+					if ( ! $request->hasHeader( 'Accept-Encoding' ) ) {
+						$encodings = array( 'gzip', 'deflate' );
+
+						// Detect if brotli is available (via cURL or ext-brotli)
+						$brotli_via_curl = false;
+						if ( function_exists( 'curl_version' ) && defined( 'CURL_VERSION_BROTLI' ) ) {
+							$curl_info       = curl_version();
+							$brotli_via_curl = isset( $curl_info['features'] ) && ( $curl_info['features'] & CURL_VERSION_BROTLI );
+						}
+						$brotli_via_ext = extension_loaded( 'brotli' );
+
+						if ( $brotli_via_curl || $brotli_via_ext ) {
+							$encodings[] = 'br';
+						}
+
+						$request = $request->withHeader( 'Accept-Encoding', implode( ', ', $encodings ) );
+					}
+
+					return $handler( $request, $options );
+				};
+			},
+			'cnb-accept-encoding-header'
+		);
+
+		// Middleware to trace requests via RemoteTrace so we can correlate timings remotely
+		$stack->push(
+			function ( callable $handler ) {
+				return function ( $request, array $options ) use ( $handler ) {
+					// Create a RemoteTrace for this outgoing request
+					// Endpoint: full URI, Context: method name for quick filtering
+					$endpoint = (string) $request->getUri();
+					$context  = 'Guzzle<' . $request->getMethod() . '>';
+					$timer    = new RemoteTrace( $endpoint, $context );
+
+					// Proceed with the request and end the trace on completion (success or error)
+					return $handler( $request, $options )->then(
+						function ( $response ) use ( $timer ) {
+							$timer->end();
+
+							return $response;
+						},
+						function ( $reason ) use ( $timer ) {
+							$timer->end();
+							// Re-throw or re-reject to keep behavior identical
+							if ( $reason instanceof Exception ) {
+								throw $reason;
+							}
+
+							// Fall back to a rejected promise for non-Exception reasons
+							return Create::rejectionFor( $reason );
+						}
+					);
+				};
+			},
+			'cnb-remote-trace'
+		);
+
+		return new Client( array(
+			'handler'                      => $stack,
+			// Ensure Guzzle decodes compressed responses automatically
+			RequestOptions::DECODE_CONTENT => true,
+		) );
+	}
+
+
+	public static function get_meet_api(): MeetApi {
+		return new MeetApi( CnbAppRemote::get_api_client(), CnbAppRemote::get_api_config() );
+	}
+
+	public static function get_wordpress_api(): WordPressApi {
+		return new WordPressApi( CnbAppRemote::get_api_client(), CnbAppRemote::get_api_config() );
+	}
+
+	/// END new API
+
 	/***
 	 * Sets all WordPress needed information globally
 	 *
@@ -429,9 +559,10 @@ class CnbAppRemote {
 	 * @global CnbDomain[]|null $cnb_domains the Domains corresponding to the current User
 	 * @global CnbPromotionCode|null $cnb_coupon the Coupon currently active
 	 * @global CnbPlan[]|null $cnb_plans the Plans currently active
-     * @global CnbAgencyPlan[]|null $cnb_agency_plans the Agency Plans currently active
+	 * @global CnbAgencyPlan[]|null $cnb_agency_plans the Agency Plans currently active
 	 * @global ValidationMessageWithId[]|null $cnb_validation_messages all Validation messages for this account
 	 * @global SubscriptionStatus|null $cnb_subscription_data Subscription status for the current domain
+	 * @global Workspace|null $cnb_workspace
 	 */
 	public function get_wp_info() {
 		global
@@ -441,16 +572,18 @@ class CnbAppRemote {
 		$cnb_domains,
 		$cnb_coupon,
 		$cnb_plans,
-        $cnb_agency_plans,
+		$cnb_agency_plans,
 		$cnb_validation_messages,
 		$cnb_subscription_data,
-		$cnb_settings;
+		$cnb_settings,
+		$cnb_workspace;
 
 		$rest_endpoint = '/v1/wp/all/' . $this->cnb_clean_site_url();
 
 		$data = self::cnb_remote_get( $rest_endpoint );
 		if ( $data === null || is_wp_error( $data ) ) {
 			$cnb_user = CnbUser::fromObject( $data );
+
 			return;
 		}
 
@@ -460,11 +593,13 @@ class CnbAppRemote {
 		$cnb_buttons             = CnbButton::fromObjects( $data->buttons );
 		$cnb_coupon              = CnbPromotionCode::fromObject( $data->coupon );
 		$cnb_plans               = CnbPlan::fromObjects( $data->plans );
-        $cnb_agency_plans        = CnbAgencyPlan::fromObjects( $data->agencyPlans );
+		$cnb_agency_plans        = CnbAgencyPlan::fromObjects( $data->agencyPlans );
 		$cnb_validation_messages = ValidationMessageWithId::fromObjects( $data->validationMessages );
-		$cnb_settings            = UrlSettings::fromObject($data->settings);
+		$cnb_settings            = UrlSettings::fromObject( $data->settings );
 		// This might not be available in each API call, depending on environment settings
-		$cnb_subscription_data   = SubscriptionStatus::from_object( $data->subscriptionStatusData );
+		$cnb_subscription_data = SubscriptionStatus::from_object( $data->subscriptionStatusData );
+		$workspace             = ObjectSerializer::deserialize( $data->workspace, '\cnb\api\Model\Workspace' );
+		$cnb_workspace         = ( $workspace instanceof Workspace && $workspace->valid() ) ? $workspace : null;
 
 		// Store user data in cache
 		if ( isset( $cnb_user ) && ! is_wp_error( $cnb_user ) ) {
@@ -479,15 +614,15 @@ class CnbAppRemote {
 		}
 
 		// Store subscription data in cache
-		if ($cnb_subscription_data instanceof SubscriptionStatus) {
+		if ( $cnb_subscription_data instanceof SubscriptionStatus ) {
 			$cnb_subscription_cache = new CnbSubscriptionCache();
 			$cnb_subscription_cache->save_subscription_data( $cnb_subscription_data );
 		}
 
 		// Store button and action counts in cache
-		if (isset($cnb_buttons)) {
+		if ( isset( $cnb_buttons ) ) {
 			$cnb_dashboard_cache = new CnbDashboardCache();
-			$cnb_dashboard_cache->store_counts($cnb_buttons);
+			$cnb_dashboard_cache->store_counts( $cnb_buttons );
 		}
 
 		// This updates the internal options, so that the new settings (if any) can be rendered on the front-end
@@ -504,9 +639,9 @@ class CnbAppRemote {
 	 *
 	 * @return void
 	 */
-	private function save_subscription_data($cnb_subscription_data) {
-		if ($cnb_subscription_data && !is_wp_error($cnb_subscription_data)) {
-			$hook_name = (new Cron())->get_hook_name();
+	private function save_subscription_data( $cnb_subscription_data ) {
+		if ( $cnb_subscription_data && ! is_wp_error( $cnb_subscription_data ) ) {
+			$hook_name = ( new Cron() )->get_hook_name();
 			set_transient( $hook_name, $cnb_subscription_data, DAY_IN_SECONDS );
 		}
 	}
@@ -518,13 +653,15 @@ class CnbAppRemote {
 	 * @return bool|SubscriptionStatus
 	 */
 	public function get_subscription_data() {
-		$hook_name = (new Cron())->get_hook_name();
-		return get_transient($hook_name);
+		$hook_name = ( new Cron() )->get_hook_name();
+
+		return get_transient( $hook_name );
 	}
 
 	public function get_subscription_status( $domainId ) {
 		$rest_endpoint = '/v1/subscription/domain/' . $domainId;
-		$data = self::cnb_remote_get( $rest_endpoint );
+		$data          = self::cnb_remote_get( $rest_endpoint );
+
 		return SubscriptionStatus::from_object( $data );
 	}
 
@@ -536,7 +673,7 @@ class CnbAppRemote {
 	public function get_button( $id ) {
 		global $cnb_buttons;
 		// This usually means the API was to slow return anything
-		if ( empty($cnb_buttons) ) {
+		if ( empty( $cnb_buttons ) ) {
 			return new WP_Error( 'WP_RETRIEVE_ERROR', 'Could not retrieve buttons for ID <code>' . esc_html( $id ) . '</code>. Please refresh the page.' );
 		}
 
@@ -1022,14 +1159,14 @@ class CnbAppRemote {
 		return StripeBillingPortal::fromObject( self::cnb_remote_post( $rest_endpoint, $body ) );
 	}
 
-    /**
-     * @return StripeRequestBillingPortalResponse
-     */
-    public function request_billing_portal() {
-        $rest_endpoint = '/v1/stripe/requestBillingPortal';
+	/**
+	 * @return StripeRequestBillingPortalResponse
+	 */
+	public function request_billing_portal() {
+		$rest_endpoint = '/v1/stripe/requestBillingPortal';
 
-        return StripeRequestBillingPortalResponse::fromObject( self::cnb_remote_post( $rest_endpoint ) );
-    }
+		return StripeRequestBillingPortalResponse::fromObject( self::cnb_remote_post( $rest_endpoint ) );
+	}
 
 	/**
 	 * Data model:
@@ -1067,9 +1204,10 @@ class CnbAppRemote {
 	 *
 	 * @return mixed|WP_Error
 	 */
-	public function set_user_storage_type ( $storage_type ) {
+	public function set_user_storage_type( $storage_type ) {
 		$rest_endpoint = '/v1/user/settings/storage/' . $storage_type;
-		$body = '';
+		$body          = '';
+
 		return self::cnb_remote_post( $rest_endpoint, $body );
 	}
 
@@ -1080,7 +1218,7 @@ class CnbAppRemote {
 	 */
 	public function enable_chat() {
 		$rest_endpoint = '/v1/chat/user/enable';
-		$result = self::cnb_remote_post( $rest_endpoint );
+		$result        = self::cnb_remote_post( $rest_endpoint );
 
 		// To ensure cache is refreshed immediately, call get_wp_info
 		$this->get_wp_info();
@@ -1095,7 +1233,7 @@ class CnbAppRemote {
 	 */
 	public function disable_chat() {
 		$rest_endpoint = '/v1/chat/user/enable';
-		$result = self::cnb_remote_delete( $rest_endpoint );
+		$result        = self::cnb_remote_delete( $rest_endpoint );
 
 		// To ensure cache is refreshed immediately, call get_wp_info
 		$this->get_wp_info();
@@ -1119,6 +1257,7 @@ class CnbAppRemote {
 	 */
 	public function upgrade_subscription_to_yearly( $subscriptionId ) {
 		$rest_endpoint = '/v1/user/subscription/' . $subscriptionId . '/upgrade-to-yearly';
+
 		return self::cnb_remote_post( $rest_endpoint );
 	}
 }

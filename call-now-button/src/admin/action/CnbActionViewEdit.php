@@ -200,7 +200,7 @@ class CnbActionViewEdit {
                         <?php } ?>
                     </select>
 
-                    <p class="description cnb-action-properties cnb-action-properties-TALLY"><a target="_blank" href="https://tally.so?ref=callnowbutton&utm_source=callnowbutton&utm_medium=wordpress">Tally</a> is our favorite form tool.</p>
+                    <p class="description cnb-action-properties cnb-action-properties-TALLY"><a target="_blank" href="https://tally.cello.so/2HihbOcRQMK&utm_source=callnowbutton&utm_medium=wordpress">Tally</a> is our favorite form tool.</p>
                 </td>
             </tr>
             <tr class="cnb-action-value cnb_hide_on_modal">
@@ -418,6 +418,7 @@ class CnbActionViewEdit {
 	    (new ActionSettingsEmail())->render($action);
 	    (new ActionSettingsLink())->render($action);
 	    (new ActionSettingsMap())->render($action);
+        (new ActionSettingsBooking())->render( $action, $button );
 	    (new ActionSettingsIframe())->render($action);
 	    (new ActionSettingsTally())->render($action);
 	    (new ActionSettingsIntercom())->render($action);
@@ -427,7 +428,6 @@ class CnbActionViewEdit {
 	    (new ActionSettingsLine())->render($action);
 	    (new ActionSettingsWeChat())->render($action);
         (new ActionSettingsChat())->render( $action );
-        (new ActionSettingsBooking())->render( $action, $button );
     }
     /**
      * previously cnb_admin_page_action_edit_render_main
@@ -524,7 +524,7 @@ class CnbActionViewEdit {
             return;
         }
 
-        $notices = ValidationMessage::get_validation_notices_for_action($action);
+        $notices = ValidationMessage::get_validation_notices_for_action( $action );
         do_action('cnb_validation_notices', $notices, true);
         ?>
         <div class="cnb-two-column-section-preview">

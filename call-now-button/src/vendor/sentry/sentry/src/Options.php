@@ -9,6 +9,8 @@ use Psr\Log\NullLogger;
 use Sentry\HttpClient\HttpClientInterface;
 use Sentry\Integration\ErrorListenerIntegration;
 use Sentry\Integration\IntegrationInterface;
+use Sentry\Logs\Log;
+use Sentry\Metrics\Types\Metric;
 use Sentry\Transport\TransportInterface;
 use Symfony\Component\OptionsResolver\Options as SymfonyOptions;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -152,6 +154,53 @@ final class Options
     public function getEnableTracing(): ?bool
     {
         return $this->options['enable_tracing'];
+    }
+
+    /**
+     * Sets if logs should be enabled or not.
+     *
+     * @param bool|null $enableLogs Boolean if logs should be enabled or not
+     */
+    public function setEnableLogs(?bool $enableLogs): self
+    {
+        $options = array_merge($this->options, ['enable_logs' => $enableLogs]);
+
+        $this->options = $this->resolver->resolve($options);
+
+        return $this;
+    }
+
+    /**
+     * Gets if logs is enabled or not.
+     */
+    public function getEnableLogs(): bool
+    {
+        return $this->options['enable_logs'] ?? false;
+    }
+
+    /**
+     * Sets if metrics should be enabled or not.
+     */
+    public function setEnableMetrics(bool $enableTracing): self
+    {
+        $options = array_merge($this->options, ['enable_metrics' => $enableTracing]);
+
+        $this->options = $this->resolver->resolve($options);
+
+        return $this;
+    }
+
+    /**
+     * Returns whether metrics are enabled or not.
+     */
+    public function getEnableMetrics(): bool
+    {
+        /**
+         * @var bool $enableMetrics
+         */
+        $enableMetrics = $this->options['enable_metrics'] ?? true;
+
+        return $enableMetrics;
     }
 
     /**
@@ -437,6 +486,26 @@ final class Options
     }
 
     /**
+     * Gets the Org ID.
+     */
+    public function getOrgId(): ?int
+    {
+        return $this->options['org_id'];
+    }
+
+    /**
+     * Sets the Org ID.
+     */
+    public function setOrgId(int $orgId): self
+    {
+        $options = array_merge($this->options, ['org_id' => $orgId]);
+
+        $this->options = $this->resolver->resolve($options);
+
+        return $this;
+    }
+
+    /**
      * Gets the name of the server the SDK is running on (e.g. the hostname).
      */
     public function getServerName(): string
@@ -593,6 +662,34 @@ final class Options
     }
 
     /**
+     * Gets a callback that will be invoked before an log is sent to the server.
+     * If `null` is returned it won't be sent.
+     *
+     * @psalm-return callable(Log): ?Log
+     */
+    public function getBeforeSendLogCallback(): callable
+    {
+        return $this->options['before_send_log'];
+    }
+
+    /**
+     * Sets a callable to be called to decide whether a log should
+     * be captured or not.
+     *
+     * @param callable $callback The callable
+     *
+     * @psalm-param callable(Log): ?Log $callback
+     */
+    public function setBeforeSendLogCallback(callable $callback): self
+    {
+        $options = array_merge($this->options, ['before_send_log' => $callback]);
+
+        $this->options = $this->resolver->resolve($options);
+
+        return $this;
+    }
+
+    /**
      * Gets a callback that will be invoked before metrics are sent to the server.
      * If `null` is returned it won't be sent.
      *
@@ -603,6 +700,35 @@ final class Options
     public function getBeforeSendMetricsCallback(): callable
     {
         return $this->options['before_send_metrics'];
+    }
+
+    /**
+     * Gets a callback that will be invoked before a metric is added.
+     * Returning `null` means that the metric will be discarded.
+     */
+    public function getBeforeSendMetricCallback(): callable
+    {
+        /**
+         * @var callable $callback
+         */
+        $callback = $this->options['before_send_metric'];
+
+        return $callback;
+    }
+
+    /**
+     * Sets a new callback that is invoked before metrics are sent.
+     * Returning `null` means that the metric will be discarded.
+     *
+     * @return $this
+     */
+    public function setBeforeSendMetricCallback(callable $callback): self
+    {
+        $options = array_merge($this->options, ['before_send_metric' => $callback]);
+
+        $this->options = $this->resolver->resolve($options);
+
+        return $this;
     }
 
     /**
@@ -642,6 +768,26 @@ final class Options
     public function setTracePropagationTargets(array $tracePropagationTargets): self
     {
         $options = array_merge($this->options, ['trace_propagation_targets' => $tracePropagationTargets]);
+
+        $this->options = $this->resolver->resolve($options);
+
+        return $this;
+    }
+
+    /**
+     * Returns whether strict trace propagation is enabled or not.
+     */
+    public function isStrictTracePropagationEnabled(): bool
+    {
+        return $this->options['strict_trace_propagation'];
+    }
+
+    /**
+     * Sets if strict trace propagation should be enabled or not.
+     */
+    public function enableStrictTracePropagation(bool $strictTracePropagation): self
+    {
+        $options = array_merge($this->options, ['strict_trace_propagation' => $strictTracePropagation]);
 
         $this->options = $this->resolver->resolve($options);
 
@@ -1039,7 +1185,7 @@ final class Options
      *                                   captured. It can be set to one of the
      *                                   following values:
      *
-     *                                    - none: request bodies are never sent
+     *                                    - never: request bodies are never sent
      *                                    - small: only small request bodies will
      *                                      be captured where the cutoff for small
      *                                      depends on the SDK (typically 4KB)
@@ -1128,6 +1274,8 @@ final class Options
             'prefixes' => array_filter(explode(\PATH_SEPARATOR, get_include_path() ?: '')),
             'sample_rate' => 1,
             'enable_tracing' => null,
+            'enable_logs' => false,
+            'enable_metrics' => true,
             'traces_sample_rate' => null,
             'traces_sampler' => null,
             'profiles_sample_rate' => null,
@@ -1146,6 +1294,7 @@ final class Options
             'spotlight_url' => 'http://localhost:8969',
             'release' => $_SERVER['SENTRY_RELEASE'] ?? $_SERVER['AWS_LAMBDA_FUNCTION_VERSION'] ?? null,
             'dsn' => $_SERVER['SENTRY_DSN'] ?? null,
+            'org_id' => null,
             'server_name' => gethostname(),
             'ignore_exceptions' => [],
             'ignore_transactions' => [],
@@ -1158,13 +1307,21 @@ final class Options
             'before_send_check_in' => static function (Event $checkIn): Event {
                 return $checkIn;
             },
+            'before_send_log' => static function (Log $log): Log {
+                return $log;
+            },
             /**
              * @deprecated Metrics are no longer supported. Metrics API is a no-op and will be removed in 5.x.
+             * Use `before_send_metric` instead.
              */
             'before_send_metrics' => static function (Event $metrics): ?Event {
                 return null;
             },
+            'before_send_metric' => static function (Metric $metric): Metric {
+                return $metric;
+            },
             'trace_propagation_targets' => null,
+            'strict_trace_propagation' => false,
             'tags' => [],
             'error_types' => null,
             'max_breadcrumbs' => self::DEFAULT_MAX_BREADCRUMBS,
@@ -1192,6 +1349,8 @@ final class Options
         $resolver->setAllowedTypes('prefixes', 'string[]');
         $resolver->setAllowedTypes('sample_rate', ['int', 'float']);
         $resolver->setAllowedTypes('enable_tracing', ['null', 'bool']);
+        $resolver->setAllowedTypes('enable_logs', 'bool');
+        $resolver->setAllowedTypes('enable_metrics', 'bool');
         $resolver->setAllowedTypes('traces_sample_rate', ['null', 'int', 'float']);
         $resolver->setAllowedTypes('traces_sampler', ['null', 'callable']);
         $resolver->setAllowedTypes('profiles_sample_rate', ['null', 'int', 'float']);
@@ -1206,12 +1365,16 @@ final class Options
         $resolver->setAllowedTypes('spotlight_url', 'string');
         $resolver->setAllowedTypes('release', ['null', 'string']);
         $resolver->setAllowedTypes('dsn', ['null', 'string', 'bool', Dsn::class]);
+        $resolver->setAllowedTypes('org_id', ['null', 'int']);
         $resolver->setAllowedTypes('server_name', 'string');
         $resolver->setAllowedTypes('before_send', ['callable']);
         $resolver->setAllowedTypes('before_send_transaction', ['callable']);
+        $resolver->setAllowedTypes('before_send_log', 'callable');
+        $resolver->setAllowedTypes('before_send_metric', ['callable']);
         $resolver->setAllowedTypes('ignore_exceptions', 'string[]');
         $resolver->setAllowedTypes('ignore_transactions', 'string[]');
         $resolver->setAllowedTypes('trace_propagation_targets', ['null', 'string[]']);
+        $resolver->setAllowedTypes('strict_trace_propagation', 'bool');
         $resolver->setAllowedTypes('tags', 'string[]');
         $resolver->setAllowedTypes('error_types', ['null', 'int']);
         $resolver->setAllowedTypes('max_breadcrumbs', 'int');
@@ -1227,6 +1390,7 @@ final class Options
         $resolver->setAllowedTypes('http_connect_timeout', ['int', 'float']);
         $resolver->setAllowedTypes('http_timeout', ['int', 'float']);
         $resolver->setAllowedTypes('http_ssl_verify_peer', 'bool');
+        $resolver->setAllowedTypes('http_ssl_native_ca', 'bool');
         $resolver->setAllowedTypes('http_compression', 'bool');
         $resolver->setAllowedTypes('capture_silenced_errors', 'bool');
         $resolver->setAllowedTypes('max_request_body_size', 'string');
@@ -1355,13 +1519,13 @@ final class Options
     }
 
     /**
-     * Validates if the value of the max_breadcrumbs option is in range.
+     * Validates if the value of the max_breadcrumbs option is valid.
      *
      * @param int $value The value to validate
      */
     private function validateMaxBreadcrumbsOptions(int $value): bool
     {
-        return $value >= 0 && $value <= self::DEFAULT_MAX_BREADCRUMBS;
+        return $value >= 0;
     }
 
     /**

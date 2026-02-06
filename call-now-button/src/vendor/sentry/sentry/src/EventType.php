@@ -42,12 +42,14 @@ final class EventType implements \Stringable
         return self::getInstance('check_in');
     }
 
-    /**
-     * @deprecated Metrics are no longer supported. Metrics API is a no-op and will be removed in 5.x.
-     */
+    public static function logs(): self
+    {
+        return self::getInstance('log');
+    }
+
     public static function metrics(): self
     {
-        return self::getInstance('metrics');
+        return self::getInstance('trace_metric');
     }
 
     /**
@@ -61,8 +63,20 @@ final class EventType implements \Stringable
             self::event(),
             self::transaction(),
             self::checkIn(),
+            self::logs(),
             self::metrics(),
         ];
+    }
+
+    public function requiresEventId(): bool
+    {
+        switch ($this) {
+            case self::metrics():
+            case self::logs():
+                return false;
+            default:
+                return true;
+        }
     }
 
     public function __toString(): string

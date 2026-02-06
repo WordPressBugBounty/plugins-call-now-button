@@ -31,9 +31,6 @@ class RemoteTrace {
      */
     protected $end;
 
-    protected $cacheHit = false;
-
-
     public function __construct( $endpoint = null, $context = null ) {
         $cnb_remoted_traces = RemoteTracer::getInstance();
 
@@ -62,18 +59,6 @@ class RemoteTrace {
      */
     public function getEndpoint() {
         return $this->endpoint;
-    }
-
-    /**
-     * @param $cacheHit boolean
-     */
-    public function setCacheHit( $cacheHit ) {
-        // phpcs:ignore PHPCompatibility.FunctionUse
-        $this->cacheHit = boolval( $cacheHit );
-    }
-
-    public function isCacheHit() {
-        return $this->cacheHit;
     }
 
     /**

@@ -158,9 +158,9 @@ final class FrameBuilder
      *
      * @param array<string, mixed> $backtraceFrame The frame data
      *
-     * @return array<string, mixed>
-     *
      * @psalm-param StacktraceFrame $backtraceFrame
+     *
+     * @return array<string, mixed>
      */
     private function getFunctionArguments(array $backtraceFrame): array
     {
@@ -219,7 +219,15 @@ final class FrameBuilder
         foreach ($reflectionFunction->getParameters() as $reflectionParameter) {
             $parameterPosition = $reflectionParameter->getPosition();
 
-            if (!isset($backtraceFrameArgs[$parameterPosition])) {
+            if ($reflectionParameter->isVariadic()) {
+                // For variadic parameters, collect all remaining arguments into an array
+                $variadicArgs = \array_slice($backtraceFrameArgs, $parameterPosition);
+                $argumentValues[$reflectionParameter->getName()] = array_values($variadicArgs);
+                // Variadic parameter is always the last one, so we can break
+                break;
+            }
+
+            if (!\array_key_exists($parameterPosition, $backtraceFrameArgs)) {
                 continue;
             }
 

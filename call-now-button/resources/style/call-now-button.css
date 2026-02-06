@@ -921,185 +921,6 @@ input[type=checkbox].cnb_day_selector:checked + label.cnb_day_selector {
     color: #00aa00;
 }
 
-.cnb-promobox .cnb-promobox-header {
-    display: flex;
-    align-items: center;
-    border: 1px solid #c3c4c7;
-    background-color: #f0f0f1;
-}
-
-.cnb-promobox .cnb-promobox-header-blue {
-    background-color: #2371b1;
-    border: 1px solid #2371b1;
-    color: #fff;
-}
-
-.cnb-promobox .cnb-promobox-header-brown {
-    background-color: #B16323;
-    border: 1px solid #B16323;
-    color: #fff;
-}
-
-.cnb-promobox.cnb-promobox-brown .button-primary {
-    background: #B16323;
-    border-color: #B16323;
-}
-
-.cnb-promobox.cnb-promobox-brown .button-primary:hover,
-.cnb-promobox.cnb-promobox-brown .button-primary:active {
-    background: #8d4f1b;
-    border-color: #8d4f1b;
-}
-
-.cnb-promobox .cnb-promobox-header-purple {
-    background-color: #B12371;
-    border: 1px solid #B12371;
-    color: #fff;
-}
-
-.cnb-promobox.cnb-promobox-purple .button-primary {
-    background: #B12371;
-    border-color: #B12371;
-}
-
-.cnb-promobox.cnb-promobox-purple .button-primary:hover,
-.cnb-promobox.cnb-promobox-purple .button-primary:active {
-    background: #8d1b5a;
-    border-color: #8d1b5a;
-}
-
-.cnb-promobox .cnb-promobox-header-green {
-    background-color: #009900;
-    border: 1px solid #009900;
-    color: #fff;
-}
-
-.cnb-promobox .cnb-promobox-header-dark-green {
-    background-color: #006600;
-    border: 1px solid #006600;
-    color: #fff;
-}
-
-.button.button-green,
-.cnb-promobox.cnb-promobox-green .button-primary {
-    background: #009900;
-    border-color: #009900;
-}
-
-.button.button-primary.button-green.button-large.font-16 {
-    font-size: 16px;
-    padding: 5px 30px;
-}
-
-.button.button-green:hover,
-.button.button-green:active,
-.cnb-promobox.cnb-promobox-green .button-primary:hover,
-.cnb-promobox.cnb-promobox-green .button-primary:active {
-    background: #007600;
-    border-color: #007600;
-}
-
-.cnb-promobox .cnb-promobox-header .dashicons {
-    margin-left: 12px;
-}
-
-.cnb-one-column-section .cnb-promobox h2,
-.cnb-one-column-section .cnb-promobox h3 {
-    font-size: 16px;
-    padding: 8px 12px;
-    margin: 0;
-    line-height: 1.4;
-}
-
-.cnb-two-column-section .cnb-promobox h2,
-.cnb-two-column-section .cnb-promobox h3 {
-    font-size: 14px;
-    padding: 8px 12px;
-    margin: 0;
-    line-height: 1.4;
-}
-
-.cnb-promobox .cnb-promobox-header-blue h2,
-.cnb-promobox .cnb-promobox-header-blue h3,
-.cnb-promobox .cnb-promobox-header-purple h2,
-.cnb-promobox .cnb-promobox-header-purple h3,
-.cnb-promobox .cnb-promobox-header-brown h2,
-.cnb-promobox .cnb-promobox-header-brown h3,
-.cnb-promobox .cnb-promobox-header-green h2,
-.cnb-promobox .cnb-promobox-header-green h3,
-.cnb-promobox .cnb-promobox-header-dark-green h2,
-.cnb-promobox .cnb-promobox-header-dark-green h3 {
-    color: #fff;
-}
-
-.cnb-one-column-section .cnb-promobox .inside,
-.cnb-two-column-section .cnb-promobox .inside {
-    margin: 0;
-    padding: 0;
-    position: relative;
-    line-height: 1.4;
-    font-size: 13px;
-    border: 1px solid #c3c4c7;
-    border-top: none;
-    background-color: #fff;
-    box-shadow: 0 1px 1px rgb(0 0 0 / 4%);
-}
-
-.cnb-one-column-section .cnb-promobox .inside,
-.cnb-one-column-section .cnb-promobox .inside p,
-.cnb-one-column-section .cnb-promobox .inside li {
-    font-size: 14px;
-}
-
-.inside .cnb_description {
-    display: block;
-    font-size: 12px;
-    margin-left: 16px;
-}
-
-.cnb-one-column-section .cnb-promobox .inside .cnb-promobox-copy,
-.cnb-two-column-section .cnb-promobox .inside .cnb-promobox-copy {
-    padding: 6px 0 0;
-}
-
-.cnb-promobox-copy .cnb-promobox-item {
-    margin: 5px 10px;
-}
-
-.cnb-one-column-section .cnb-promobox .inside .cnb-promobox-action,
-.cnb-two-column-section .cnb-promobox .inside .cnb-promobox-action {
-    padding: 10px;
-    clear: both;
-    border-top: 1px solid #dcdcde;
-    background: #f6f7f7;
-}
-
-.cnb-promobox-action .cnb-promobox-action-left {
-    margin-top: 8px;
-    display: inline-block;
-}
-
-.cnb-promobox-action .cnb-promobox-action-left.larger {
-    margin-top: 5px;
-    font-size: 110%;
-}
-
-.cnb-promobox-action .cnb-promobox-action-right {
-    text-align: right;
-    float: right;
-    line-height: 1.9;
-}
-
-.cnb-two-promobox-row {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-}
-
-.cnb-two-promobox-row .cnb-body-column {
-    width: 49%;
-}
-
 @media only screen and (max-width: 850px) {
     .cnb-two-column-section,
     .cnb-two-column-section-preview {
@@ -2135,12 +1956,12 @@ ul.font-18 {
 }
 
 .cnb_inpage_notice {
-    background-color: #fff;
-    display: none;
     padding: 5px 10px 10px 20px;
-    border-left: 4px solid #00aa00;
-    box-shadow: 0 1px 1px rgb(0 0 0 / 4%);
     color: #3c434a;
+    margin-top: -16px;
+    border: 1px solid #00aa00;
+    border-radius: 4px;
+    background-color: #f9f9f9;
 }
 
 .cnb_inpage_notice img {
@@ -2645,4 +2466,181 @@ p.cnb-privacy-note {
 .cnb-privacy-policy-acceptance a:hover {
     color: #135e96;
     text-decoration: underline;
+}
+
+.cnb-promobox-container {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    width: 100%;
+    color: rgba(255, 255, 255, 0.95);
+    line-height: 1.4;
+    background: linear-gradient(135deg, #0ea449 0%, #0d8e3d 100%);
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 10px 30px rgba(14, 164, 73, 0.2);
+    overflow: hidden;
+    position: relative;
+    margin-bottom: 24px;
+}
+.cnb-promobox-container.cnb-promobox-blue {
+    background: linear-gradient(135deg, #0066cc 0%, #0052a3 100%);
+}
+.cnb-promobox-container.cnb-promobox-green {
+    background: linear-gradient(135deg, #0ea449 0%, #0d8e3d 100%);
+}
+.cnb-promobox-container.cnb-promobox-purple {
+    background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+}
+
+.cnb-promobox-container::before {
+    content: '';
+    position: absolute;
+    top: -200px;
+    right: -100px;
+    width: 300px;
+    height: 300px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.cnb-promobox-content {
+    position: relative;
+    z-index: 1;
+}
+
+.cnb-promobox-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.cnb-promobox-icon {
+    width: 28px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.25);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+}
+
+.cnb-promobox-header-text {
+    font-weight: 600;
+    color: white;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.cnb-promobox-headline {
+    font-size: 18px;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 16px;
+    line-height: 1.3;
+}
+
+.cnb-promobox-features {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.cnb-promobox-feature {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.95);
+    line-height: 1.4;
+}
+
+.cnb-promobox-feature-check {
+    width: 16px;
+    height: 16px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 10px;
+    font-weight: 700;
+    color: white;
+}
+
+.cnb-promobox-feature-group {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.cnb-promobox-feature-icon {
+    font-size: 20px;
+}
+
+.cnb-promobox-feature-text {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.95);
+    font-weight: 500;
+    line-height: 1.3;
+}
+
+.cnb-promobox-cta-section {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.cnb-promobox-trial-text {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
+.cnb-promobox-trial-days {
+    font-size: 22px;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 12px;
+}
+
+.cnb-promobox-upgrade-btn {
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    padding: 12px;
+    background: white;
+    color: #0ea449;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+.cnb-promobox-blue .cnb-promobox-upgrade-btn {
+    color: #0066cc;
+}
+.cnb-promobox-purple .cnb-promobox-upgrade-btn {
+    color: #7c3aed;
+}
+
+.cnb-promobox-upgrade-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.cnb-promobox-upgrade-btn:active {
+    transform: translateY(0);
 }

@@ -276,7 +276,6 @@ class Hub implements HubInterface
 
             if ($tracesSampler !== null) {
                 $sampleRate = $tracesSampler($samplingContext);
-
                 $sampleSource = 'config:traces_sampler';
             } else {
                 $parentSampleRate = $context->getMetadata()->getParentSamplingRate();
@@ -288,7 +287,7 @@ class Hub implements HubInterface
                         $samplingContext->getParentSampled(),
                         $options->getTracesSampleRate() ?? 0
                     );
-                    $sampleSource = $samplingContext->getParentSampled() ? 'parent:sampling_decision' : 'config:traces_sample_rate';
+                    $sampleSource = $samplingContext->getParentSampled() !== null ? 'parent:sampling_decision' : 'config:traces_sample_rate';
                 }
             }
 
@@ -301,6 +300,12 @@ class Hub implements HubInterface
             }
 
             $transaction->getMetadata()->setSamplingRate($sampleRate);
+
+            // Always overwrite the sample_rate in the DSC
+            $dynamicSamplingContext = $context->getMetadata()->getDynamicSamplingContext();
+            if ($dynamicSamplingContext !== null) {
+                $dynamicSamplingContext->set('sample_rate', (string) $sampleRate, true);
+            }
 
             if ($sampleRate === 0.0) {
                 $transaction->setSampled(false);

@@ -300,6 +300,7 @@ function cnb_init_tabs() {
 function cnb_switch_tab(tabName, addToHistory = true) {
 	const tab = jQuery('a.nav-tab[data-tab-name][data-tab-name="' + tabName + '"]')
 	const tabContent = jQuery('table[data-tab-name][data-tab-name="' + tabName + '"], div[data-tab-name][data-tab-name="' + tabName + '"]')
+	const activePromobox = jQuery('.cnb-on-active-tab[data-tab-name="' + tabName + '"]')
 
 	// Does tab name exist (if not, don't do anything)
 	if (tab.length === 0) return false
@@ -307,12 +308,15 @@ function cnb_switch_tab(tabName, addToHistory = true) {
 	// Hide all tabs
 	const otherTabs = jQuery('a.nav-tab[data-tab-name][data-tab-name!="' + tabName + '"]')
 	const otherTabsContent = jQuery('table[data-tab-name][data-tab-name!="' + tabName + '"], div[data-tab-name][data-tab-name!="' + tabName + '"]')
+	const otherPromoboxes = jQuery('.cnb-on-active-tab[data-tab-name][data-tab-name!="' + tabName + '"]')
 	otherTabs.removeClass('nav-tab-active')
 	otherTabsContent.hide()
+	otherPromoboxes.removeClass('nav-tab-active')
 
 	// Display passed in tab
 	tab.addClass('nav-tab-active')
 	tabContent.show()
+	activePromobox.addClass('nav-tab-active')
 
 	// If there is an element keeping track of the tab, update it
 	jQuery('input[name="tab"]').val(tabName)

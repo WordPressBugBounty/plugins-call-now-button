@@ -4,6 +4,7 @@
 defined( 'ABSPATH' ) || die( '-1' );
 
 require_once __DIR__ . '/autoload.php';
+require_once __DIR__ . '/vendor/autoload.php';
 require_once __DIR__ . '/utils/cnb-backwards-compatible.php';
 
 use cnb\renderer\RendererFactory;

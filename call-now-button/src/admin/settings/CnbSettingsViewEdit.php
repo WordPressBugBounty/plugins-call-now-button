@@ -381,21 +381,6 @@ class CnbSettingsViewEdit {
                     </td>
                 </tr>
                 <tr class="cnb_advanced_view">
-                    <th><label for="cnb-api-caching">API caching</label></th>
-                    <td>
-                        <input type="hidden" name="cnb[api_caching]" value="0"/>
-                        <input id="cnb-api-caching" class="cnb_toggle_checkbox" type="checkbox"
-                                name="cnb[api_caching]"
-                                value="1" <?php checked( '1', $cnb_options['api_caching'] ); ?> />
-                        <label for="cnb-api-caching" class="cnb_toggle_label">Toggle</label>
-                        <span data-cnb_toggle_state_label="cnb-api-caching"
-                                class="cnb_toggle_state cnb_toggle_false">(Disabled)</span>
-                        <span data-cnb_toggle_state_label="cnb-api-caching"
-                                class="cnb_toggle_state cnb_toggle_true">Enabled</span>
-                        <p class="description">Cache API requests (using WordPress transients)</p>
-                    </td>
-                </tr>
-                <tr class="cnb_advanced_view">
                     <th><label for="cnb-storage_type">Storage type</label></th>
                     <td>
                         <p>Storage type: <code><?php echo esc_html($cnb_settings->get_storage_type())?></code></p>
@@ -457,80 +442,183 @@ class CnbSettingsViewEdit {
         echo '<div class="cnb-postbox-container cnb-side-column">';
         if ( ! $use_cloud && $status != 'cloud' ) {
             ( new CnbAdminFunctions() )->cnb_promobox(
-                'green',
-                'Enable NowButtons features!',
-                '<p>Sign up to enable NowButtons features. A set of additional actions and features to power your website.</p>',
-                'unlock',
-                '<strong>Get more for FREE!</strong>',
-                'Learn more',
-                ( new CnbAdminFunctions() )->cnb_legacy_upgrade_page()
+                    'Sign up',
+                    'purple',
+                    'Unlock Extra Features!',
+                    '<div class="cnb-promobox-feature">
+                        <div class="cnb-promobox-feature-check">✓</div>
+                        <span>Create multiple buttons</span>
+                    </div><div class="cnb-promobox-feature">
+                        <div class="cnb-promobox-feature-check">✓</div>
+                        <span>Phone, email, and SMS </span>
+                    </div>
+                    <div class="cnb-promobox-feature">
+                        <div class="cnb-promobox-feature-check">✓</div>
+                        <span>9 social chat channels</span>
+                    </div>
+                    <div class="cnb-promobox-feature">
+                        <div class="cnb-promobox-feature-check">✓</div>
+                        <span>Location, links, scroll and more</span>
+                    </div>',
+                    '✨',
+                    'Enable it now!',
+                    '<strong>100% Free</strong>',
+                    'Create Account',
+                    ( new CnbAdminFunctions() )->cnb_legacy_upgrade_page()
             );
         }
         if ( $use_cloud && isset( $cnb_domain ) && ! is_wp_error( $cnb_domain ) && $cnb_domain->type !== 'PRO' ) {
-            $custom_image = plugins_url('resources/images/custom-image.jpg', CNB_PLUGINS_URL_BASE );
-            $schedule_illustration = plugins_url('resources/images/scheduler.png', CNB_PLUGINS_URL_BASE );
-            $promoboxes = range(1,3);
+            $promoboxes = range(1,5); // array of [0] = 1, [1] = 2
             shuffle($promoboxes);
-            $promoItem = array_rand($promoboxes);
+            $promoItemIndex = array_rand($promoboxes); // picks a KEY from the array
+            $promoItem = $promoboxes[ $promoItemIndex ]; // converts the KEY to the VALUE (which we use below)
             $upgrade_url = ( new CnbUtils() )->get_cnb_domain_upgrade();
-            if ( $promoItem == 1) {
+            if ( $promoItem == 1 ) {
                 ( new CnbAdminFunctions() )->cnb_promobox(
-                    'green',
-                    'Schedule your buttons',
-                    '<h4>Show a call button during office hours</h4>' .
-                    '<div class="cnb-center" style="padding: 10px 30px"><img src="' . esc_url( $schedule_illustration ) . '" alt="Upgrade your domain to PRO with an extra discount" style="max-width:300px; width:100%; height:auto;" /></div>' .
-                    '<p>A mail button when you\'re off.</p>' ,
-                    'clock',
-                    'Try PRO 14 days free',
-                    'Upgrade',
-                    $upgrade_url
+                        'Pro',
+                        'green',
+                        'Smart Scheduling,<br>Smarter Conversions',
+                        '<div class="cnb-promobox-description">Automatically switch your buttons based on your hours.<br><br>Never miss a lead again.</div>',
+                        '🕙',
+                        'Unlock with PRO',
+                        'Try 14 days free',
+                        'Upgrade  Now',
+                        $upgrade_url
                 );
-            } elseif ( $promoItem == 2) {
+            } elseif ( $promoItem == 2 ) {
                 ( new CnbAdminFunctions() )->cnb_promobox(
-                    'green',
-                    'Professional features',
-                    '<p>
-                        <span class="dashicons dashicons-yes cnb-green"></span> Button scheduler<br>
-                        <span class="dashicons dashicons-yes cnb-green"></span> Multi-action buttons<br>
-                        <span class="dashicons dashicons-yes cnb-green"></span> Icon picker & custom images<br>
-                        <span class="dashicons dashicons-yes cnb-green"></span> Advanced display rules<br>
-                        <span class="dashicons dashicons-yes cnb-green"></span> Geo targeting<br>
-                        <span class="dashicons dashicons-yes cnb-green"></span> Set scroll height for buttons to appear<br>
-                        <span class="dashicons dashicons-yes cnb-green"></span> Slide-in content windows<br>
-                        <span class="dashicons dashicons-yes cnb-green"></span> Integrate your Intercom chat</p><h3>And much more!</h3>',
-                    'performance',
-                    'Try PRO 14 days free!',
-                    'Upgrade',
-                    $upgrade_url
+                        'Pro',
+                        'green',
+                        'Unlock Your Full Potential',
+                        '<div class="cnb-promobox-feature">
+                            <div class="cnb-promobox-feature-check">✓</div>
+                            <span>Smart button scheduler</span>
+                        </div>
+                        <div class="cnb-promobox-feature">
+                            <div class="cnb-promobox-feature-check">✓</div>
+                            <span>Multi-action buttons</span>
+                        </div>
+                        <div class="cnb-promobox-feature">
+                            <div class="cnb-promobox-feature-check">✓</div>
+                            <span>Custom icon library</span>
+                        </div>
+                        <div class="cnb-promobox-feature">
+                            <div class="cnb-promobox-feature-check">✓</div>
+                            <span>Advanced display rules</span>
+                        </div>
+                        <div class="cnb-promobox-feature">
+                            <div class="cnb-promobox-feature-check">✓</div>
+                            <span>Geo-targeting</span>
+                        </div>
+                        <div class="cnb-promobox-feature">
+                            <div class="cnb-promobox-feature-check">✓</div>
+                            <span>Scroll triggers & more</span>
+                        </div>',
+                        '✨',
+                        'Start free trial',
+                        '14 days',
+                        'Upgrade Now',
+                        $upgrade_url
+                );
+            } elseif ( $promoItem == 3 ) {
+                ( new CnbAdminFunctions() )->cnb_promobox(
+                        'Live Chat',
+                        'green',
+                        'Connect in Real-Time',
+                        '<div class="cnb-promobox-feature">
+                            <div class="cnb-promobox-feature-check">✓</div>
+                            <span>Instant on-site messaging</span>
+                        </div>
+                        <div class="cnb-promobox-feature">
+                            <div class="cnb-promobox-feature-check">✓</div>
+                            <span>Multi-agent support</span>
+                        </div>
+                        <div class="cnb-promobox-feature">
+                            <div class="cnb-promobox-feature-check">✓</div>
+                            <span>Agency workspaces</span>
+                        </div>',
+                        '💬',
+                        'Try PRO 14 days free',
+                        'Live Chat',
+                        'Upgrade Now',
+                        $upgrade_url
+                );
+            } elseif ( $promoItem == 4 ) {
+                ( new CnbAdminFunctions() )->cnb_promobox(
+                        'Meeting Slots',
+                        'green',
+                        'Bookings Made Easy',
+                        '<div class="cnb-promobox-feature">
+                            <div class="cnb-promobox-feature-check">✓</div>
+                            <span>Direct Google Calendar sync</span>
+                        </div>
+                        <div class="cnb-promobox-feature">
+                            <div class="cnb-promobox-feature-check">✓</div>
+                            <span>One-click meeting booking</span>
+                        </div>
+                        <div class="cnb-promobox-feature">
+                            <div class="cnb-promobox-feature-check">✓</div>
+                            <span>Reduce back-and-forth emails</span>
+                        </div>',
+                        '📅',
+                        'Try PRO 14 days free',
+                        'Live Chat',
+                        'Upgrade Now',
+                        $upgrade_url
                 );
             } else {
                 ( new CnbAdminFunctions() )->cnb_promobox(
-                    'green',
-                    'Customize your buttons',
-                    '<h4>Unlock more icons...</h4>' .
-                    '<p>Upgrade to Pro to enable an icon picker for your actions.</p>' .
-                    '<h4>...or personalize with Custom Images</h4>' .
-                    '<div class="cnb-center" style="padding: 0 34px"><img src="' . esc_url( $custom_image ) . '" alt="Custom button images" style="max-width:246px; width:100%; height:auto;" /></div>' .
-                    '<p>With custom images you can add your own image to your buttons.</p>',
-                    'art',
-                    'Try PRO 14 days free!',
-                    'Upgrade',
-                    $upgrade_url
+                        'Pro',
+                        'green',
+                        'Make It Truly Yours',
+                        '<div class="cnb-promobox-feature-group">
+                            <div class="cnb-promobox-feature-icon">🎭</div>
+                            <div class="cnb-promobox-feature-text">
+                                <strong>Icon Picker</strong><br>
+                                Select a different icon
+                            </div>
+                        </div>
+                        <div class="cnb-promobox-feature-group">
+                            <div class="cnb-promobox-feature-icon">📸</div>
+                            <div class="cnb-promobox-feature-text">
+                                <strong>Custom Images</strong><br>
+                                Upload your own visuals
+                            </div>
+                        </div>',
+                        '🎨',
+                        'Try it 14 days free!',
+                        'Customization',
+                        'Upgrade Now',
+                        $upgrade_url
                 );
             }
         }
 
-        $support_illustration = plugins_url('resources/images/support.png', CNB_PLUGINS_URL_BASE );
         ( new CnbAdminFunctions() )->cnb_promobox(
-            'blue',
-            'Need help?',
-            '<p>Please head over to our <strong>Help Center</strong> for all your questions and support needs.</p>
-
-                  <div class="cnb-right" style="padding: 10px 10px 10px 70px"><img src="' . esc_url( $support_illustration ) . '" alt="Our Help Center and support options" style="max-width:300px; width:100%; height:auto;" /></div>',
-            'welcome-learn-more',
-            '',
-            'Open Help Center',
-            ( new CnbUtils() )->get_support_url( '', 'promobox-need-help', 'Help Center' )
+                'Support',
+                'blue',
+                'Need Some Guidance?',
+                '<div class="cnb-promobox-feature">
+                    <div class="cnb-promobox-feature-check">✓</div>
+                    <span>Step-by-step tutorials</span>
+                </div>
+                <div class="cnb-promobox-feature">
+                    <div class="cnb-promobox-feature-check">✓</div>
+                    <span>Video walkthroughs</span>
+                </div>
+                <div class="cnb-promobox-feature">
+                    <div class="cnb-promobox-feature-check">✓</div>
+                    <span>FAQ section</span>
+                </div>
+                <div class="cnb-promobox-feature">
+                    <div class="cnb-promobox-feature-check">✓</div>
+                    <span>Contact options</span>
+                </div>',
+                '🛟',
+                '',
+                '',
+                'Open Help Center',
+                ( new CnbUtils() )->get_support_url( '', 'promobox-need-help', 'Help Center' )
         );
         echo '</div>';
     }
@@ -548,6 +636,24 @@ class CnbSettingsViewEdit {
         <tr>
             <th colspan="2"><h2>NowButtons.com</h2></th>
         </tr>
+        <?php if ( $cnb_options['cloud_enabled'] == 1 && $cloud_successful ) { ?>
+        <tr id="cnb_not_working_tips" style="display:none;">
+            <td colspan="2">
+                <div class="cnb_inpage_notice">
+                        
+                        <p>If the button didn’t show up, these are the two most common causes:</p>
+                        <p><strong>Clear your cache</strong><br>
+                                Caching plugins can delay visual changes. Clearing the cache and reloading the page often resolves this.</p>
+                        <p><strong>Check visibility settings</strong><br>
+                                Make sure the button is enabled for both desktop and mobile under Visibility.</p>
+                            
+                        <p class="cnb_align_right">Need help? <a
+                        href="<?php echo esc_url( $cnb_utils->get_support_url( 'contact/contact-support/', 'Settings_page', 'Cloud_disable_toggle' ) ) ?>" target="_blank">Contact Support</a></p>
+                        
+                    </div>
+            </td>
+        </tr>
+        <?php } ?>
         <tr>
             <th scope="row">
                 <label for="cnb_cloud_enabled">Connection
@@ -583,29 +689,7 @@ class CnbSettingsViewEdit {
                         <a href="<?php echo esc_url( ( new CnbUtils() )->get_cnb_domain_upgrade() ) ?>">Learn
                             more</a>
                     </p>
-                <?php } ?>
-
-                <?php if ( $cnb_options['cloud_enabled'] == 1 && $cloud_successful ) {
-                    ?>
-
-                    <div id="cnb_not_working_tips" class="cnb_inpage_notice">
-                        <h3>👋 Plugin not playing nice?</h3>
-                        <p>No worries—we've got your back. Before you hit that off switch, let's try a couple of quick fixes:</p>
-                        <ol style="list-style:none">
-                            <li>
-                                <p><strong>🧹 Sweep out that cache!</strong><br>
-                                <i>Caching plugins can be sneaky and hide our button. Give your cache a good flush, then check if our button pops back up.</i></p>
-                            </li>
-                            <li>
-                                <p><strong>👀 Double-check those visibility settings</strong><br>
-                                <i>Make sure our button's set to shine on both desktop and mobile. Hop into the "Visibility" tab when you're editing your button to check.</i></p>
-                            </li>
-                        </ol>
-                        <p>Still no luck? Don't sweat it! <a
-                        href="<?php echo esc_url( $cnb_utils->get_support_url( 'contact/contact-support/', 'Settings_page', 'Cloud_disable_toggle' ) ) ?>" target="_blank">Drop us a line</a>, and we'll get you sorted in no time.</p>
-                        <p>We're here to help you succeed! 🚀</p>
-                    </div>
-                <?php } ?>
+                <?php } ?>                
             </td>
         </tr>
         <?php

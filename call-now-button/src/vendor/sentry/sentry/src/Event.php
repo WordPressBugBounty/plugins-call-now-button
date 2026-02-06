@@ -6,6 +6,8 @@ namespace Sentry;
 
 use Sentry\Context\OsContext;
 use Sentry\Context\RuntimeContext;
+use Sentry\Logs\Log;
+use Sentry\Metrics\Types\Metric;
 use Sentry\Profiling\Profile;
 use Sentry\Tracing\Span;
 
@@ -64,6 +66,16 @@ final class Event
      * @var CheckIn|null The check in data
      */
     private $checkIn;
+
+    /**
+     * @var Log[]
+     */
+    private $logs = [];
+
+    /**
+     * @var Metric[]
+     */
+    private $metrics = [];
 
     /**
      * @var string|null The name of the server (e.g. the host name)
@@ -230,9 +242,11 @@ final class Event
         return new self($eventId, EventType::checkIn());
     }
 
-    /**
-     * @deprecated Metrics are no longer supported. Metrics API is a no-op and will be removed in 5.x.
-     */
+    public static function createLogs(?EventId $eventId = null): self
+    {
+        return new self($eventId, EventType::logs());
+    }
+
     public static function createMetrics(?EventId $eventId = null): self
     {
         return new self($eventId, EventType::metrics());
@@ -417,18 +431,38 @@ final class Event
     }
 
     /**
-     * @deprecated Metrics are no longer supported. Metrics API is a no-op and will be removed in 5.x.
+     * @return Log[]
      */
-    public function getMetrics(): array
+    public function getLogs(): array
     {
-        return [];
+        return $this->logs;
     }
 
     /**
-     * @deprecated Metrics are no longer supported. Metrics API is a no-op and will be removed in 5.x.
+     * @param Log[] $logs
+     */
+    public function setLogs(array $logs): self
+    {
+        $this->logs = $logs;
+
+        return $this;
+    }
+
+    /**
+     * @return Metric[]
+     */
+    public function getMetrics(): array
+    {
+        return $this->metrics;
+    }
+
+    /**
+     * @param Metric[] $metrics
      */
     public function setMetrics(array $metrics): self
     {
+        $this->metrics = $metrics;
+
         return $this;
     }
 
@@ -863,11 +897,11 @@ final class Event
     /**
      * Gets the SDK metadata.
      *
-     * @return mixed
-     *
      * @psalm-template T of string|null
      *
      * @psalm-param T $name
+     *
+     * @return mixed
      *
      * @psalm-return (T is string ? mixed : array<string, mixed>|null)
      */

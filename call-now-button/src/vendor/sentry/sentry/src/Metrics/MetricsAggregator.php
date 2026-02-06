@@ -4,16 +4,17 @@ declare(strict_types=1);
 
 namespace Sentry\Metrics;
 
+use Sentry\Client;
 use Sentry\Event;
 use Sentry\EventId;
-use Sentry\Metrics\Types\AbstractType;
-use Sentry\Metrics\Types\CounterType;
-use Sentry\Metrics\Types\DistributionType;
-use Sentry\Metrics\Types\GaugeType;
-use Sentry\Metrics\Types\SetType;
+use Sentry\Metrics\Types\CounterMetric;
+use Sentry\Metrics\Types\DistributionMetric;
+use Sentry\Metrics\Types\GaugeMetric;
+use Sentry\Metrics\Types\Metric;
 use Sentry\SentrySdk;
 use Sentry\State\Scope;
-use Sentry\Tracing\TransactionSource;
+use Sentry\Unit;
+use Sentry\Util\RingBuffer;
 
 /**
  * @internal
@@ -23,135 +24,125 @@ final class MetricsAggregator
     /**
      * @var int
      */
-    private const ROLLUP_IN_SECONDS = 10;
+    public const METRICS_BUFFER_SIZE = 1000;
 
     /**
-     * @var array<string, AbstractType>
+     * @var RingBuffer<Metric>
      */
-    private $buckets = [];
+    private $metrics;
+
+    public function __construct()
+    {
+        $this->metrics = new RingBuffer(self::METRICS_BUFFER_SIZE);
+    }
 
     private const METRIC_TYPES = [
-        CounterType::TYPE => CounterType::class,
-        DistributionType::TYPE => DistributionType::class,
-        GaugeType::TYPE => GaugeType::class,
-        SetType::TYPE => SetType::class,
+        CounterMetric::TYPE => CounterMetric::class,
+        DistributionMetric::TYPE => DistributionMetric::class,
+        GaugeMetric::TYPE => GaugeMetric::class,
     ];
 
     /**
-     * @param array<string, string> $tags
-     * @param int|float|string      $value
+     * @param int|float                            $value
+     * @param array<string, int|float|string|bool> $attributes
      */
     public function add(
         string $type,
-        string $key,
+        string $name,
         $value,
-        ?MetricsUnit $unit,
-        array $tags,
-        ?int $timestamp,
-        int $stackLevel
+        array $attributes,
+        ?Unit $unit
     ): void {
-        if ($timestamp === null) {
-            $timestamp = time();
-        }
-        if ($unit === null) {
-            $unit = MetricsUnit::none();
-        }
-
-        $tags = $this->serializeTags($tags);
-
-        $bucketTimestamp = floor($timestamp / self::ROLLUP_IN_SECONDS);
-        $bucketKey = md5(
-            $type .
-            $key .
-            $unit .
-            serialize($tags) .
-            $bucketTimestamp
-        );
-
-        if (\array_key_exists($bucketKey, $this->buckets)) {
-            $metric = $this->buckets[$bucketKey];
-            $metric->add($value);
-        } else {
-            $metricTypeClass = self::METRIC_TYPES[$type];
-            /** @var AbstractType $metric */
-            /** @phpstan-ignore-next-line SetType accepts int|float|string, others only int|float */
-            $metric = new $metricTypeClass($key, $value, $unit, $tags, $timestamp);
-            $this->buckets[$bucketKey] = $metric;
-        }
-
         $hub = SentrySdk::getCurrentHub();
         $client = $hub->getClient();
 
-        if ($client !== null) {
+        if (!\is_int($value) && !\is_float($value)) {
+            if ($client !== null) {
+                $client->getOptions()->getLoggerOrNullLogger()->debug('Metrics value is neither int nor float. Metric will be discarded');
+            }
+
+            return;
+        }
+
+        if ($client instanceof Client) {
             $options = $client->getOptions();
 
-            if (
-                $options->shouldAttachMetricCodeLocations()
-                && !$metric->hasCodeLocation()
-            ) {
-                $metric->addCodeLocation($stackLevel);
+            if ($options->getEnableMetrics() === false) {
+                return;
             }
+
+            $defaultAttributes = [
+                'sentry.sdk.name' => $client->getSdkIdentifier(),
+                'sentry.sdk.version' => $client->getSdkVersion(),
+                'sentry.environment' => $options->getEnvironment() ?? Event::DEFAULT_ENVIRONMENT,
+                'server.address' => $options->getServerName(),
+            ];
+
+            if ($options->shouldSendDefaultPii()) {
+                $hub->configureScope(function (Scope $scope) use (&$defaultAttributes) {
+                    $user = $scope->getUser();
+                    if ($user !== null) {
+                        if ($user->getId() !== null) {
+                            $defaultAttributes['user.id'] = $user->getId();
+                        }
+                        if ($user->getEmail() !== null) {
+                            $defaultAttributes['user.email'] = $user->getEmail();
+                        }
+                        if ($user->getUsername() !== null) {
+                            $defaultAttributes['user.name'] = $user->getUsername();
+                        }
+                    }
+                });
+            }
+
+            $release = $options->getRelease();
+            if ($release !== null) {
+                $defaultAttributes['sentry.release'] = $release;
+            }
+
+            $attributes += $defaultAttributes;
         }
+
+        $spanId = null;
+        $traceId = null;
 
         $span = $hub->getSpan();
         if ($span !== null) {
-            $span->setMetricsSummary($type, $key, $value, $unit, $tags);
+            $spanId = $span->getSpanId();
+            $traceId = $span->getTraceId();
+        } else {
+            $hub->configureScope(function (Scope $scope) use (&$traceId, &$spanId) {
+                $propagationContext = $scope->getPropagationContext();
+                $traceId = $propagationContext->getTraceId();
+                $spanId = $propagationContext->getSpanId();
+            });
         }
+
+        $metricTypeClass = self::METRIC_TYPES[$type];
+        /** @var Metric $metric */
+        /** @phpstan-ignore-next-line */
+        $metric = new $metricTypeClass($name, $value, $traceId, $spanId, $attributes, microtime(true), $unit);
+
+        if ($client !== null) {
+            $beforeSendMetric = $client->getOptions()->getBeforeSendMetricCallback();
+            $metric = $beforeSendMetric($metric);
+            if ($metric === null) {
+                return;
+            }
+        }
+
+        $this->metrics->push($metric);
     }
 
     public function flush(): ?EventId
     {
-        if ($this->buckets === []) {
+        if ($this->metrics->isEmpty()) {
             return null;
         }
 
         $hub = SentrySdk::getCurrentHub();
-        $event = Event::createMetrics()->setMetrics($this->buckets);
-
-        $this->buckets = [];
+        $event = Event::createMetrics()->setMetrics($this->metrics->drain());
 
         return $hub->captureEvent($event);
-    }
-
-    /**
-     * @param array<string, string> $tags
-     *
-     * @return array<string, string>
-     */
-    private function serializeTags(array $tags): array
-    {
-        $hub = SentrySdk::getCurrentHub();
-        $client = $hub->getClient();
-
-        if ($client !== null) {
-            $options = $client->getOptions();
-
-            $defaultTags = [
-                'environment' => $options->getEnvironment() ?? Event::DEFAULT_ENVIRONMENT,
-            ];
-
-            $release = $options->getRelease();
-            if ($release !== null) {
-                $defaultTags['release'] = $release;
-            }
-
-            $hub->configureScope(function (Scope $scope) use (&$defaultTags) {
-                $transaction = $scope->getTransaction();
-                if (
-                    $transaction !== null
-                    // Only include the transaction name if it has good quality
-                    && $transaction->getMetadata()->getSource() !== TransactionSource::url()
-                ) {
-                    $defaultTags['transaction'] = $transaction->getName();
-                }
-            });
-
-            $tags = array_merge($defaultTags, $tags);
-        }
-
-        // It's very important to sort the tags in order to obtain the same bucket key.
-        ksort($tags);
-
-        return $tags;
     }
 }

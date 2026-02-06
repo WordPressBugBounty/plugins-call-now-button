@@ -44,7 +44,6 @@ class CnbSettingsController {
             'advanced_view'               => 0,
             'show_all_buttons_for_domain' => 0,
             'footer_show_traces'          => 0,
-            'api_caching'                 => 0,
             'reporting_enabled'           => 0,
 	        'displaymode'                 => 'MOBILE_ONLY',
         );
@@ -70,7 +69,6 @@ class CnbSettingsController {
         $cnb_options['advanced_view']               = isset( $cnb_options['advanced_view'] ) && $cnb_options['advanced_view'] == 1 ? 1 : 0;
         $cnb_options['show_all_buttons_for_domain'] = isset( $cnb_options['show_all_buttons_for_domain'] ) && $cnb_options['show_all_buttons_for_domain'] == 1 ? 1 : 0;
         $cnb_options['footer_show_traces']          = isset( $cnb_options['footer_show_traces'] ) && $cnb_options['footer_show_traces'] == 1 ? 1 : 0;
-        $cnb_options['api_caching']                 = isset( $cnb_options['api_caching'] ) && $cnb_options['api_caching'] == 1 ? 1 : 0;
         $cnb_options['conversions']                 = isset( $cnb_options['conversions'] ) && ( $cnb_options['conversions'] == 1 || $cnb_options['conversions'] == 2 ) ? (int) $cnb_options['conversions'] : 0;
         $cnb_options['cloud_enabled']               = ( new CnbUtils() )->isCloudActive( $cnb_options );
 

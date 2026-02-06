@@ -24,10 +24,6 @@ function cnb_ask_for_feedback_disable_cloud() {
             const options = {
                 width: 350,
                 hideTitle: 1,
-                emoji: {
-                    text: '😢',
-                    animation: 'heart-beat'
-                },
                 autoClose: 5000,
                 hiddenFields: {
                     wordPressUrl: window.location.href,
@@ -71,8 +67,19 @@ function cnb_show_tips_when_deactivating() {
     ele.on('click', () => {
         const isChecked = ele.is(':checked')
         if (!isChecked) {
-            jQuery("#cnb_not_working_tips").css('display','block');
-        } else {
+            setTimeout(() => {
+                const row = jQuery("#cnb_not_working_tips");
+                row.css('display','table-row');
+                const td = row.find('td');
+                const content = td.children();
+                const contentHeight = content.outerHeight(true);
+                
+                content.css({height: 0, overflow: 'hidden'});
+                content.animate({height: contentHeight}, 1000, function() {
+                    content.css({height: '', overflow: ''});
+                });
+            }, 1500);
+        }  else {
             jQuery("#cnb_not_working_tips").hide();
         }
     })

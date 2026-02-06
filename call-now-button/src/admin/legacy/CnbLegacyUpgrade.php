@@ -292,10 +292,6 @@ class CnbLegacyUpgrade {
             <span class="benefit-name">Zalo</span>
             </div>
             <div class="benefit-box">
-            <span class="benefit-number cnb-font-icon"><i>skype</i></span>
-            <span class="benefit-name">Skype</span>
-            </div>
-            <div class="benefit-box">
             <span class="benefit-number cnb-font-icon"><i>line</i></span>
             <span class="benefit-name">Line</span>
             </div>
@@ -399,11 +395,6 @@ class CnbLegacyUpgrade {
                 </tr>
                 <tr>
                 <th>Signal</th>
-                <td>𐄂</td>
-                <td class="yes">✓</td>
-                </tr>
-                <tr>
-                <th>Skype</th>
                 <td>𐄂</td>
                 <td class="yes">✓</td>
                 </tr>

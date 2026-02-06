@@ -2,10 +2,10 @@
 Contributors: jgrietveld, jasperroel
 Donate link: https://callnowbutton.com/donate/
 Tags: call button, click to call, convert, call now button, contact button
-Requires at least: 4.1
-Requires PHP: 5.4
+Requires at least: 6.1
+Requires PHP: 7.4
 Tested up to: 6.9
-Stable tag: 1.5.5
+Stable tag: 2.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -19,7 +19,7 @@ This plugin places a Call Now Button (click-to-call button) to the bottom of the
 No more navigating to the contact page and no more complicated copy/pasting or memorizing the phone number!
 
 #### More actions
-Connect to our **cloud service** to enable more action buttons such as **WhatsApp**, **Signal**, **Telegram**, **Messenger**, **SMS/Text**, **Email**, **Directions**, **Skype**, **Viber**, **Zalo**, **WeChat**, **Line** and more. Find a more complete overview below in the _Account_ section.
+Connect to our **cloud service** to enable more action buttons such as **WhatsApp**, **Signal**, **Telegram**, **Messenger**, **SMS/Text**, **Email**, **Directions**, **Viber**, **Zalo**, **WeChat**, **Line** and more. Find a more complete overview below in the _Account_ section.
 
 ###Could not be easier!
 The settings are very easy: enable and enter your phone number. That's it!
@@ -35,8 +35,8 @@ In the **Settings menu** you'll find a bunch of features such as click tracking 
 ### Connecting to NowButtons.com
 Connect the plugin to our cloud service NowButtons.com to unlock more features. Here's an overview:
 
-* ⚡ More actions: SMS/Text, Email, Maps, URLs, Scroll to top
-* 🤗 Social actions: WhatsApp, Messenger, Telegram, Signal, Zalo, Viber, Line, Skype, WeChat
+* ⚡ More actions: SMS/Text, Email, Maps, URLs, Scroll to point
+* 🤗 Social actions: WhatsApp, Messenger, Telegram, Signal, Zalo, Viber, Line, WeChat
 * 🆕 Create 5 different buttons (instead of 1)
 * 🎯 Create smarter rules to decide where buttons should appear
 * 👁️️ Live preview
@@ -51,6 +51,8 @@ The PRO plan offers the following extras:
 * 🌼 Button templates
 * 💬 Live chat (beta)
 * 💬 WhatsApp chat window
+* 💬 Live Chat (beta)
+* 🗓️ Meeting Scheduler (coming soon)
 * 💬 Messenger Chat Widget
 * 🗂️ Multi action buttons
 * 🕘 Scheduler: create a weekly schedule for your buttons
@@ -136,8 +138,13 @@ Yes, you can connect the plugin to our cloud service NowButtons.com. That alread
 6. 3 variants of the Buttonbar (multi-action button is a paid feature)
 7. The Multibutton allows up to 10 actions (a paid feature)
 
-
 == Changelog ==
+= 2.0.0 =
+* Raised PHP compatibility from 5.4 to 7.4
+* Raised WordPress compatibility from 4.1 to 6.1
+* Reverted WordPress React library from 6.5 to 6.1
+* Bumped major version to 2.0
+
 = 1.5.5 =
 * Additional security improvements
 

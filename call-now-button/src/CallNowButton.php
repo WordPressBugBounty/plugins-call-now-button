@@ -700,7 +700,8 @@ class CallNowButton {
 	    }
 
 		$action_controller = new CnbActionController();
-		add_filter( 'cnb_get_action_types', array( $action_controller, 'filter_action_types' ) );
+	    add_filter( 'cnb_get_action_types', array( $action_controller, 'filter_chat_type' ) );
+	    add_filter( 'cnb_get_action_types', array( $action_controller, 'filter_booking_type' ) );
 
 	    $admin_functions = new CnbAdminFunctions();
 	    add_filter( 'cnb_get_condition_types', array( $admin_functions, 'filter_condition_types' ) );

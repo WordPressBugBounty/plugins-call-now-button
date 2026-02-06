@@ -51,13 +51,13 @@ class CnbActivation {
      */
     public $button;
 
-    /**
-     * @param bool $activation_attempt
-     * @param bool $success
-     * @param CnbDomain $domain
-     * @param CnbButton $button
-     */
-    public function __construct( $activation_attempt = false, $success = false, CnbDomain $domain = null, CnbButton $button = null ) {
+	/**
+	 * @param bool $activation_attempt
+	 * @param bool $success
+	 * @param CnbDomain|null $domain
+	 * @param CnbButton|null $button
+	 */
+    public function __construct( $activation_attempt = false, $success = false, ?CnbDomain $domain = null, ?CnbButton $button = null ) {
         $this->activation_attempt = $activation_attempt;
         $this->success            = $success;
         $this->domain             = $domain;

@@ -9,6 +9,8 @@ use Sentry\EventType;
 use Sentry\Options;
 use Sentry\Serializer\EnvelopItems\CheckInItem;
 use Sentry\Serializer\EnvelopItems\EventItem;
+use Sentry\Serializer\EnvelopItems\LogsItem;
+use Sentry\Serializer\EnvelopItems\MetricsItem;
 use Sentry\Serializer\EnvelopItems\ProfileItem;
 use Sentry\Serializer\EnvelopItems\TransactionItem;
 use Sentry\Tracing\DynamicSamplingContext;
@@ -39,11 +41,14 @@ final class PayloadSerializer implements PayloadSerializerInterface
     {
         // @see https://develop.sentry.dev/sdk/envelopes/#envelope-headers
         $envelopeHeader = [
-            'event_id' => (string) $event->getId(),
             'sent_at' => gmdate('Y-m-d\TH:i:s\Z'),
             'dsn' => (string) $this->options->getDsn(),
             'sdk' => $event->getSdkPayload(),
         ];
+
+        if ($event->getType()->requiresEventId()) {
+            $envelopeHeader['event_id'] = (string) $event->getId();
+        }
 
         $dynamicSamplingContext = $event->getSdkMetadata('dynamic_sampling_context');
         if ($dynamicSamplingContext instanceof DynamicSamplingContext) {
@@ -54,28 +59,29 @@ final class PayloadSerializer implements PayloadSerializerInterface
             }
         }
 
-        $items = '';
+        $items = [];
 
         switch ($event->getType()) {
             case EventType::event():
-                $items = EventItem::toEnvelopeItem($event);
+                $items[] = EventItem::toEnvelopeItem($event);
                 break;
             case EventType::transaction():
-                $transactionItem = TransactionItem::toEnvelopeItem($event);
+                $items[] = TransactionItem::toEnvelopeItem($event);
                 if ($event->getSdkMetadata('profile') !== null) {
-                    $profileItem = ProfileItem::toEnvelopeItem($event);
-                    if ($profileItem !== '') {
-                        $items = \sprintf("%s\n%s", $transactionItem, $profileItem);
-                        break;
-                    }
+                    $items[] = ProfileItem::toEnvelopeItem($event);
                 }
-                $items = $transactionItem;
                 break;
             case EventType::checkIn():
-                $items = CheckInItem::toEnvelopeItem($event);
+                $items[] = CheckInItem::toEnvelopeItem($event);
+                break;
+            case EventType::logs():
+                $items[] = LogsItem::toEnvelopeItem($event);
+                break;
+            case EventType::metrics():
+                $items[] = MetricsItem::toEnvelopeItem($event);
                 break;
         }
 
-        return \sprintf("%s\n%s", JSON::encode($envelopeHeader), $items);
+        return \sprintf("%s\n%s", JSON::encode($envelopeHeader), implode("\n", array_filter($items)));
     }
 }

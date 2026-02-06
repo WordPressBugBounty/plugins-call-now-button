@@ -470,77 +470,93 @@ class CnbLegacyEdit {
                 </div>
             </div>
             <div class="cnb-postbox-container cnb-side-column">
-                <div class="cnb-on-active-tab <?php echo esc_attr( $adminFunctions->is_active_tab( 'basic_options' ) ) ?>">
+                <div class="cnb-on-active-tab <?php echo esc_attr( $adminFunctions->is_active_tab( 'basic_options' ) ) ?>" data-tab-name="basic_options">
                     <?php
                     ( new CnbAdminFunctions() )->cnb_promobox(
-                        'green',
-                        'Need more power?',
-                        '<p><strong>Sign up to add:</strong></p>
-                        <p>
-                            🧰 14 button actions<br>
-                            🛎️ 5 unique buttons<br>
-                            🎯 Advanced display rules
-                        </p>
-                ',
-                        'format-chat',
-                        'Get all this for <b>FREE</b>!',
-                        'Learn more',
-                        ( new CnbAdminFunctions() )->cnb_legacy_upgrade_page()
-                    );
-                    ?>
-                    <?php
-                    ( new CnbAdminFunctions() )->cnb_promobox(
-                        '',
-                        'Upgrade to PRO',
-                        '<p><b>PRO includes:</b></p>
-                <p>🏗️ 99 unique buttons<br>
-                ⏰ Button scheduler<br>
-                💬 Live Chat (beta)<br>
-                💬 WhatsApp Chat module<br>
-                🗂️ Multi-action buttons<br>
-                🖼️ Slide-in content windows<br>
-                📷 Custom images<br>
-                🎁 And so much more</p>
-                ',
-                        'awards',
-                        '<b>Boost your conversions!</b>',
-                        'Sign up',
-                        ( new CnbAdminFunctions() )->cnb_legacy_upgrade_page()
+                            'Action booster',
+                            'green',
+                            'Need more actions?',
+                            '<div class="cnb-promobox-feature">
+                                <div class="cnb-promobox-feature-check">✓</div>
+                                <span>WhatsApp</span>
+                            </div>
+                            <div class="cnb-promobox-feature">
+                                <div class="cnb-promobox-feature-check">✓</div>
+                                <span>Email</span>
+                            </div>
+                            <div class="cnb-promobox-feature">
+                                <div class="cnb-promobox-feature-check">✓</div>
+                                <span>SMS</span>
+                            </div>
+                            <div class="cnb-promobox-feature">
+                                <div class="cnb-promobox-feature-check">✓</div>
+                                <span>Signal</span>
+                            </div>
+                            <div class="cnb-promobox-feature">
+                                <div class="cnb-promobox-feature-check">✓</div>
+                                <span>Viber</span>
+                            </div>
+                            <div class="cnb-promobox-feature">
+                                <div class="cnb-promobox-feature-check">✓</div>
+                                <span>Links</span>
+                            </div>
+                            <div class="cnb-promobox-feature">
+                                <div class="cnb-promobox-feature-check">✓</div>
+                                <span>And many more!</span>
+                            </div>',
+                            '✨',
+                            'Enable it now',
+                            '<strong>100% Free</strong>',
+                            'Create Account',
+                            ( new CnbAdminFunctions() )->cnb_legacy_upgrade_page()
                     );
                     ?>
                 </div>
-                <div class="cnb-on-active-tab <?php echo esc_attr( $adminFunctions->is_active_tab( 'extra_options' ) ) ?>">
+                <div class="cnb-on-active-tab <?php echo esc_attr( $adminFunctions->is_active_tab( 'extra_options' ) ) ?>" data-tab-name="extra_options">
                     <?php
                     ( new CnbAdminFunctions() )->cnb_promobox(
-                        'purple',
-                        'More control with Display Rules',
-                        '<p>Do you need more flexibility in selecting the pages where you want a button to appear?</p>
-                  <p>Sign up to unlock 3 methods for selecting the right pages:</p>
-                  <p>&check; Page URL is ...<br>
-                  &check; Page URL contains ...<br>
-                  &check; Page path starts with ...</p>
-                  <p>PRO adds 2 more:</p>
-                  <p>&check; URL Parameter contains ...<br>
-                  &check; URL matches RegEx ...</p>',
-                        'visibility',
-                        '',
-                        'Learn more',
-                        ( new CnbAdminFunctions() )->cnb_legacy_upgrade_page()
+                            'Custom buttons',
+                            'purple',
+                            'Make It Truly Yours',
+                            '<div class="cnb-promobox-feature-group">
+                                <div class="cnb-promobox-feature-icon">📸</div>
+                                <div class="cnb-promobox-feature-text">
+                                    Upload your own visuals
+                                </div>
+                            </div><div class="cnb-promobox-feature-group">
+                                <div class="cnb-promobox-feature-icon">🎭</div>
+                                <div class="cnb-promobox-feature-text">
+                                    Select different icons
+                                </div>
+                            </div>',
+                            '🎨',
+                            'Unlock with PRO',
+                            'Try 14 days free',
+                            'Upgrade Now',
+                            ( new CnbAdminFunctions() )->cnb_legacy_upgrade_page()
                     );
 
                     ?>
                 </div>
-                <div class="cnb-on-active-tab <?php echo esc_attr( $adminFunctions->is_active_tab( 'scheduler' ) ) ?>">
+                <div class="cnb-on-active-tab <?php echo esc_attr( $adminFunctions->is_active_tab( 'scheduler' ) ) ?>" data-tab-name="scheduler">
                     <?php
                     ( new CnbAdminFunctions() )->cnb_promobox(
-                        'purple',
-                        'Phones off at 6pm?',
-                        '<p>Upgrade to enable a scheduler that allows you to set the days and hours that you are available.</p>' .
-                        '<p>Use the scheduler to show a mail button when you\'re off and a phone button during your business hours.</p>',
-                        'clock',
-                        '<strong>Try it 14 days free!</strong>',
-                        'Upgrade',
-                        ( new CnbAdminFunctions() )->cnb_legacy_upgrade_page()
+                            'Scheduler',
+                            'blue',
+                            'Smart Scheduling,<br>Smarter Conversions',
+                            '<div class="cnb-promobox-feature">
+                                <div class="cnb-promobox-feature-check">✓</div>
+                                <span>Automatically switch buttons based on your hours</span>
+                            </div>
+                            <div class="cnb-promobox-feature">
+                                <div class="cnb-promobox-feature-check">✓</div>
+                                <span>Never miss a lead again</span>
+                            </div>',
+                            '🕙',
+                            'Unlock with PRO',
+                            'Try 14 days free',
+                            'Upgrade  Now',
+                            ( new CnbAdminFunctions() )->cnb_legacy_upgrade_page()
                     );
                     ?>
                 </div>

@@ -575,16 +575,6 @@ class CnbDomainViewUpgradeOverview {
                     <td class="yes">✓</td>
                 </tr>
                 <tr class="cnb-starter">
-                    <th>Skype
-                        <span class="cnb-tooltip-icon">?</span>
-                        <div class="cnb-tooltip-text">
-                            A button that opens the Skype app and enables a chat or text conversation with you.
-                        </div>
-                    </th>
-                    <td class="yes cnb-starter">✓</td>
-                    <td class="yes">✓</td>
-                </tr>
-                <tr class="cnb-starter">
                     <th>Viber
                         <span class="cnb-tooltip-icon">?</span>
                         <div class="cnb-tooltip-text">
@@ -773,6 +763,18 @@ class CnbDomainViewUpgradeOverview {
                         A button that opens a live chat window directly on your website where you can interact with visitors 
                         in real-time. You can set up automated welcome messages that appear in sequence. <br>Visitors can start 
                         chatting immediately without leaving your site or installing any app.
+                        </div>
+                    </th>
+                    <td class="cnb-starter">𐄂</td>
+                    <td class="yes">✓</td>
+                </tr>
+                <tr>
+                    <th>Meeting Scheduler (coming soon)
+                        <span class="cnb-tooltip-icon">?</span>
+                        <div class="cnb-tooltip-text">
+                        A button that opens a calendar widget directly on your website where visitors can schedule meetings 
+                        with you. You can set availability preferences that sync with your Google Calendar. <br>Visitors can book 
+                        appointments immediately without leaving your site.
                         </div>
                     </th>
                     <td class="cnb-starter">𐄂</td>

@@ -208,6 +208,9 @@ class Cnb_Action_List_Table extends WP_List_Table {
 	 */
 	private function get_action_value( $action ) {
 		if ($action->actionType === 'CHAT' ) return ' -';
+		if ($action->actionType === 'BOOKING' ) {
+			return $action->properties->{'booking-meeting-id'};
+		}
 		return ! empty( $action->actionValue ) ? esc_html( $action->actionValue ) : '<em>No value</em>';
 	}
 
