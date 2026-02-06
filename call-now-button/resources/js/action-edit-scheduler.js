@@ -64,9 +64,10 @@ function cnbAjaxTimeFormat(start, stop) {
     const local_counter = cnb_api_counter + 1
     cnb_api_counter = local_counter
     const data = {
-        'action': 'cnb_time_format',
-        'start': start,
-        'stop': stop
+        action: 'cnb_time_format',
+        start: start,
+        stop: stop,
+        _ajax_nonce: cnb_time_format_data.nonce
     };
 
     if (cnb_api_in_progress) {

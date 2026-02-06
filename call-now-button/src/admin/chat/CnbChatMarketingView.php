@@ -131,16 +131,6 @@ class CnbChatMarketingView {
         <?php
         // Enqueue the chat marketing script
         wp_enqueue_script(CNB_SLUG . '-chat-marketing');
-
-        // Localize the script with the nonce and chat page URL
-        wp_localize_script(
-            CNB_SLUG . '-chat-marketing',
-            'cnb_chat_marketing',
-            array(
-                'nonce' => wp_create_nonce('cnb_enable_chat'),
-                'chat_url' => admin_url('admin.php?page=call-now-button-chat'),
-            )
-        );
         ?>
         <?php
     }

@@ -23,16 +23,12 @@ class CnbConditionController {
      * @return CnbCondition|WP_Error|null
      */
     private function deleteWithId( $condition_id ) {
-        if ( ( new CnbUtils() )->cnb_check_ajax_referer( 'cnb_delete_condition' ) ) {
-            $condition     = new CnbCondition();
-            $condition->id = $condition_id;
+        $condition     = new CnbCondition();
+        $condition->id = $condition_id;
 
-            $ignore_notifications = array();
+        $ignore_notifications = array();
 
-            return CnbAdminCloud::cnb_delete_condition( $ignore_notifications, $condition );
-        }
-
-        return null;
+        return CnbAdminCloud::cnb_delete_condition( $ignore_notifications, $condition );
     }
 
 	/**
@@ -87,7 +83,11 @@ class CnbConditionController {
      */
     public function delete_ajax() {
         do_action( 'cnb_init', __METHOD__ );
-        $cnb_utils = new CnbUtils();
+
+	    // Verify nonce (die immediately if failed)
+	    check_ajax_referer('cnb_delete_condition');
+
+	    $cnb_utils = new CnbUtils();
         $id        = $cnb_utils->get_post_val( 'id', null );
 
         $result     = $this->deleteWithId( $id );

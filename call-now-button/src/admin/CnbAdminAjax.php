@@ -22,6 +22,10 @@ class CnbAdminAjax {
         do_action( 'cnb_init', __METHOD__ );
         $planId   = filter_input( INPUT_POST, 'planId', @FILTER_SANITIZE_STRING );
         $domainId = filter_input( INPUT_POST, 'domainId', @FILTER_SANITIZE_STRING );
+
+	    // Verify nonce (die immediately if failed)
+	    check_ajax_referer('cnb_get_checkout');
+
         $cnb_subscription_api = new CnbAppRemotePayment();
 
         $url             = admin_url( 'admin.php' );
@@ -51,7 +55,11 @@ class CnbAdminAjax {
         do_action( 'cnb_init', __METHOD__ );
 	    $planId   = filter_input( INPUT_POST, 'planId', @FILTER_SANITIZE_STRING );
 	    $currency = filter_input( INPUT_POST, 'currency', @FILTER_SANITIZE_STRING );
-        $cnb_subscription_api = new CnbAppRemotePayment();
+
+	    // Verify nonce (die immediately if failed)
+	    check_ajax_referer('cnb_get_agency_checkout');
+
+	    $cnb_subscription_api = new CnbAppRemotePayment();
 
         $url             = admin_url( 'admin.php' );
         $callbackUri   = esc_url_raw(
@@ -102,37 +110,20 @@ class CnbAdminAjax {
         }
     }
 
-    /**
-     * called via jQuery.post
-     * @return void
-     */
-    public function settings_profile_save() {
-        do_action( 'cnb_init', __METHOD__ );
-        $data = array();
-        // Security note: the nonce will be checked via update_user (below),
-        // and we sanitize the data via filter_var below
-        // phpcs:ignore WordPress.Security
-        wp_parse_str( $_POST['data'], $data );
-        $controller = new CnbProfileController();
-        $nonce      = filter_var( $data['_wpnonce'], @FILTER_SANITIZE_STRING );
-        $profile    = filter_var( $data['user'], @FILTER_SANITIZE_STRING,
-            FILTER_REQUIRE_ARRAY | FILTER_FLAG_NO_ENCODE_QUOTES );
-        $user       = CnbUser::fromObject( $profile );
-
-        $result = $controller->update_user( $nonce, $user );
-        wp_send_json( $result );
-        do_action( 'cnb_finish' );
-        wp_die();
-    }
-
     public function cnb_email_activation() {
         do_action( 'cnb_init', __METHOD__ );
+
+	    // Verify nonce (die immediately if failed)
+	    check_ajax_referer('cnb_email_activation');
+
         $cnb_remote = new CnbAppRemote();
         $admin_url = esc_url( admin_url( 'admin-post.php' ) );
 
         $custom_email = trim( filter_input( INPUT_POST, 'admin_email', @FILTER_SANITIZE_STRING ) );
         if ( is_email( $custom_email ) ) {
-            $data = $cnb_remote->create_email_activation( $custom_email, $admin_url );
+			$wpnonce = wp_create_nonce('cnb_email_activation');
+	        update_option('cnb_email_activation_wp_nonce', $wpnonce);
+            $data = $cnb_remote->create_email_activation( $custom_email, $wpnonce, $admin_url );
         } else {
             $data = new WP_Error( 'CNB_EMAIL_INVALID', __( 'Please enter a valid e-mail address.' ) );
             if ( empty( $custom_email ) ) {
@@ -154,7 +145,11 @@ class CnbAdminAjax {
     public function time_format() {
         do_action( 'cnb_init', __METHOD__ );
         $start = trim( filter_input( INPUT_POST, 'start', @FILTER_SANITIZE_STRING ) );
-        $stop  = trim( filter_input( INPUT_POST, 'stop', @FILTER_SANITIZE_STRING ) );
+	    $stop  = trim( filter_input( INPUT_POST, 'stop', @FILTER_SANITIZE_STRING ) );
+
+	    // Verify nonce (die immediately if failed)
+	    check_ajax_referer( 'cnb_time_format' );
+
         wp_send_json( array(
                 'start' => self::cnb_time_format_( $start ),
                 'stop'  => self::cnb_time_format_( $stop ),
@@ -167,6 +162,10 @@ class CnbAdminAjax {
     public function get_plans() {
         do_action( 'cnb_init', __METHOD__ );
         global $cnb_plans;
+
+	    // Verify nonce (die immediately if failed)
+	    check_ajax_referer('cnb_get_plans');
+
         $domain_controller    = new CnbDomainController();
 
         // Hardcoded fallback values in case the API call fails
@@ -226,25 +225,24 @@ class CnbAdminAjax {
 
     public function get_billing_portal() {
         do_action( 'cnb_init', __METHOD__ );
+
+	    // Verify nonce (die immediately if failed)
+	    check_ajax_referer('cnb_get_billing_portal');
+
         $cnb_remote = new CnbAppRemote();
-        wp_send_json( $cnb_remote->create_billing_portal() );
+        wp_send_json_success( $cnb_remote->create_billing_portal() );
         do_action( 'cnb_finish' );
         wp_die();
     }
 
     public function request_billing_portal() {
         do_action( 'cnb_init', __METHOD__ );
-        $cnb_remote = new CnbAppRemote();
-        wp_send_json( $cnb_remote->request_billing_portal() );
-        do_action( 'cnb_finish' );
-        wp_die();
-    }
 
-    public function get_domain_status() {
-        $domainId = trim( filter_input( INPUT_POST, 'domainId', @FILTER_SANITIZE_STRING ) );
-        do_action( 'cnb_init', __METHOD__ );
-        $cnb_remote = new CnbAppRemote();
-        wp_send_json( $cnb_remote->get_subscription_status( $domainId ) );
+	    // Verify nonce (die immediately if failed)
+	    check_ajax_referer('cnb_request_billing_portal');
+
+	    $cnb_remote = new CnbAppRemote();
+	    wp_send_json_success( $cnb_remote->request_billing_portal() );
         do_action( 'cnb_finish' );
         wp_die();
     }
@@ -252,7 +250,11 @@ class CnbAdminAjax {
     public function upgrade_to_yearly() {
         do_action( 'cnb_init', __METHOD__ );
         $subscriptionId = trim( filter_input( INPUT_POST, 'subscriptionId', @FILTER_SANITIZE_STRING ) );
-        $cnb_remote = new CnbAppRemote();
+
+	    // Verify nonce (die immediately if failed)
+	    check_ajax_referer('cnb_upgrade_to_yearly');
+
+	    $cnb_remote = new CnbAppRemote();
 		$result = $cnb_remote->upgrade_subscription_to_yearly( $subscriptionId );
 		if ( ! is_wp_error( $result ) && $result->success === true ) {
 			wp_send_json_success( $result );

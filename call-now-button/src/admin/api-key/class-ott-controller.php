@@ -122,8 +122,14 @@ class OttController {
 	 * @return string|null The API key if found
 	 */
 	private function get_api_key_from_ott() {
-		$cnb_remote                              = new CnbAppRemote();
-		$api_key                                 = $cnb_remote->get_apikey_via_ott( $this->activation->ott_key );
+		$wp_nonce = get_option('cnb_email_activation_wp_nonce');
+
+		if ( !$wp_nonce ) {
+			return null;
+		}
+
+		$cnb_remote = new CnbAppRemote();
+		$api_key = $cnb_remote->get_apikey_via_ott( $this->activation->ott_key, $wp_nonce );
 
 		if ( $api_key === null ) {
 			return null;
@@ -152,6 +158,9 @@ class OttController {
 
 			return null;
 		}
+
+		// Clean nonce, it is no longer needed
+		delete_option('cnb_email_activation_wp_nonce');
 
 		return $api_key->key;
 	}

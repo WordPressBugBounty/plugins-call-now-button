@@ -80,10 +80,10 @@ function cnb_delete_condition() {
             const id = jQuery(this).data('id')
             const bid = jQuery(this).data('bid')
             const data = {
-                'action': 'cnb_delete_condition',
-                'id': id,
-                'bid': bid,
-                '_ajax_nonce': jQuery(this).data('wpnonce'),
+                action: 'cnb_delete_condition',
+                id: id,
+                bid: bid,
+                _ajax_nonce: jQuery(this).data('wpnonce'),
             }
 
             // Send remove request

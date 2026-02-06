@@ -434,7 +434,6 @@ class CnbSettingsViewEdit {
                             <input
                                     class="cnb-disable-chat button button-secondary"
                                     type="button"
-                                    data-wpnonce="<?php echo esc_attr($user_nonce) ?>"
                                     value="Disable Chat"
                             />
                             <div class="notice inline hidden cnb-disable-chat-result"><p></p></div>

@@ -22,31 +22,34 @@ class CnbChatAjaxHandler {
      * Handle the AJAX request to enable chat
      */
     public function handle_enable_chat() {
+	    do_action( 'cnb_init', __METHOD__ );
+
         // Verify nonce
-        if (!check_ajax_referer('cnb_enable_chat', 'nonce', false)) {
-            wp_send_json_error(array(
-                'message' => 'Invalid nonce',
-            ));
-            return;
+        if (!check_ajax_referer('cnb_enable_chat', false, false)) {
+	        wp_send_json_error(array( 'message' => 'Invalid security token.' ));
+	        do_action( 'cnb_finish' );
+	        wp_die();
         }
 
         // Check if user has PRO access
-        $cnb_remote = new CnbAppRemote();
-        $domain = $cnb_remote->get_wp_domain();
+	    $cnb_app_remote = new CnbAppRemote();
+        $domain = $cnb_app_remote->get_wp_domain();
         if (!$domain || !$domain->is_pro()) {
             wp_send_json_error(array(
                 'message' => 'PRO access required to enable chat',
             ));
-            return;
+	        do_action( 'cnb_finish' );
+	        wp_die();
         }
 
         // Try to enable chat
-        $result = $cnb_remote->enable_chat();
+        $result = $cnb_app_remote->enable_chat();
         if (is_wp_error($result)) {
             wp_send_json_error(array(
                 'message' => $result->get_error_message(),
             ));
-            return;
+	        do_action( 'cnb_finish' );
+	        wp_die();
         }
 
         // Success!
@@ -54,6 +57,8 @@ class CnbChatAjaxHandler {
             'message' => 'Chat enabled successfully',
             'user' => $result,
         ));
+	    do_action( 'cnb_finish' );
+	    wp_die();
     }
 
     /**
@@ -62,26 +67,28 @@ class CnbChatAjaxHandler {
     public function handle_disable_chat() {
 	    do_action( 'cnb_init', __METHOD__ );
         // Verify nonce
-        $nonce = filter_input( INPUT_POST, 'nonce', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
-        if (!$nonce || !wp_verify_nonce($nonce, 'cnb-user')) {
+        if (!check_ajax_referer('cnb_disable_chat', false, false)) {
             wp_send_json_error(array( 'message' => 'Invalid security token.' ));
-            return;
+	        do_action( 'cnb_finish' );
+	        wp_die();
         }
 
         // Check if user has PRO access
         $cnb_utils = new CnbUtils();
         if (!$cnb_utils->is_chat_api_enabled()) {
             wp_send_json_error(array( 'message' => 'Chat functionality is not enabled for this account.' ));
-            return;
+	        do_action( 'cnb_finish' );
+	        wp_die();
         }
 
-        // Attempt to disable chat
+        // Try to disable chat
         $cnb_app_remote = new CnbAppRemote();
         $result = $cnb_app_remote->disable_chat();
 
         if (is_wp_error($result)) {
             wp_send_json_error(array( 'message' => $result->get_error_message() ));
-            return;
+	        do_action( 'cnb_finish' );
+	        wp_die();
         }
 
         wp_send_json_success(array( 'message' => 'Chat functionality has been disabled successfully.' ));

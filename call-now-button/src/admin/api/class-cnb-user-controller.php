@@ -19,12 +19,8 @@ class CnbUserController {
 	public function set_storage_solution( ) {
 		do_action( 'cnb_init', __METHOD__ );
 
-		$nonce = filter_input( INPUT_POST, '_ajax_nonce', @FILTER_SANITIZE_STRING );
-		if ( ! wp_verify_nonce( $nonce, 'cnb-user' ) ) {
-			wp_send_json( new WP_Error( 'invalid_nonce', __( 'Invalid nonce', 'call-now-button' ) ) );
-			do_action( 'cnb_finish' );
-			wp_die();
-		}
+		// Verify nonce (die immediately if failed)
+		check_ajax_referer('cnb_set_user_storage_solution');
 
 		$storage_type = filter_input( INPUT_POST, 'storage_type', @FILTER_SANITIZE_STRING );
 		if ($storage_type !== 'GCS' && $storage_type !== 'R2') {

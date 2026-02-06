@@ -38,8 +38,9 @@ function cnb_email_activation(form) {
 
     // Prep data
     const data = {
-        'action': 'cnb_email_activation',
-        'admin_email': email_address
+        action: 'cnb_email_activation',
+        admin_email: email_address,
+        _ajax_nonce: cnb_email_activation_data.nonce
     }
 
     // Disable the Email and Button fields (reactivate in case of errors)

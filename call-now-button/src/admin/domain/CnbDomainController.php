@@ -194,33 +194,24 @@ class CnbDomainController {
         }
     }
 
-    public function update_timezone() {
-        global $cnb_domain;
-        do_action( 'cnb_init', __METHOD__ );
-        if ( isset( $_REQUEST['_wpnonce'] ) && ! empty( $_REQUEST['_wpnonce'] ) ) {
-            $nonce  = filter_input( INPUT_POST, '_wpnonce', @FILTER_SANITIZE_STRING );
-            $action = 'cnb_update_domain_timezone';
-            if ( wp_verify_nonce( $nonce, $action ) ) {
-                $timezone         = filter_input( INPUT_POST, 'timezone', @FILTER_SANITIZE_STRING );
-                $cnb_domain->timezone = $timezone;
-                $notifications    = array();
-                CnbAdminCloud::cnb_update_domain( $notifications, $cnb_domain );
-                wp_send_json( array(
-'success'      => true,
-                                    'domain'       => $cnb_domain,
-                                    'notification' => $notifications,
-                                    'timezone'     => esc_html( $timezone ),
-                ) );
-                do_action( 'cnb_finish' );
-                return;
-            }
-            wp_send_json( array( 'success' => false, 'reason' => 'nonce fail' ) );
-            do_action( 'cnb_finish' );
-            return;
-        }
-        wp_send_json( array( 'success' => false, 'reason' => 'no nonce' ) );
-        do_action( 'cnb_finish' );
-    }
+	public function update_timezone() {
+		global $cnb_domain;
+		do_action( 'cnb_init', __METHOD__ );
+
+		// Verify nonce (die immediately if failed)
+		check_ajax_referer( 'cnb_update_domain_timezone' );
+
+		$timezone             = filter_input( INPUT_POST, 'timezone', @FILTER_SANITIZE_STRING );
+		$cnb_domain->timezone = $timezone;
+		$notifications        = array();
+		CnbAdminCloud::cnb_update_domain( $notifications, $cnb_domain );
+		wp_send_json_success( array(
+			'domain'       => $cnb_domain,
+			'notification' => $notifications,
+			'timezone'     => esc_html( $timezone ),
+		) );
+		do_action( 'cnb_finish' );
+	}
 
     private function getDomainFromRequest() {
         $domain_controller = new CnbDomainController();

@@ -85,9 +85,9 @@ function add_onclick_cnb_user_storage_type() {
 function cnb_user_storage_type() {
     const switchingTo = jQuery(this).data('storage-type')
     const data = {
-        'action': 'cnb_set_user_storage_solution',
-        'storage_type': switchingTo,
-        '_ajax_nonce': jQuery(this).data('wpnonce'),
+        action: 'cnb_set_user_storage_solution',
+        storage_type: switchingTo,
+        _ajax_nonce: cnb_set_user_storage_solution_data.nonce,
     }
 
     jQuery(this).prop('disabled', true)
@@ -143,9 +143,9 @@ function cnb_setup_switch_to_yearly() {
 
         // Show confirmation dialog
         if (!confirm('Switch to annual billing?\n\n' +
-            '• You will be charged immediately\n' +
-            '• Remaining days from your monthly plan will be credited\n' +
-            '• Please ensure your payment method is up to date with sufficient funds to avoind service disruption\n\n' +
+            '• You will be charged immediately.\n' +
+            '• Remaining days from your monthly plan will be credited.\n' +
+            '• Please ensure your payment method is up to date with sufficient funds to avoid service disruption.\n\n' +
             'Do you want to proceed?')) {
             return;
         }
@@ -158,7 +158,8 @@ function cnb_setup_switch_to_yearly() {
         // Make AJAX call
         jQuery.post(ajaxurl, {
             action: 'cnb_upgrade_to_yearly',
-            subscriptionId: subscriptionId
+            subscriptionId: subscriptionId,
+            _ajax_nonce: cnb_upgrade_to_yearly_data.nonce,
         }, function(response) {
             if (response.success === true) {
                 $result.removeClass('notice-info').addClass('notice-success')

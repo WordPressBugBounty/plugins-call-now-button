@@ -165,13 +165,12 @@ class CacheHandler {
         return $messages;
     }
 
-    public static function exclude() {
-        $handler = new CacheHandler();
-        $handler->exclude_cloud_from_wprocket();
+    public function register_exclude_actions() {
+        $this->exclude_cloud_from_wprocket();
 
-        add_action( 'cnb_after_button_changed', array( $handler, 'clear_wprocketcache' ) );
-        add_action( 'cnb_after_button_changed', array( $handler, 'clear_wpsupercache' ) );
+        add_action( 'cnb_after_button_changed', array( $this, 'clear_wprocketcache' ) );
+        add_action( 'cnb_after_button_changed', array( $this, 'clear_wpsupercache' ) );
 
-        add_filter( 'cnb_after_save', array( $handler, 'add_warning_if_cache_plugin_active' ) );
+        add_filter( 'cnb_after_save', array( $this, 'add_warning_if_cache_plugin_active' ) );
     }
 }

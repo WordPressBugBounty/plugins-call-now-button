@@ -744,11 +744,12 @@ class CnbAppRemote {
 
 	/**
 	 * @param $ott string a one-time token to retrieve an API key
+	 * @param $wp_nonce string a nonce unique to this WordPress instance
 	 *
 	 * @return CnbApiKey|WP_Error
 	 */
-	public function get_apikey_via_ott( $ott ) {
-		$rest_endpoint = '/v1/apikey/ott/' . $ott;
+	public function get_apikey_via_ott( $ott, $wp_nonce ) {
+		$rest_endpoint = '/v1/apikey/ott/' . $ott . '/' . $wp_nonce;
 
 		return CnbApiKey::fromObject( self::cnb_remote_get( $rest_endpoint, false ) );
 	}
@@ -1040,17 +1041,20 @@ class CnbAppRemote {
 	 * }
 	 *
 	 * Version 2 is the admin-post.php version
+	 * Version 3 includes a nonceToken
 	 *
 	 * @param $admin_email string Email address of the user signing up
+	 * @param $wp_nonce string a nonce unique to this WordPress instance
 	 * @param $admin_url string URL (including the /wp-admin portion)
 	 */
-	public function create_email_activation( $admin_email, $admin_url ) {
+	public function create_email_activation( $admin_email, $wp_nonce, $admin_url ) {
 		$cnbAppRemote = new CnbAppRemote();
 		$body         = array(
-			'email'    => $admin_email,
-			'domain'   => $cnbAppRemote->cnb_clean_site_url(),
-			'adminUrl' => $admin_url,
-			'version'  => 2,
+			'email'      => $admin_email,
+			'domain'     => $cnbAppRemote->cnb_clean_site_url(),
+			'nonceToken' => $wp_nonce,
+			'adminUrl'   => $admin_url,
+			'version'    => 3,
 		);
 
 		$rest_endpoint = '/v1/user/wp';

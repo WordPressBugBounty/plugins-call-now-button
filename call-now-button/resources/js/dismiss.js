@@ -7,12 +7,11 @@ function cnb_dismissables_listener() {
         function() {
         const $notice = jQuery(this).parent('.is-dismissible');
         const dismiss_option = $notice.attr('data-dismiss-option');
-        const nonce = $notice.attr('data-dismiss-nonce');
         if ( dismiss_option ) {
             const data = {
-                'action': 'cnb_hide_notice',
-                '_wpnonce': nonce,
-                'dismiss_option': dismiss_option
+                action: 'cnb_hide_notice',
+                dismiss_option: dismiss_option,
+                _ajax_nonce: cnb_hide_notice_data.nonce,
             };
 
             jQuery.post(ajaxurl, data)

@@ -52,11 +52,13 @@ class CnbChatController {
 	public function create_chat_token_ajax() {
 		do_action( 'cnb_init', __METHOD__ );
 
+		// Verify nonce (die immediately if failed)
+		check_ajax_referer('cnb_create_chat_token');
+
 		$chat_api = new CnbMagicTokenController();
 		$token = $chat_api->create_chat_token();
 
-		wp_send_json( array(
-			'status'  => 'success',
+		wp_send_json_success( array(
 			'token' => $token,
 		) );
 

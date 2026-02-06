@@ -160,8 +160,9 @@ class CnbDomainViewEdit {
                 <td>
             <?php
             if ( ! empty( $domain->expires ) ) { ?>
+                <input type="hidden" name="domain[renew]" value="0" />
                 <input id="cnb-renew" class="cnb_toggle_checkbox" name="domain[renew]" type="checkbox"
-                            value="true" <?php checked( true, $domain->renew ); ?> />
+                            value="1" <?php checked( true, $domain->renew ); ?> />
                 <label for="cnb-renew" class="cnb_toggle_label">Toggle</label>
                 <span data-cnb_toggle_state_label="cnb-renew" class="cnb_toggle_state cnb_toggle_false">(Off)</span>
                 <span data-cnb_toggle_state_label="cnb-renew" class="cnb_toggle_state cnb_toggle_true">On</span>

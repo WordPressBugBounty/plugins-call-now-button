@@ -4,7 +4,8 @@
  */
 function cnb_create_chat() {
     const data = {
-        'action': 'cnb_create_chat_token'
+        action: 'cnb_create_chat_token',
+        _ajax_nonce: cnb_create_chat_token_data.nonce
     }
 
     jQuery('.cnb-create-chat-token')
@@ -12,9 +13,10 @@ function cnb_create_chat() {
         .text('Creating your token...')
 
     jQuery.get(ajaxurl, data, function (response) {
+        if (!response.success) return
         jQuery('.cnb-chat-token-created').removeClass('hidden')
         jQuery('.cnb-create-chat-token').text('Token created')
-        jQuery('.cnb-chat-token-created-token').text(JSON.stringify(response.token))
+        jQuery('.cnb-chat-token-created-token').text(JSON.stringify(response.data.token))
     })
     return false
 }

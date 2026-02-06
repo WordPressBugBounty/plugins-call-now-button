@@ -24,14 +24,10 @@ class CnbActionController {
      * @return CnbAction|WP_Error|null
      */
     function deleteWithId( $action_id, &$cnb_cloud_notifications = array() ) {
-        if ( ( new CnbUtils() )->cnb_check_ajax_referer( 'cnb_delete_action' ) ) {
-            $action     = new CnbAction();
-            $action->id = $action_id;
+        $action     = new CnbAction();
+        $action->id = $action_id;
 
-            return CnbAdminCloud::cnb_delete_action( $cnb_cloud_notifications, $action );
-        }
-
-        return null;
+        return CnbAdminCloud::cnb_delete_action( $cnb_cloud_notifications, $action );
     }
 
     /**
@@ -41,6 +37,10 @@ class CnbActionController {
      */
     public function delete_ajax() {
         do_action( 'cnb_init', __METHOD__ );
+
+	    // Verify nonce (die immediately if failed)
+	    check_ajax_referer('cnb_delete_action');
+
         $cnb_utils  = new CnbUtils();
         $cnb_remote = new CnbAppRemote();
         // Action ID

@@ -214,10 +214,10 @@ function cnb_delete_action() {
 		const id = jQuery(this).data('id')
 		const bid = jQuery(this).data('bid')
 		const data = {
-			'action': 'cnb_delete_action',
-			'id': id,
-			'bid': bid,
-			'_ajax_nonce': jQuery(this).data('wpnonce'),
+			action: 'cnb_delete_action',
+			id: id,
+			bid: bid,
+			_ajax_nonce: jQuery(this).data('wpnonce'),
 		}
 
 		// Send remove request
@@ -355,7 +355,8 @@ function cnb_setup_pricing() {
 	// If there are elements, find the pricing (ajax call)
 	if (elements.length) {
 		const data = {
-			'action': 'cnb_get_plans',
+			action: 'cnb_get_plans',
+            _ajax_nonce: cnb_get_plans_data.nonce,
 		}
 		jQuery.post(ajaxurl, data)
 			.done((result) => {

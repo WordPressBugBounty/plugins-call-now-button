@@ -36,6 +36,8 @@ class RendererFactory {
      *
      * This function should be scheduled on the front-end (only), usually via the `wp_loaded` hook.
      *
+     * This call can be done at any user/capability level.
+     *
      * @return void
      */
     public static function register() {

@@ -53,7 +53,7 @@ function cnb_enable_chat_action() {
             type: 'POST',
             data: {
                 action: 'cnb_enable_chat',
-                nonce: cnb_chat_marketing.nonce
+                _ajax_nonce: cnb_chat_marketing_data.enable_chat_nonce
             },
             success: function(response) {
                 if (response.success) {
@@ -66,7 +66,7 @@ function cnb_enable_chat_action() {
 
                     // Redirect to chat page after 2 seconds
                     setTimeout(function() {
-                        window.location.href = cnb_chat_marketing.chat_url;
+                        window.location.href = cnb_chat_marketing_data.chat_url;
                     }, 2000);
                 } else {
                     // Show error message
@@ -104,7 +104,6 @@ function cnb_disable_chat_action() {
 
         const $button = jQuery(this);
         const $result = $button.siblings('.cnb-disable-chat-result');
-        const nonce = $button.data('wpnonce');
 
         // Disable button while processing
         $button.prop('disabled', true);
@@ -123,7 +122,7 @@ function cnb_disable_chat_action() {
             type: 'POST',
             data: {
                 action: 'cnb_disable_chat',
-                nonce: nonce
+                _ajax_nonce: cnb_chat_marketing_data.disable_chat_nonce
             },
             success: function(response) {
                 if (response.success) {

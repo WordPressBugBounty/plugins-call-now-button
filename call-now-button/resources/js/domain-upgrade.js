@@ -52,9 +52,10 @@ function cnb_get_checkout(planId) {
     cnb_stripe_show_message('warning', 'Processing your request, please wait...')
 
     const data = {
-        'action': 'cnb_get_checkout',
-        'planId': planId,
-        'domainId': jQuery('#cnb_domain_id').val()
+        action: 'cnb_get_checkout',
+        planId: planId,
+        domainId: jQuery('#cnb_domain_id').val(),
+        _ajax_nonce: cnb_get_checkout_data.nonce,
     };
 
     jQuery.post(ajaxurl, data, function (response) {
@@ -73,9 +74,10 @@ function cnb_get_agency_checkout(planId, currency) {
     cnb_stripe_show_message('warning', 'Processing your agency account request, please wait...')
 
     const data = {
-        'action': 'cnb_get_agency_checkout',
-        'planId': planId,
-        'currency': currency,
+        action: 'cnb_get_agency_checkout',
+        planId: planId,
+        currency: currency,
+        _ajax_nonce: cnb_get_agency_checkout_data.nonce
     };
 
     jQuery.post(ajaxurl, data, function (response) {

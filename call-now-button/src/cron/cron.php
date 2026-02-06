@@ -35,6 +35,8 @@ class Cron {
 	 * This pulls the information from the remote API and store it in a transient.
 	 * All the "heavy lifting" is done by <code>CnbAppRemote</code> (the pulling *and* storing).
 	 *
+	 * This call can be done at any user/capability level.
+	 *
 	 * @return void
 	 */
 	public function do_hook() {

@@ -176,19 +176,6 @@ class CnbUtils {
         return $timestamp;
     }
 
-    /**
-     * Same as check_ajax_referer, but does not die() by default
-     *
-     * @param string $action
-     * @param bool $query_arg
-     * @param bool $die
-     *
-     * @return false|int|mixed|void
-     */
-    function cnb_check_ajax_referer( $action, $query_arg = false, $die = false ) {
-        return check_ajax_referer( $action, $query_arg, $die );
-    }
-
     function get_cnb_domain_upgrade() {
         global $cnb_domain;
         if ( $cnb_domain && ! ( $cnb_domain instanceof WP_Error ) ) {

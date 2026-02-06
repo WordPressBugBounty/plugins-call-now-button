@@ -5,7 +5,7 @@ Tags: call button, click to call, convert, call now button, contact button
 Requires at least: 4.1
 Requires PHP: 5.4
 Tested up to: 6.9
-Stable tag: 1.5.3
+Stable tag: 1.5.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -138,6 +138,12 @@ Yes, you can connect the plugin to our cloud service NowButtons.com. That alread
 
 
 == Changelog ==
+= 1.5.5 =
+* Additional security improvements
+
+= 1.5.4 =
+* Small bugfixes and improvements
+
 = 1.5.3 =
 * Small bugfixes and improvements to the CI
 * Ready for WordPress 6.9

@@ -41,33 +41,26 @@ class CnbAdminNotices {
      *
      * @return void
      */
-    public function hide_notice() {
-        do_action( 'cnb_init', __METHOD__ );
-        $nonce = filter_input( INPUT_POST, '_wpnonce', @FILTER_SANITIZE_STRING );
-        $action         = 'cnb_hide_notice';
-        $nonce_verified = wp_verify_nonce( $nonce, $action );
-        if ( $nonce_verified ) {
-            $dismiss_option = filter_input( INPUT_POST, 'dismiss_option', @FILTER_SANITIZE_STRING );
-            if ( is_string( $dismiss_option ) && ! empty( $dismiss_option ) ) {
-                update_option( CNB_SLUG . '_dismissed_' . $dismiss_option, true );
-                // For example, do_action(cnb_update_' . CNB_VERSION), which calls the Settings Controller (update_version)
-                do_action( $dismiss_option );
-                do_action( 'cnb_finish' );
-                wp_die(
-                    esc_html( 'Dismissed notice: ' . $dismiss_option ), esc_html__( 'Dismissed notice' ),
-                    array(
-                        'response' => 200,
-                    )
-                );
-            }
-        } else {
-            do_action( 'cnb_finish' );
-            wp_die( esc_html__( 'Invalid nonce specified' ), esc_html__( 'Error' ), array(
-                'response'  => 403,
-                'back_link' => true,
-            ) );
-        }
-    }
+	public function hide_notice() {
+		do_action( 'cnb_init', __METHOD__ );
+
+		// Verify nonce (die immediately if failed)
+		check_ajax_referer( 'cnb_hide_notice' );
+
+		$dismiss_option = filter_input( INPUT_POST, 'dismiss_option', @FILTER_SANITIZE_STRING );
+		if ( is_string( $dismiss_option ) && ! empty( $dismiss_option ) ) {
+			update_option( CNB_SLUG . '_dismissed_' . $dismiss_option, true );
+			// For example, do_action(cnb_update_' . CNB_VERSION), which calls the Settings Controller (update_version)
+			do_action( $dismiss_option );
+			do_action( 'cnb_finish' );
+			wp_die(
+				esc_html( 'Dismissed notice: ' . $dismiss_option ), esc_html__( 'Dismissed notice' ),
+				array(
+					'response' => 200,
+				)
+			);
+		}
+	}
 
     /**
      * @param $notice CnbNotice
@@ -94,8 +87,7 @@ class CnbAdminNotices {
                 '"' .
                  // phpcs:ignore WordPress.Security
                 ( $notice->dismissable === true && $notice->dismiss_option
-                    ? ' data-dismiss-option="' . esc_attr( $notice->dismiss_option ) . '"' .
-                        ' data-dismiss-nonce="' . esc_attr(wp_create_nonce('cnb_hide_notice')) . '"'
+                    ? ' data-dismiss-option="' . esc_attr( $notice->dismiss_option ) . '"'
                     : ''
                 ) . '>';
             // phpcs:ignore WordPress.Security

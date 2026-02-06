@@ -13,7 +13,7 @@ use cnb\admin\domain\CnbDomainCache;
 class CnbDashboardWidget {
     private $dashboard_cache;
 
-    public function __construct() {
+    public function register_dashboard() {
 		$settings = new CnbDashboardSettings();
 		if ( ! $settings->is_dashboard_enabled() ) {
 			return;
