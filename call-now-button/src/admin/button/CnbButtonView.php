@@ -294,7 +294,35 @@ class CnbButtonView {
                         $upgrade_url
                     );
                 }
-            }            
+            }
+            if ( $cnb_domain !== null && ! ( $cnb_domain instanceof WP_Error ) && $cnb_domain->type === 'PRO' ) {
+                ( new CnbAdminFunctions() )->cnb_promobox(
+                    'Support',
+                    'blue',
+                    'Need Some Guidance?',
+                    '<div class="cnb-promobox-feature">
+                        <div class="cnb-promobox-feature-check">✓</div>
+                        <span>Step-by-step tutorials</span>
+                    </div>
+                    <div class="cnb-promobox-feature">
+                        <div class="cnb-promobox-feature-check">✓</div>
+                        <span>Video walkthroughs</span>
+                    </div>
+                    <div class="cnb-promobox-feature">
+                        <div class="cnb-promobox-feature-check">✓</div>
+                        <span>FAQ section</span>
+                    </div>
+                    <div class="cnb-promobox-feature">
+                        <div class="cnb-promobox-feature-check">✓</div>
+                        <span>Contact options</span>
+                    </div>',
+                    '🛟',
+                    '',
+                    '',
+                    'Open Help Center',
+                    ( new CnbUtils() )->get_support_url( '', 'promobox-need-help', 'Help Center' )
+                );
+            }
             echo '</div>';
         }
         echo '<br class="clear">';

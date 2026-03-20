@@ -266,7 +266,7 @@ class ModernRenderer extends Renderer {
 
             if ( ! $cnb_hide_icon ) {
                 $altAttr = $cnb_has_text ? 'alt=""' : 'alt="Call Now Button"';
-                $result .= sprintf( '<img ' . $altAttr . ' src="data:image/svg+xml;base64,%1$s" width="40">',
+                $result .= sprintf( '<img ' . $altAttr . ' src="data:image/svg+xml;base64,%1$s" width="40" class="no-lazy skip-lazy" data-skip-lazy loading="eager">',
                     esc_attr( $svg ) );
             }
             

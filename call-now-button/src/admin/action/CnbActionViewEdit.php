@@ -222,6 +222,7 @@ class CnbActionViewEdit {
                                 href="https://www.intercom.com/help/en/articles/3539-where-can-i-find-my-workspace-id-app-id?utm_source=callnowbutton&utm_medium=callnowbutton-plugin"
                                 target="_blank">this Intercom article</a> on how to find your app ID.</p>
                     <p class="description cnb-action-properties cnb-action-properties-VIBER cnb-action-properties-viber-pa-chat">For personal chat change <i>Chat type</i> below. </p>
+                    <?php do_action( 'cnb_content_window_form_picker' ); // Hooked by NowButtons Forms Add-on for WordPress ?>
                 </td>
             </tr>
             <tr class="cnb-action-properties cnb-action-properties-intl-input">

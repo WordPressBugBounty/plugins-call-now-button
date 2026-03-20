@@ -161,6 +161,14 @@ Other styling
     content: "\f147"; /* \f147 = yes (since 4.1), \f12a = yes-alt (since 5.2), \f15e = saved (since 5.5) */
 }
 
+.form-table td div.description {
+    font-size: 12px;
+    margin: 2px 0 5px;
+    line-height: 1.5;
+    color: #646970;
+    max-width: 650px;
+}
+
 .form-table td p.description {
     max-width: 650px;
 }

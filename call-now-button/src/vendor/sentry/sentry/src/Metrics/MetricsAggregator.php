@@ -12,6 +12,7 @@ use Sentry\Metrics\Types\DistributionMetric;
 use Sentry\Metrics\Types\GaugeMetric;
 use Sentry\Metrics\Types\Metric;
 use Sentry\SentrySdk;
+use Sentry\State\HubInterface;
 use Sentry\State\Scope;
 use Sentry\Unit;
 use Sentry\Util\RingBuffer;
@@ -79,7 +80,7 @@ final class MetricsAggregator
             ];
 
             if ($options->shouldSendDefaultPii()) {
-                $hub->configureScope(function (Scope $scope) use (&$defaultAttributes) {
+                $hub->configureScope(static function (Scope $scope) use (&$defaultAttributes) {
                     $user = $scope->getUser();
                     if ($user !== null) {
                         if ($user->getId() !== null) {
@@ -111,7 +112,7 @@ final class MetricsAggregator
             $spanId = $span->getSpanId();
             $traceId = $span->getTraceId();
         } else {
-            $hub->configureScope(function (Scope $scope) use (&$traceId, &$spanId) {
+            $hub->configureScope(static function (Scope $scope) use (&$traceId, &$spanId) {
                 $propagationContext = $scope->getPropagationContext();
                 $traceId = $propagationContext->getTraceId();
                 $spanId = $propagationContext->getSpanId();
@@ -134,13 +135,13 @@ final class MetricsAggregator
         $this->metrics->push($metric);
     }
 
-    public function flush(): ?EventId
+    public function flush(?HubInterface $hub = null): ?EventId
     {
         if ($this->metrics->isEmpty()) {
             return null;
         }
 
-        $hub = SentrySdk::getCurrentHub();
+        $hub = $hub ?? SentrySdk::getCurrentHub();
         $event = Event::createMetrics()->setMetrics($this->metrics->drain());
 
         return $hub->captureEvent($event);

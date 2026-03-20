@@ -1143,6 +1143,37 @@ final class Options
     }
 
     /**
+     * Returns whether a shared curl handle should be used or not.
+     *
+     * For PHP 8.5 and above, this will use the persistent curl handle. For previous PHP versions, it will use the
+     * regular share handle.
+     */
+    public function isShareHandleEnabled(): bool
+    {
+        /**
+         * @var bool $shareHandleEnabled
+         */
+        $shareHandleEnabled = $this->options['http_enable_curl_share_handle'];
+
+        return $shareHandleEnabled;
+    }
+
+    /**
+     * Sets whether the persistent curl handle should be used or not.
+     *
+     * For PHP 8.5 and above, this will use the persistent curl handle. For previous PHP versions, it will use the
+     * regular share handle.
+     */
+    public function setEnableShareHandle(bool $enabled): self
+    {
+        $options = array_merge($this->options, ['http_enable_curl_share_handle' => $enabled]);
+
+        $this->options = $this->resolver->resolve($options);
+
+        return $this;
+    }
+
+    /**
      * Gets whether the silenced errors should be captured or not.
      *
      * @return bool If true, errors silenced through the @ operator will be reported,
@@ -1341,6 +1372,7 @@ final class Options
             'http_ssl_verify_peer' => true,
             'http_ssl_native_ca' => false,
             'http_compression' => true,
+            'http_enable_curl_share_handle' => true,
             'capture_silenced_errors' => false,
             'max_request_body_size' => 'medium',
             'class_serializers' => [],
@@ -1392,6 +1424,7 @@ final class Options
         $resolver->setAllowedTypes('http_ssl_verify_peer', 'bool');
         $resolver->setAllowedTypes('http_ssl_native_ca', 'bool');
         $resolver->setAllowedTypes('http_compression', 'bool');
+        $resolver->setAllowedTypes('http_enable_curl_share_handle', 'bool');
         $resolver->setAllowedTypes('capture_silenced_errors', 'bool');
         $resolver->setAllowedTypes('max_request_body_size', 'string');
         $resolver->setAllowedTypes('class_serializers', 'array');
@@ -1408,6 +1441,7 @@ final class Options
             return array_map([$this, 'normalizeAbsolutePath'], $value);
         });
 
+        $resolver->setNormalizer('spotlight_url', \Closure::fromCallable([$this, 'normalizeSpotlightUrl']));
         $resolver->setNormalizer('spotlight', \Closure::fromCallable([$this, 'normalizeBooleanOrUrl']));
 
         $resolver->setNormalizer('in_app_exclude', function (SymfonyOptions $options, array $value) {
@@ -1445,10 +1479,22 @@ final class Options
         }
 
         if (filter_var($booleanOrUrl, \FILTER_VALIDATE_URL)) {
-            return $booleanOrUrl;
+            return $this->normalizeSpotlightUrl($options, $booleanOrUrl);
         }
 
         return filter_var($booleanOrUrl, \FILTER_VALIDATE_BOOLEAN);
+    }
+
+    /**
+     * Normalizes the spotlight URL by removing the `/stream` at the end if present.
+     */
+    private function normalizeSpotlightUrl(SymfonyOptions $options, string $url): string
+    {
+        if (substr_compare($url, '/stream', -7, 7) === 0) {
+            return substr($url, 0, -7);
+        }
+
+        return $url;
     }
 
     /**

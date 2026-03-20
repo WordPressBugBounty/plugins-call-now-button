@@ -5,7 +5,7 @@ Tags: call button, click to call, convert, call now button, contact button
 Requires at least: 6.1
 Requires PHP: 7.4
 Tested up to: 6.9
-Stable tag: 2.0.0
+Stable tag: 2.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -139,6 +139,10 @@ Yes, you can connect the plugin to our cloud service NowButtons.com. That alread
 7. The Multibutton allows up to 10 actions (a paid feature)
 
 == Changelog ==
+= 2.0.1 =
+* Prevent icon from being lazy loaded
+* Prepare contact form addon for Content Window
+
 = 2.0.0 =
 * Raised PHP compatibility from 5.4 to 7.4
 * Raised WordPress compatibility from 4.1 to 6.1
