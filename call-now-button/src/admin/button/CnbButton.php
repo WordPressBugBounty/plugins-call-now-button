@@ -195,7 +195,7 @@ class CnbButton implements JsonSerializable {
         // Convert "stdClass" actions into Action classes
         $button->actions = CnbAction::fromObjects( $button->actions );
 
-	    self::validate( $button );
+        self::validate( $button );
 
         return $button;
     }
@@ -235,8 +235,8 @@ class CnbButton implements JsonSerializable {
         );
     }
 
-	/** @noinspection PhpLanguageLevelInspection */
-	#[\ReturnTypeWillChange]
+    /** @noinspection PhpLanguageLevelInspection */
+    #[\ReturnTypeWillChange]
     public function jsonSerialize() {
         return $this->toArray();
     }
@@ -267,13 +267,13 @@ class CnbButtonOptions implements JsonSerializable {
      * @var CnbScrollOptions
      */
     public $scroll;
-	/**
-	 * Free text field for additional CSS Classes
-	 * PRO only
-	 *
-	 * @var string
-	 */
-	public $cssClasses;
+    /**
+     * Free text field for additional CSS Classes
+     * PRO only
+     *
+     * @var string
+     */
+    public $cssClasses;
 
     public static function getAnimationTypes() {
         return array(
@@ -294,7 +294,7 @@ class CnbButtonOptions implements JsonSerializable {
             'iconColor'           => $this->iconColor,
             'displayMode'         => $this->displayMode,
             'scroll'              => $this->scroll,
-	        'cssClasses'          => $this->cssClasses,
+            'cssClasses'          => $this->cssClasses,
         );
     }
 
@@ -310,13 +310,13 @@ class CnbButtonOptions implements JsonSerializable {
         if ( $scrollOptions != null ) {
             $options->scroll = CnbScrollOptions::fromObject( $scrollOptions );
         }
-	    $options->cssClasses          = CnbUtils::getPropertyOrNull( $object, 'cssClasses' );
+        $options->cssClasses          = CnbUtils::getPropertyOrNull( $object, 'cssClasses' );
 
         return $options;
     }
 
-	/** @noinspection PhpLanguageLevelInspection */
-	#[\ReturnTypeWillChange]
+    /** @noinspection PhpLanguageLevelInspection */
+    #[\ReturnTypeWillChange]
     public function jsonSerialize() {
         return $this->toArray();
     }
@@ -352,7 +352,7 @@ class CnbMultiButtonOptions implements JsonSerializable {
     public $labelBackgroundColorClose;
     public $labelTextColorClose;
 
-	public $defaultState;
+    public $defaultState;
 
     public function toArray() {
         return array(
@@ -382,7 +382,7 @@ class CnbMultiButtonOptions implements JsonSerializable {
             'labelBackgroundColorClose' => $this->labelBackgroundColorClose, // PRO only
             'labelTextColorClose'       => $this->labelTextColorClose, // PRO only,
 
-	        'defaultState'              => $this->defaultState, // PRO only,
+            'defaultState'              => $this->defaultState, // PRO only,
         );
     }
 
@@ -414,19 +414,19 @@ class CnbMultiButtonOptions implements JsonSerializable {
         $options->labelBackgroundColorClose = CnbUtils::getPropertyOrNull( $object, 'labelBackgroundColorClose' );
         $options->labelTextColorClose = CnbUtils::getPropertyOrNull( $object, 'labelTextColorClose' );
 
-		$options->defaultState = CnbUtils::getPropertyOrNull( $object, 'defaultState' );
+        $options->defaultState = CnbUtils::getPropertyOrNull( $object, 'defaultState' );
 
         return $options;
     }
 
-	public static function getDefaultStates() {
-		return array(
-			'CLOSED'   => 'Closed (default)',
-			'EXPANDED' => 'Expanded',
-		);
-	}
-	/** @noinspection PhpLanguageLevelInspection */
-	#[\ReturnTypeWillChange]
+    public static function getDefaultStates() {
+        return array(
+            'CLOSED'   => 'Closed (default)',
+            'EXPANDED' => 'Expanded',
+        );
+    }
+    /** @noinspection PhpLanguageLevelInspection */
+    #[\ReturnTypeWillChange]
     public function jsonSerialize() {
         return $this->toArray();
     }
@@ -469,8 +469,8 @@ class CnbScrollOptions implements JsonSerializable {
         return $options;
     }
 
-	/** @noinspection PhpLanguageLevelInspection */
-	#[\ReturnTypeWillChange]
+    /** @noinspection PhpLanguageLevelInspection */
+    #[\ReturnTypeWillChange]
     public function jsonSerialize() {
         return $this->toArray();
     }

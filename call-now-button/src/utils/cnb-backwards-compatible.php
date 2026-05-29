@@ -84,9 +84,9 @@ if ( ! function_exists( 'wp_timezone_string' ) ) {
 // https://www.php.net/manual/en/function.str-contains.php#125977
 // based on original work from the PHP Laravel framework
 if (!function_exists('str_contains')) {
-	function str_contains($haystack, $needle) {
-		return $needle !== '' && mb_strpos($haystack, $needle, 0, 'UTF-8') !== false;
-	}
+    function str_contains($haystack, $needle) {
+        return $needle !== '' && mb_strpos($haystack, $needle, 0, 'UTF-8') !== false;
+    }
 }
 
 /**
@@ -98,24 +98,24 @@ if (!function_exists('str_contains')) {
  * @return string formatted in the proper language format (6.03 $, or €6,03, etc)
  */
 function cnb_get_formatted_amount( $amount, $currency ) {
-	$locale = get_locale();
-	if ( class_exists( 'NumberFormatter' ) && $currency !== null ) {
-		$number_formatter = new NumberFormatter( $locale, NumberFormatter::CURRENCY );
+    $locale = get_locale();
+    if ( class_exists( 'NumberFormatter' ) && $currency !== null ) {
+        $number_formatter = new NumberFormatter( $locale, NumberFormatter::CURRENCY );
 
-		return $number_formatter->formatCurrency( $amount, $currency );
-	}
+        return $number_formatter->formatCurrency( $amount, $currency );
+    }
 
-	return _cnb_convert_currency_to_symbol( $currency ) . ' ' . $amount;
+    return _cnb_convert_currency_to_symbol( $currency ) . ' ' . $amount;
 }
 
 function _cnb_convert_currency_to_symbol( $currency ) {
-	if ($currency === null) return $currency;
-	if ( strtolower( $currency ) == 'eur' ) {
-		return '€';
-	}
-	if ( strtolower( $currency ) == 'usd' ) {
-		return '$';
-	}
+    if ($currency === null) return $currency;
+    if ( strtolower( $currency ) == 'eur' ) {
+        return '€';
+    }
+    if ( strtolower( $currency ) == 'usd' ) {
+        return '$';
+    }
 
-	return $currency;
+    return $currency;
 }

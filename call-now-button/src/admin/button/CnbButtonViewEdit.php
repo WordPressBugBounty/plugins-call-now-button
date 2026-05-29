@@ -23,12 +23,12 @@ class CnbButtonViewEdit {
             $type = $button->type;
             $name = $button->name;
         } else {
-	        $name = 'New Button';
-	        $type = strtoupper( filter_input( INPUT_GET, 'type', @FILTER_SANITIZE_STRING ) );
+            $name = 'New Button';
+            $type = strtoupper( sanitize_text_field( filter_input( INPUT_GET, 'type' ) ) );
         }
 
         // In case no type or Button could be found, bail early
-	    if ( ! $type ) return;
+        if ( ! $type ) return;
 
         $adminFunctions = new CnbAdminFunctions();
         $buttonTypes    = $adminFunctions->cnb_get_button_types();
@@ -93,7 +93,7 @@ class CnbButtonViewEdit {
         wp_enqueue_script( CNB_SLUG . '-action-edit' );
         wp_enqueue_script( CNB_SLUG . '-condition-edit' );
         wp_enqueue_style( CNB_SLUG . '-client' );
-	    (new Preview())->register_preview_data();
+        (new Preview())->register_preview_data();
         ?>
         <form class="cnb-container <?php if ( ! $hide_on_modal ) { ?>cnb-validation<?php } ?>"
                 action="<?php echo esc_url( admin_url( 'admin-post.php' ) ) ?>" method="post">
@@ -130,16 +130,16 @@ class CnbButtonViewEdit {
 
         $cnb_remote = new CnbAppRemote();
         $button    = new CnbButton();
-        $button->id = filter_input( INPUT_GET, 'id', @FILTER_SANITIZE_STRING );
+        $button->id = sanitize_text_field( filter_input( INPUT_GET, 'id' ) );
 
         if ( strlen( $button->id ) > 0 && $button->id !== 'new' ) {
             // Only set the Button is we could actually retrieve it
             $button_new = $cnb_remote->get_button( $button->id );
             if ($button_new) {
-	            $button = $button_new;
+                $button = $button_new;
             }
         } elseif ( $button->id === 'new' ) {
-            $button->type   = strtoupper( filter_input( INPUT_GET, 'type', @FILTER_SANITIZE_STRING ) );
+            $button->type   = strtoupper( sanitize_text_field( filter_input( INPUT_GET, 'type' ) ) );
             $button->domain = $cnb_domain;
         }
         if ( is_wp_error( $button ) || $button->actions === null ) {
@@ -171,7 +171,7 @@ class CnbButtonViewEdit {
         // END Preview date picker details
 
         $notices = ValidationMessage::get_validation_notices($button);
-	    do_action('cnb_validation_notices', $notices, true);
+        do_action('cnb_validation_notices', $notices, true);
         ?>
 
         <div class="cnb-two-column-section-preview">

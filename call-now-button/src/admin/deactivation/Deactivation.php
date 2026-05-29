@@ -16,6 +16,6 @@ class Deactivation {
      */
     static public function on_deactivation() {
         $cnb_cron = new Cron();
-		$cnb_cron->unregister_hook();
+        $cnb_cron->unregister_hook();
     }
 }

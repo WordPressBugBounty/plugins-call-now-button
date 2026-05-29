@@ -132,10 +132,10 @@ class CnbDomainViewUpgradeFinished {
         }
 
         // This is in case this page is called without a Notice (which happens on a direct call, but not as a redirect from the Upgrade page itself)
-	    if($domain->type == 'PRO') {
-		    echo '<p>Your domain <strong>' . esc_html( $domain->name ) . '</strong> ';
-		    echo 'is already on the <code>' . esc_html( $domain->type ) . '</code> cloud plan.</p>';
-	    }
+        if($domain->type == 'PRO') {
+            echo '<p>Your domain <strong>' . esc_html( $domain->name ) . '</strong> ';
+            echo 'is already on the <code>' . esc_html( $domain->type ) . '</code> cloud plan.</p>';
+        }
     }
 
     /**

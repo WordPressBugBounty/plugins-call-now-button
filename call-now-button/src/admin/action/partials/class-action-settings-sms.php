@@ -8,22 +8,22 @@ defined( 'ABSPATH' ) || die( '-1' );
 use cnb\utils\CnbUtils;
 
 class ActionSettingsSms {
-	/**
-	 * @param CnbAction $action
-	 *
-	 * @return void
-	 */
-	function render( $action ) {
-		$this->render_options( $action );
-	}
+    /**
+     * @param CnbAction $action
+     *
+     * @return void
+     */
+    function render( $action ) {
+        $this->render_options( $action );
+    }
 
 
-	/**
-	 * @param CnbAction $action
-	 *
-	 * @return void
-	 */
-	function render_options( $action ) {
+    /**
+     * @param CnbAction $action
+     *
+     * @return void
+     */
+    function render_options( $action ) {
         $cnb_utils = new CnbUtils();
         ?>
         <tr class="cnb-action-properties cnb-action-properties-SMS">
@@ -41,6 +41,6 @@ class ActionSettingsSms {
                         } ?></textarea>
             </td>
         </tr>
-		<?php
-	}
+        <?php
+    }
 }

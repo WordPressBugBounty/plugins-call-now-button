@@ -14,7 +14,7 @@ class CnbDomainCache {
      * @var string The name of the transient that stores the CnbDomain data.
      */
     private $cache_name = 'cnb_domain_cache';
-	private static $expiration = DAY_IN_SECONDS;
+    private static $expiration = DAY_IN_SECONDS;
 
     /**
      * Stores the CnbDomain to a local (transient) store.

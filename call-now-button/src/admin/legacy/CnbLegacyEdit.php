@@ -159,7 +159,7 @@ class CnbLegacyEdit {
         $adminFunctions = new CnbAdminFunctions();
         $cnb_utils      = new CnbUtils();
 
-	    $display_mode = isset( $cnb_options['displaymode'] ) ? $cnb_options['displaymode'] : 'MOBILE_ONLY';
+        $display_mode = isset( $cnb_options['displaymode'] ) ? $cnb_options['displaymode'] : 'MOBILE_ONLY';
 
         ?>
         <div class="cnb-two-column-section">
@@ -416,25 +416,25 @@ class CnbLegacyEdit {
                             <th>Set days</th>
                             <td>
                                 <input disabled class="cnb_day_selector" id="cnb_weekday_0" type="checkbox">
-								<label title="Monday" class="cnb_day_selector" for="cnb_weekday_0">Mon</label>
+                                <label title="Monday" class="cnb_day_selector" for="cnb_weekday_0">Mon</label>
 
                                 <input disabled class="cnb_day_selector" id="cnb_weekday_1" type="checkbox">
-								<label title="Tuesday" class="cnb_day_selector" for="cnb_weekday_1">Tue</label>
+                                <label title="Tuesday" class="cnb_day_selector" for="cnb_weekday_1">Tue</label>
 
                                 <input disabled class="cnb_day_selector" id="cnb_weekday_2" type="checkbox">
-								<label title="Wednesday" class="cnb_day_selector" for="cnb_weekday_2">Wed</label>
+                                <label title="Wednesday" class="cnb_day_selector" for="cnb_weekday_2">Wed</label>
 
                                 <input disabled class="cnb_day_selector" id="cnb_weekday_3" type="checkbox">
-								<label title="Thursday" class="cnb_day_selector" for="cnb_weekday_3">Thu</label>
+                                <label title="Thursday" class="cnb_day_selector" for="cnb_weekday_3">Thu</label>
 
                                 <input disabled class="cnb_day_selector" id="cnb_weekday_4" type="checkbox">
-								<label title="Friday" class="cnb_day_selector" for="cnb_weekday_4">Fri</label>
+                                <label title="Friday" class="cnb_day_selector" for="cnb_weekday_4">Fri</label>
 
                                 <input disabled class="cnb_day_selector" id="cnb_weekday_5" type="checkbox">
-								<label title="Saturday" class="cnb_day_selector" for="cnb_weekday_5">Sat</label>
+                                <label title="Saturday" class="cnb_day_selector" for="cnb_weekday_5">Sat</label>
 
                                 <input disabled class="cnb_day_selector" id="cnb_weekday_6" type="checkbox">
-								<label title="Sunday" class="cnb_day_selector" for="cnb_weekday_6">Sun</label>
+                                <label title="Sunday" class="cnb_day_selector" for="cnb_weekday_6">Sun</label>
                             </td>
                             </tr>
                             <tr class="cnb_disabled_feature">

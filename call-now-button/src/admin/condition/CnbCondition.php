@@ -95,8 +95,8 @@ class CnbCondition implements JsonSerializable {
         );
     }
 
-	/** @noinspection PhpLanguageLevelInspection */
-	#[\ReturnTypeWillChange]
+    /** @noinspection PhpLanguageLevelInspection */
+    #[\ReturnTypeWillChange]
     public function jsonSerialize() {
         return $this->toArray();
     }

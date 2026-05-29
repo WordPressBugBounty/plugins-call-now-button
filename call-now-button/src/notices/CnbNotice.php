@@ -26,24 +26,24 @@ class CnbNotice {
      * @var string
      */
     public $dismiss_option;
-	/**
-	 * @var string
-	 * @since  v1.2.1
-	 */
-	public $name;
+    /**
+     * @var string
+     * @since  v1.2.1
+     */
+    public $name;
 
-	/**
-	 * @param string $type one of info, success, warning, error
-	 * @param string $message
-	 * @param boolean $dismissable
-	 * @param boolean $dismiss_option
-	 * @param string $name
-	 */
+    /**
+     * @param string $type one of info, success, warning, error
+     * @param string $message
+     * @param boolean $dismissable
+     * @param boolean $dismiss_option
+     * @param string $name
+     */
     public function __construct( $type = null, $message = null, $dismissable = false, $dismiss_option = false, $name = null ) {
         $this->type           = $type;
         $this->message        = $message;
         $this->dismissable    = $dismissable;
         $this->dismiss_option = $dismiss_option;
-		$this->name           = $name;
+        $this->name           = $name;
     }
 }

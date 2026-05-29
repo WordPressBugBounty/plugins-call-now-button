@@ -24,12 +24,12 @@ class CnbHeader {
 
         do_action( 'cnb_admin_notices' );
 
-	    if (has_action('cnb_header_name') || has_action('cnb_after_header')) {
-		    echo '<h1>';
-		    do_action( 'cnb_header_name' );
-		    do_action( 'cnb_after_header' );
-		    echo '</h1>';
-	    }
+        if (has_action('cnb_header_name') || has_action('cnb_after_header')) {
+            echo '<h1>';
+            do_action( 'cnb_header_name' );
+            do_action( 'cnb_after_header' );
+            echo '</h1>';
+        }
     }
 
     private function preHeader() {
@@ -50,12 +50,12 @@ class CnbHeader {
     }
 
     private function renderHeader() {
-	    $default_classes = array( 'wrap', 'call-now-button-plugin' );
-	    $classes = apply_filters('cnb_header_wrapper_classes', $default_classes);
-	    // Convert array to space-separated string and escape
-	    $class_string = esc_attr(implode(' ', array_filter($classes)));
+        $default_classes = array( 'wrap', 'call-now-button-plugin' );
+        $classes = apply_filters('cnb_header_wrapper_classes', $default_classes);
+        // Convert array to space-separated string and escape
+        $class_string = esc_attr(implode(' ', array_filter($classes)));
 
-	    echo '<div class="' . esc_attr($class_string) . '">'; // This is closed in CnbFooter::render
+        echo '<div class="' . esc_attr($class_string) . '">'; // This is closed in CnbFooter::render
 
         $noticeHandler = new CnbHeaderNotices();
 
@@ -67,13 +67,13 @@ class CnbHeader {
         $noticeHandler->upgrade_notice( $cnb_cloud_notifications );
         $noticeHandler->cnb_show_advanced( $cnb_cloud_notifications );
 
-	    $filtered_notices = array();
-	    foreach ( $cnb_cloud_notifications as $notice ) {
-		    $filtered_notice = apply_filters( 'cnb_admin_notice_filter', $notice );
-			if ( $filtered_notice ) $filtered_notices[] = $filtered_notice;
-	    }
+        $filtered_notices = array();
+        foreach ( $cnb_cloud_notifications as $notice ) {
+            $filtered_notice = apply_filters( 'cnb_admin_notice_filter', $notice );
+            if ( $filtered_notice ) $filtered_notices[] = $filtered_notice;
+        }
 
-	    // Add the notifications after updating the cloud
+        // Add the notifications after updating the cloud
         CnbAdminNotices::get_instance()->notices( $filtered_notices );
     }
 }

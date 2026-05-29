@@ -86,29 +86,29 @@ class CnbAdminCloud {
         // 1: Update the Condition(s)
         $new_conditions = array();
         foreach ( $conditions as $condition ) {
-	        if ( is_wp_error( $condition ) ) {
-		        $cnb_cloud_notifications[] = CnbAdminCloud::cnb_admin_get_error_message( 'update', 'condition', $condition );
-	        } else if ( $condition->delete == 'true' ) {
+            if ( is_wp_error( $condition ) ) {
+                $cnb_cloud_notifications[] = CnbAdminCloud::cnb_admin_get_error_message( 'update', 'condition', $condition );
+            } else if ( $condition->delete == 'true' ) {
                 // 2.1 Delete now unused Conditions
                 $cnb_remote->delete_condition( $condition );
             } else if ( $condition->id === '' ) {
                 // 2.2 Create new Conditions
                 $new_conditions[] = self::cnb_create_condition( $ignore_notices, $condition );
-	        } else if ( $condition->matchValue !== null ) {
-		        // 2.3 Update existing Conditions
-		        $new_conditions[] = self::cnb_update_condition( $ignore_notices, $condition );
-	        } else {
-		        // 2.4 No update needed, so pass on received (this happens on `CnbButtonController->update`, has nothing to do with Conditions)
-		        $new_conditions[] = $condition;
-	        }
+            } else if ( $condition->matchValue !== null ) {
+                // 2.3 Update existing Conditions
+                $new_conditions[] = self::cnb_update_condition( $ignore_notices, $condition );
+            } else {
+                // 2.4 No update needed, so pass on received (this happens on `CnbButtonController->update`, has nothing to do with Conditions)
+                $new_conditions[] = $condition;
+            }
         }
 
         // 2: Update the Action(s)
         $new_actions = array();
         foreach ( $actions as $action ) {
-			if ( is_wp_error( $action ) ) {
-				$cnb_cloud_notifications[] = CnbAdminCloud::cnb_admin_get_error_message( 'update', 'action', $action );
-			} else if ( $action->delete == 'true' ) {
+            if ( is_wp_error( $action ) ) {
+                $cnb_cloud_notifications[] = CnbAdminCloud::cnb_admin_get_error_message( 'update', 'action', $action );
+            } else if ( $action->delete == 'true' ) {
                 // 2.1 Delete now unused Action
                 $cnb_remote->delete_action( $action );
             } else if ( $action->id === null || $action->id === '' ) {
@@ -126,9 +126,9 @@ class CnbAdminCloud {
         $button->actions    = $new_actions;
         $button->conditions = $new_conditions;
 
-		// 3: Do not update anything is there are any validation errors already
+        // 3: Do not update anything is there are any validation errors already
 
-		if (! empty( $cnb_cloud_notifications ) ) return $cnb_cloud_notifications;
+        if (! empty( $cnb_cloud_notifications ) ) return $cnb_cloud_notifications;
 
         // 4: Update the Button
         self::cnb_update_button( $cnb_cloud_notifications, $button );

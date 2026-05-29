@@ -44,9 +44,9 @@ class RendererFactory {
         $factory = new RendererFactory();
 
         if ( ! $factory->shouldRender() ) {
-	        $noop_renderer = new NoopRenderer();
-	        $noop_renderer->register();
-			return;
+            $noop_renderer = new NoopRenderer();
+            $noop_renderer->register();
+            return;
         }
 
         switch ( $factory->getRenderer() ) {

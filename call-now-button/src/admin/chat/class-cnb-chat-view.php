@@ -10,34 +10,34 @@ use cnb\admin\models\CnbUser;
 
 class CnbChatView {
 
-	public function render() {
-		add_filter('cnb_header_wrapper_classes', function($classes) {
-			return array_diff($classes, array( 'wrap' ));
-		});
+    public function render() {
+        add_filter('cnb_header_wrapper_classes', function($classes) {
+            return array_diff($classes, array( 'wrap' ));
+        });
 
-		// Remove the notice, this payment page will explain it further
-		add_filter( 'cnb_admin_notice_filter', function ( $notice ) {
-			if ( $notice && $notice->name === 'cnb-show-advanced-notice' ) return null;
-			if ( $notice && $notice->name === 'cnb-pro-chat-notice' ) return null;
-			return $notice;
-		} );
+        // Remove the notice, this payment page will explain it further
+        add_filter( 'cnb_admin_notice_filter', function ( $notice ) {
+            if ( $notice && $notice->name === 'cnb-show-advanced-notice' ) return null;
+            if ( $notice && $notice->name === 'cnb-pro-chat-notice' ) return null;
+            return $notice;
+        } );
 
-		do_action( 'cnb_header' );
+        do_action( 'cnb_header' );
 
-		wp_enqueue_script( CNB_SLUG . '-chat' );
+        wp_enqueue_script( CNB_SLUG . '-chat' );
 
-		$this->iframe_content();
-	}
+        $this->iframe_content();
+    }
 
-	function iframe_content() {
-		/** @type CnbUser $cnb_user */
-		global $cnb_user;
-		$app_remote = new CnbAppRemote();
-		$chat_url = $app_remote->get_chat_url() . '/auth/magic-link';
-		$login_url = add_query_arg( array( 'env_from' => 'WordPress', 'login_hint' => rawurlencode( $cnb_user->email ) ), $chat_url );
-		
-		?>
-		<div class="cnb-chat-marketing">
+    function iframe_content() {
+        /** @type CnbUser $cnb_user */
+        global $cnb_user;
+        $app_remote = new CnbAppRemote();
+        $chat_url = $app_remote->get_chat_url() . '/auth/magic-link';
+        $login_url = add_query_arg( array( 'env_from' => 'WordPress', 'login_hint' => rawurlencode( $cnb_user->email ) ), $chat_url );
+        
+        ?>
+        <div class="cnb-chat-marketing">
             <div class="cnb-chat-hero">
                 <span class="cnb-hero-badge">Live Chat</span>
                 <h1>NowChats needs to be opened in a new tab...</h1>
@@ -56,9 +56,9 @@ class CnbChatView {
 
                 <div class="cnb-chat-feature">
                     <svg class="cnb-feature-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-						<path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" fill="currentColor" fill-opacity="0.2" stroke="currentColor" stroke-width="2"/>
-						<path d="M15 9L9 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-						<path d="M9 9L15 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" fill="currentColor" fill-opacity="0.2" stroke="currentColor" stroke-width="2"/>
+                        <path d="M15 9L9 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M9 9L15 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                     <h3>Avoid Cookie Issues</h3>
                     <p>Bypass third-party cookie restrictions that can limit functionality in embedded frames.</p>
@@ -83,6 +83,6 @@ class CnbChatView {
                 </div>
             </div>
         </div>
-		<?php
-	}
+        <?php
+    }
 }

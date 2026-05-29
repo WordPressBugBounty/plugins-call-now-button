@@ -19,17 +19,17 @@ class CnbDomainViewUpgrade {
      * @return CnbDomain
      */
     private function get_domain() {
-		global $cnb_domain;
+        global $cnb_domain;
         $cnb_remote = new CnbAppRemote();
-        $domain_id = filter_input( INPUT_GET, 'id', @FILTER_SANITIZE_STRING );
+        $domain_id = sanitize_text_field( filter_input( INPUT_GET, 'id' ) );
         if ( $domain_id !== null && strlen( $domain_id ) > 0 && $domain_id != 'new' ) {
             return $cnb_remote->get_domain( $domain_id );
         }
-		// The fallback is to use the global (current_ domain if none is provided
-		if ($cnb_domain !== null) {
-			return $cnb_domain;
-		}
-		return null;
+        // The fallback is to use the global (current_ domain if none is provided
+        if ($cnb_domain !== null) {
+            return $cnb_domain;
+        }
+        return null;
     }
 
     /**
@@ -38,8 +38,8 @@ class CnbDomainViewUpgrade {
      * @return CnbNotice
      */
     private function get_upgrade_notice( $domain ) {
-        $upgradeStatus     = filter_input( INPUT_GET, 'upgrade', @FILTER_SANITIZE_STRING );
-        $checkoutSessionId = filter_input( INPUT_GET, 'checkout_session_id', @FILTER_SANITIZE_STRING );
+        $upgradeStatus     = sanitize_text_field( filter_input( INPUT_GET, 'upgrade' ) );
+        $checkoutSessionId = sanitize_text_field( filter_input( INPUT_GET, 'checkout_session_id' ) );
         $remote_payment_api = new CnbAppRemotePayment();
         if ( $upgradeStatus === 'success?payment=success' ) {
             // Get checkout Session Details
@@ -73,14 +73,14 @@ class CnbDomainViewUpgrade {
             // Also flush the cache
             do_action( 'cnb_after_button_changed' );
         }
-	    wp_enqueue_script( CNB_SLUG . '-domain-upgrade' );
-	    wp_enqueue_script( CNB_SLUG . '-billing-portal' );
+        wp_enqueue_script( CNB_SLUG . '-domain-upgrade' );
+        wp_enqueue_script( CNB_SLUG . '-billing-portal' );
 
         // Print the content
-	    if ( SubscriptionStatus::has_outstanding_payment_for_domain( $domain ) ) {
-			// We bail out of the upgrade and go to payment if there is an outstanding payment
-		    (new PaymentView())->render_content();
-	    } else if ( $notice && !$domain->is_pro() ) {
+        if ( SubscriptionStatus::has_outstanding_payment_for_domain( $domain ) ) {
+            // We bail out of the upgrade and go to payment if there is an outstanding payment
+            (new PaymentView())->render_content();
+        } else if ( $notice && !$domain->is_pro() ) {
             // Probably upgraded, but not reflected yet on the API side. Warn about this
             ( new CnbDomainViewUpgradeInProgress() )->render( $domain );
         } else if ( $domain->is_pro() ) {

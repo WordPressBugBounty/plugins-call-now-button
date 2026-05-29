@@ -61,23 +61,23 @@ class CnbUser implements JsonSerializable {
      * @var CnbUserMarketingData
      */
     public $marketingData;
-	/**
-	 * @var array of roles
-	 */
-	public $roles;
+    /**
+     * @var array of roles
+     */
+    public $roles;
 
-	public function __construct() {
-	}
+    public function __construct() {
+    }
 
-	public function has_role( $role ) {
-		return in_array( $role, $this->roles );
-	}
+    public function has_role( $role ) {
+        return in_array( $role, $this->roles );
+    }
 
     public function is_pro_user() {
         return $this->has_role( 'ROLE_PRO_USER' );
     }
 
-	/**
+    /**
      * If a stdClass is passed, it is transformed into a CnbUser.
      * a WP_Error is ignored and returned immediately
      * a null if converted into an (empty) CnbUser
@@ -106,16 +106,16 @@ class CnbUser implements JsonSerializable {
         $stripeDetails       = CnbUserStripeDetails::fromObject( CnbUtils::getPropertyOrNull( $object, 'stripeDetails' ) );
         $user->stripeDetails = $stripeDetails;
         $marketing_data      = CnbUserMarketingData::fromObject( CnbUtils::getPropertyOrNull( $object, 'marketingData' ) );
-	    $user->marketingData = $marketing_data;
-	    $user->roles         = CnbUtils::getPropertyOrNull( $object, 'roles' );
+        $user->marketingData = $marketing_data;
+        $user->roles         = CnbUtils::getPropertyOrNull( $object, 'roles' );
 
         return $user;
     }
 
     public function toArray() {
         // Note:
-	    // Do not export "euvatbusiness", since that is only used internally
-	    // Do not export "roles", this is only used internally
+        // Do not export "euvatbusiness", since that is only used internally
+        // Do not export "roles", this is only used internally
         // Do not export "marketingData", since that is handled via CnbAppRemote::enable_email_opt_in/disable_email_opt_in
         return array(
             'id'          => $this->id,
@@ -127,8 +127,8 @@ class CnbUser implements JsonSerializable {
         );
     }
 
-	/** @noinspection PhpLanguageLevelInspection */
-	#[\ReturnTypeWillChange]
+    /** @noinspection PhpLanguageLevelInspection */
+    #[\ReturnTypeWillChange]
     public function jsonSerialize() {
         return $this->toArray();
     }
@@ -175,8 +175,8 @@ class CnbUserTaxId implements JsonSerializable {
         );
     }
 
-	/** @noinspection PhpLanguageLevelInspection */
-	#[\ReturnTypeWillChange]
+    /** @noinspection PhpLanguageLevelInspection */
+    #[\ReturnTypeWillChange]
     public function jsonSerialize() {
         return $this->toArray();
     }
@@ -210,8 +210,8 @@ class CnbUserTaxIdVerification implements JsonSerializable {
         );
     }
 
-	/** @noinspection PhpLanguageLevelInspection */
-	#[\ReturnTypeWillChange]
+    /** @noinspection PhpLanguageLevelInspection */
+    #[\ReturnTypeWillChange]
     public function jsonSerialize() {
         return $this->toArray();
     }
@@ -256,8 +256,8 @@ class CnbUserAddress implements JsonSerializable {
         );
     }
 
-	/** @noinspection PhpLanguageLevelInspection */
-	#[\ReturnTypeWillChange]
+    /** @noinspection PhpLanguageLevelInspection */
+    #[\ReturnTypeWillChange]
     public function jsonSerialize() {
         return $this->toArray();
     }
@@ -292,8 +292,8 @@ class CnbUserStripeDetails implements JsonSerializable {
         );
     }
 
-	/** @noinspection PhpLanguageLevelInspection */
-	#[\ReturnTypeWillChange]
+    /** @noinspection PhpLanguageLevelInspection */
+    #[\ReturnTypeWillChange]
     public function jsonSerialize() {
         return $this->toArray();
     }
@@ -341,8 +341,8 @@ class CnbUserMarketingData implements JsonSerializable {
         );
     }
 
-	/** @noinspection PhpLanguageLevelInspection */
-	#[\ReturnTypeWillChange]
+    /** @noinspection PhpLanguageLevelInspection */
+    #[\ReturnTypeWillChange]
     public function jsonSerialize() {
         return $this->toArray();
     }

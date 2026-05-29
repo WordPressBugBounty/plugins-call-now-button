@@ -88,26 +88,26 @@ class CnbAction implements JsonSerializable {
         if ( is_wp_error( $object ) ) {
             return $object;
         }
-		if ($object instanceof CnbAction) {
-			return $object;
-		}
+        if ($object instanceof CnbAction) {
+            return $object;
+        }
 
         $action = new CnbAction();
 
         $schedule = CnbUtils::getPropertyOrNull( $object, 'schedule' );
 
-		if ($schedule != null) {
-			$action->schedule               = new CnbActionSchedule();
-			$action->schedule->showAlways   = CnbUtils::getPropertyOrNull( $schedule, 'showAlways' );
-			$action->schedule->start        = CnbUtils::getPropertyOrNull( $schedule, 'start' );
-			$action->schedule->stop         = CnbUtils::getPropertyOrNull( $schedule, 'stop' );
-			$action->schedule->timezone     = CnbUtils::getPropertyOrNull( $schedule, 'timezone' );
-			$action->schedule->outsideHours = CnbUtils::getPropertyOrNull( $schedule, 'outsideHours' );
-			$daysOfWeek                     = CnbUtils::getPropertyOrNull( $schedule, 'daysOfWeek' );
-			if ( isset( $daysOfWeek ) && is_array( $daysOfWeek ) ) {
-				$action->schedule->daysOfWeek = ( new CnbAdminFunctions() )->cnb_create_days_of_week_array( $daysOfWeek );
-			}
-		}
+        if ($schedule != null) {
+            $action->schedule               = new CnbActionSchedule();
+            $action->schedule->showAlways   = CnbUtils::getPropertyOrNull( $schedule, 'showAlways' );
+            $action->schedule->start        = CnbUtils::getPropertyOrNull( $schedule, 'start' );
+            $action->schedule->stop         = CnbUtils::getPropertyOrNull( $schedule, 'stop' );
+            $action->schedule->timezone     = CnbUtils::getPropertyOrNull( $schedule, 'timezone' );
+            $action->schedule->outsideHours = CnbUtils::getPropertyOrNull( $schedule, 'outsideHours' );
+            $daysOfWeek                     = CnbUtils::getPropertyOrNull( $schedule, 'daysOfWeek' );
+            if ( isset( $daysOfWeek ) && is_array( $daysOfWeek ) ) {
+                $action->schedule->daysOfWeek = ( new CnbAdminFunctions() )->cnb_create_days_of_week_array( $daysOfWeek );
+            }
+        }
 
         $action->id              = CnbUtils::getPropertyOrNull( $object, 'id' );
         $action->actionType      = CnbUtils::getPropertyOrNull( $object, 'actionType' );
@@ -141,38 +141,38 @@ class CnbAction implements JsonSerializable {
             $action->iconText = ( new CnbUtils() )->cnb_actiontype_to_icontext( $action->actionType );
         }
 
-		$error = CnbAction::sanitize_action_value($action);
-		if ( $error ) return $error;
+        $error = CnbAction::sanitize_action_value($action);
+        if ( $error ) return $error;
 
         return $action;
     }
 
-	/**
-	 * @param $action CnbAction
-	 *
-	 * @return WP_Error|void
-	 */
-	private static function sanitize_action_value( $action ) {
-		// In case the action type has a value that represents a URL, ensure that the URL is correct
-		switch ($action->actionType) {
-			case 'LINK':
-			case 'IFRAME':
-				// phpcs:ignore WordPress.WP
-				$sanitized_value = sanitize_url($action->actionValue, array( 'http', 'https' ) );
-				if ( empty( $sanitized_value )) {
-					return new WP_Error( 'CNB_ACTION_VALUE_INVALID', 'The Full URL for your action contains an invalid URL. Please use a valid URL that starts with http:// or https://' );
-				}
-				$action->actionValue = $sanitized_value;
-				break;
-			case 'EMAIL':
-				$sanitized_value = sanitize_email($action->actionValue);
-				if ( ! is_email( $sanitized_value ) ) {
-					return new WP_Error( 'CNB_ACTION_VALUE_INVALID', 'The Email address for your action is invalid. Please use a valid email address.' );
-				}
-				$action->actionValue = $sanitized_value;
-				break;
-		}
-	}
+    /**
+     * @param $action CnbAction
+     *
+     * @return WP_Error|void
+     */
+    private static function sanitize_action_value( $action ) {
+        // In case the action type has a value that represents a URL, ensure that the URL is correct
+        switch ($action->actionType) {
+            case 'LINK':
+            case 'IFRAME':
+                // phpcs:ignore WordPress.WP
+                $sanitized_value = sanitize_url($action->actionValue, array( 'http', 'https' ) );
+                if ( empty( $sanitized_value )) {
+                    return new WP_Error( 'CNB_ACTION_VALUE_INVALID', 'The Full URL for your action contains an invalid URL. Please use a valid URL that starts with http:// or https://' );
+                }
+                $action->actionValue = $sanitized_value;
+                break;
+            case 'EMAIL':
+                $sanitized_value = sanitize_email($action->actionValue);
+                if ( ! is_email( $sanitized_value ) ) {
+                    return new WP_Error( 'CNB_ACTION_VALUE_INVALID', 'The Email address for your action is invalid. Please use a valid email address.' );
+                }
+                $action->actionValue = $sanitized_value;
+                break;
+        }
+    }
 
     /**
      * @param $objects stdClass[]|array[]|WP_Error|null
@@ -220,8 +220,8 @@ class CnbAction implements JsonSerializable {
     /**
      * @return array
      */
-	/** @noinspection PhpLanguageLevelInspection */
-	#[\ReturnTypeWillChange]
+    /** @noinspection PhpLanguageLevelInspection */
+    #[\ReturnTypeWillChange]
     public function jsonSerialize() {
         return $this->toArray();
     }
@@ -240,8 +240,8 @@ class CnbActionProperties extends ArrayObject implements JsonSerializable {
     /**
      * @return array
      */
-	/** @noinspection PhpLanguageLevelInspection */
-	#[\ReturnTypeWillChange]
+    /** @noinspection PhpLanguageLevelInspection */
+    #[\ReturnTypeWillChange]
     public function jsonSerialize() {
         return $this->toArray();
     }
@@ -292,8 +292,8 @@ class CnbActionSchedule implements JsonSerializable {
         );
     }
 
-	/** @noinspection PhpLanguageLevelInspection */
-	#[\ReturnTypeWillChange]
+    /** @noinspection PhpLanguageLevelInspection */
+    #[\ReturnTypeWillChange]
     public function jsonSerialize() {
         return $this->toArray();
     }

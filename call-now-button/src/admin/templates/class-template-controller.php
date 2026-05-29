@@ -7,7 +7,7 @@ defined( 'ABSPATH' ) || die( '-1' );
 
 class Template_Controller {
 
-	public function get_slug() {
-		return CNB_SLUG . '-templates';
-	}
+    public function get_slug() {
+        return CNB_SLUG . '-templates';
+    }
 }

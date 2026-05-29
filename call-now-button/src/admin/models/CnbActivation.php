@@ -15,17 +15,17 @@ class CnbActivation {
      * @var boolean
      */
     public $activation_attempt;
-	/**
-	 * The OTT key
-	 *
-	 * @var string
-	 */
-	public $ott_key;
-	/**
-	 * The created API key (either direct or via an OTT key)
-	 * @var string
-	 */
-	public $api_key;
+    /**
+     * The OTT key
+     *
+     * @var string
+     */
+    public $ott_key;
+    /**
+     * The created API key (either direct or via an OTT key)
+     * @var string
+     */
+    public $api_key;
     /**
      * If the activated was actually succesfull
      * @var boolean
@@ -51,12 +51,12 @@ class CnbActivation {
      */
     public $button;
 
-	/**
-	 * @param bool $activation_attempt
-	 * @param bool $success
-	 * @param CnbDomain|null $domain
-	 * @param CnbButton|null $button
-	 */
+    /**
+     * @param bool $activation_attempt
+     * @param bool $success
+     * @param CnbDomain|null $domain
+     * @param CnbButton|null $button
+     */
     public function __construct( $activation_attempt = false, $success = false, ?CnbDomain $domain = null, ?CnbButton $button = null ) {
         $this->activation_attempt = $activation_attempt;
         $this->success            = $success;

@@ -73,11 +73,11 @@ class Cnb_Action_List_Table extends WP_List_Table {
             unset( $columns['draggable'] );
         }
 
-	    if ( $this->button && $this->button->type === 'DOTS' ) {
-		    unset( $columns['labelText'] );
-	    }
+        if ( $this->button && $this->button->type === 'DOTS' ) {
+            unset( $columns['labelText'] );
+        }
 
-	    if ( CnbSettingsController::is_advanced_view() ) {
+        if ( CnbSettingsController::is_advanced_view() ) {
             $columns['actionButton'] = __( 'Button' );
         }
 
@@ -201,18 +201,18 @@ class Cnb_Action_List_Table extends WP_List_Table {
         }
     }
 
-	/**
-	 * @param $action CnbAction
-	 *
-	 * @return string
-	 */
-	private function get_action_value( $action ) {
-		if ($action->actionType === 'CHAT' ) return ' -';
-		if ($action->actionType === 'BOOKING' ) {
-			return $action->properties->{'booking-meeting-id'};
-		}
-		return ! empty( $action->actionValue ) ? esc_html( $action->actionValue ) : '<em>No value</em>';
-	}
+    /**
+     * @param $action CnbAction
+     *
+     * @return string
+     */
+    private function get_action_value( $action ) {
+        if ($action->actionType === 'CHAT' ) return ' -';
+        if ($action->actionType === 'BOOKING' ) {
+            return $action->properties->{'booking-meeting-id'};
+        }
+        return ! empty( $action->actionValue ) ? esc_html( $action->actionValue ) : '<em>No value</em>';
+    }
 
     private function get_data() {
         $cnb_remote = new CnbAppRemote();

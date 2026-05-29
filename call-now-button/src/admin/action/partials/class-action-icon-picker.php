@@ -7,22 +7,22 @@ use cnb\admin\button\CnbButton;
 defined( 'ABSPATH' ) || die( '-1' );
 
 class ActionIcon {
-	/**
-	 * PHONE, EMAIL, etc
-	 * @var string
-	 */
-	public $type;
+    /**
+     * PHONE, EMAIL, etc
+     * @var string
+     */
+    public $type;
 
-	/**
+    /**
      * Collection of icon types (name => ..., type => ...)
      * See constructor of ActionIconPicker for implementation details
-	 * @var array
-	 */
+     * @var array
+     */
     public $icons;
 
     public function __construct($type, $icons) {
-	    $this->type = $type;
-	    $this->icons = $icons;
+        $this->type = $type;
+        $this->icons = $icons;
     }
 }
 
@@ -32,33 +32,33 @@ class ActionIconPicker {
 
     public function __construct() {
         $this->icons = array(
-	        new ActionIcon('ANCHOR', array(
-		        array( 'type' => 'FONT', 'text' => 'anchor' ),
-		        array( 'type' => 'FONT', 'text' => 'close_down' ),
-		        array( 'type' => 'FONT', 'text' => 'anchor_up' ),
-	        )),
+            new ActionIcon('ANCHOR', array(
+                array( 'type' => 'FONT', 'text' => 'anchor' ),
+                array( 'type' => 'FONT', 'text' => 'close_down' ),
+                array( 'type' => 'FONT', 'text' => 'anchor_up' ),
+            )),
             new ActionIcon('BOOKING', array(
                     array( 'type' => 'FONT', 'text' => 'calendar' ),
                     array( 'type' => 'FONT', 'text' => 'chat' ),
                     array( 'type' => 'FONT', 'text' => 'communicate' ),
                     array( 'type' => 'FONT', 'text' => 'conversation' ),
             )),
-	        new ActionIcon('EMAIL', array(
-		        array( 'type' => 'FONT', 'text' => 'email' ),
-		        array( 'type' => 'FONT', 'text' => 'mail2' ),
-		        array( 'type' => 'FONT', 'text' => 'mail3' ),
-	        )),
-	        new ActionIcon('HOURS', array(
-		        array( 'type' => 'FONT_MATERIAL', 'text' => 'access_time' ),
-		        array( 'type' => 'FONT_MATERIAL', 'text' => 'access_time_filled' ),
-	        )),
-	        new ActionIcon('LINK', array(
-		        array( 'type' => 'FONT', 'text' => 'link' ),
-		        array( 'type' => 'FONT', 'text' => 'link2' ),
-		        array( 'type' => 'FONT', 'text' => 'link3' ),
-		        array( 'type' => 'FONT', 'text' => 'link4' ),
-		        array( 'type' => 'FONT', 'text' => 'link5' ),
-		        array( 'type' => 'FONT', 'text' => 'calendar' ),
+            new ActionIcon('EMAIL', array(
+                array( 'type' => 'FONT', 'text' => 'email' ),
+                array( 'type' => 'FONT', 'text' => 'mail2' ),
+                array( 'type' => 'FONT', 'text' => 'mail3' ),
+            )),
+            new ActionIcon('HOURS', array(
+                array( 'type' => 'FONT_MATERIAL', 'text' => 'access_time' ),
+                array( 'type' => 'FONT_MATERIAL', 'text' => 'access_time_filled' ),
+            )),
+            new ActionIcon('LINK', array(
+                array( 'type' => 'FONT', 'text' => 'link' ),
+                array( 'type' => 'FONT', 'text' => 'link2' ),
+                array( 'type' => 'FONT', 'text' => 'link3' ),
+                array( 'type' => 'FONT', 'text' => 'link4' ),
+                array( 'type' => 'FONT', 'text' => 'link5' ),
+                array( 'type' => 'FONT', 'text' => 'calendar' ),
                 array( 'type' => 'FONT', 'text' => 'call3' ),
                 array( 'type' => 'FONT', 'text' => 'email' ),
                 array( 'type' => 'FONT', 'text' => 'chat' ),
@@ -72,107 +72,107 @@ class ActionIconPicker {
                 array( 'type' => 'FONT', 'text' => 'fire' ),
                 array( 'type' => 'FONT', 'text' => 'star' ),
                 array( 'type' => 'FONT', 'text' => 'support' ),
-	        )),
-	        new ActionIcon('MAP', array(
-		        array( 'type' => 'FONT', 'text' => 'directions' ),
-		        array( 'type' => 'FONT', 'text' => 'directions2' ),
-		        array( 'type' => 'FONT', 'text' => 'directions3' ),
-		        array( 'type' => 'FONT', 'text' => 'directions4' ),
-		        array( 'type' => 'FONT', 'text' => 'directions5' ),
-		        array( 'type' => 'FONT', 'text' => 'directions6' ),
-	        )),
-	        new ActionIcon('PHONE', array(
-		        array( 'type' => 'FONT', 'text' => 'call' ),
-		        array( 'type' => 'FONT', 'text' => 'call2' ),
-		        array( 'type' => 'FONT', 'text' => 'call3' ),
-		        array( 'type' => 'FONT', 'text' => 'call4' ),
-	        )),
-	        new ActionIcon('SMS', array(
-		        array( 'type' => 'FONT', 'text' => 'chat' ),
-		        array( 'type' => 'FONT', 'text' => 'sms' ),
-	        )),
-	        new ActionIcon('WHATSAPP', array(
-		        array( 'type' => 'FONT', 'text' => 'whatsapp' ),
-	        )),
-	        new ActionIcon('FACEBOOK', array(
-		        array( 'type' => 'FONT', 'text' => 'facebook_messenger' ),
-	        )),
-	        new ActionIcon('TELEGRAM', array(
-		        array( 'type' => 'FONT', 'text' => 'telegram' ),
-	        )),
-	        new ActionIcon('SIGNAL', array(
-		        array( 'type' => 'FONT', 'text' => 'signal' ),
-	        )),
-	        new ActionIcon('IFRAME', array(
-		        array( 'type' => 'FONT', 'text' => 'open_modal' ),
-		        array( 'type' => 'FONT', 'text' => 'calendar' ),
-		        array( 'type' => 'FONT', 'text' => 'communicate' ),
+            )),
+            new ActionIcon('MAP', array(
+                array( 'type' => 'FONT', 'text' => 'directions' ),
+                array( 'type' => 'FONT', 'text' => 'directions2' ),
+                array( 'type' => 'FONT', 'text' => 'directions3' ),
+                array( 'type' => 'FONT', 'text' => 'directions4' ),
+                array( 'type' => 'FONT', 'text' => 'directions5' ),
+                array( 'type' => 'FONT', 'text' => 'directions6' ),
+            )),
+            new ActionIcon('PHONE', array(
+                array( 'type' => 'FONT', 'text' => 'call' ),
+                array( 'type' => 'FONT', 'text' => 'call2' ),
+                array( 'type' => 'FONT', 'text' => 'call3' ),
+                array( 'type' => 'FONT', 'text' => 'call4' ),
+            )),
+            new ActionIcon('SMS', array(
+                array( 'type' => 'FONT', 'text' => 'chat' ),
+                array( 'type' => 'FONT', 'text' => 'sms' ),
+            )),
+            new ActionIcon('WHATSAPP', array(
+                array( 'type' => 'FONT', 'text' => 'whatsapp' ),
+            )),
+            new ActionIcon('FACEBOOK', array(
+                array( 'type' => 'FONT', 'text' => 'facebook_messenger' ),
+            )),
+            new ActionIcon('TELEGRAM', array(
+                array( 'type' => 'FONT', 'text' => 'telegram' ),
+            )),
+            new ActionIcon('SIGNAL', array(
+                array( 'type' => 'FONT', 'text' => 'signal' ),
+            )),
+            new ActionIcon('IFRAME', array(
+                array( 'type' => 'FONT', 'text' => 'open_modal' ),
+                array( 'type' => 'FONT', 'text' => 'calendar' ),
+                array( 'type' => 'FONT', 'text' => 'communicate' ),
                 array( 'type' => 'FONT', 'text' => 'call3' ),
                 array( 'type' => 'FONT', 'text' => 'chat' ),
-		        array( 'type' => 'FONT', 'text' => 'conversation' ),
+                array( 'type' => 'FONT', 'text' => 'conversation' ),
                 array( 'type' => 'FONT', 'text' => 'chat_2' ),
                 array( 'type' => 'FONT', 'text' => 'chat_3' ),
                 array( 'type' => 'FONT', 'text' => 'chat_4' ),
-		        array( 'type' => 'FONT', 'text' => 'more_info' ),
-		        array( 'type' => 'FONT', 'text' => 'call_back' ),
-		        array( 'type' => 'FONT', 'text' => 'donate' ),
-		        array( 'type' => 'FONT', 'text' => 'payment' ),
+                array( 'type' => 'FONT', 'text' => 'more_info' ),
+                array( 'type' => 'FONT', 'text' => 'call_back' ),
+                array( 'type' => 'FONT', 'text' => 'donate' ),
+                array( 'type' => 'FONT', 'text' => 'payment' ),
                 array( 'type' => 'FONT', 'text' => 'email' ),
                 array( 'type' => 'FONT', 'text' => 'mail2' ),
                 array( 'type' => 'FONT', 'text' => 'directions3' ),
                 array( 'type' => 'FONT', 'text' => 'support' ),
-	        )),
-	        new ActionIcon('TALLY', array(
-		        array( 'type' => 'FONT', 'text' => 'call3' ),
-		        array( 'type' => 'FONT', 'text' => 'email' ),
-		        array( 'type' => 'FONT', 'text' => 'chat' ),
-		        array( 'type' => 'FONT', 'text' => 'communicate' ),
-		        array( 'type' => 'FONT', 'text' => 'open_modal' ),
-		        array( 'type' => 'FONT', 'text' => 'donate' ),
-		        array( 'type' => 'FONT', 'text' => 'payment' ),
-	        )),
-	        new ActionIcon('INTERCOM', array(
-		        array( 'type' => 'FONT', 'text' => 'intercom' ),
+            )),
+            new ActionIcon('TALLY', array(
+                array( 'type' => 'FONT', 'text' => 'call3' ),
+                array( 'type' => 'FONT', 'text' => 'email' ),
+                array( 'type' => 'FONT', 'text' => 'chat' ),
+                array( 'type' => 'FONT', 'text' => 'communicate' ),
+                array( 'type' => 'FONT', 'text' => 'open_modal' ),
+                array( 'type' => 'FONT', 'text' => 'donate' ),
+                array( 'type' => 'FONT', 'text' => 'payment' ),
+            )),
+            new ActionIcon('INTERCOM', array(
+                array( 'type' => 'FONT', 'text' => 'intercom' ),
                 array( 'type' => 'FONT', 'text' => 'chat' ),
                 array( 'type' => 'FONT', 'text' => 'conversation' ),
-	        )),
-	        new ActionIcon('SKYPE', array(
-		        array( 'type' => 'FONT', 'text' => 'skype' ),
-	        )),
-	        new ActionIcon('ZALO', array(
-		        array( 'type' => 'FONT', 'text' => 'zalo' ),
-	        )),
-	        new ActionIcon('VIBER', array(
-		        array( 'type' => 'FONT', 'text' => 'viber' ),
-	        )),
-	        new ActionIcon('LINE', array(
-		        array( 'type' => 'FONT', 'text' => 'line' ),
-	        )),
-	        new ActionIcon('WECHAT', array(
-		        array( 'type' => 'FONT', 'text' => 'wechat' ),
-	        )),
-	        new ActionIcon('CHAT', array(
+            )),
+            new ActionIcon('SKYPE', array(
+                array( 'type' => 'FONT', 'text' => 'skype' ),
+            )),
+            new ActionIcon('ZALO', array(
+                array( 'type' => 'FONT', 'text' => 'zalo' ),
+            )),
+            new ActionIcon('VIBER', array(
+                array( 'type' => 'FONT', 'text' => 'viber' ),
+            )),
+            new ActionIcon('LINE', array(
+                array( 'type' => 'FONT', 'text' => 'line' ),
+            )),
+            new ActionIcon('WECHAT', array(
+                array( 'type' => 'FONT', 'text' => 'wechat' ),
+            )),
+            new ActionIcon('CHAT', array(
                 array( 'type' => 'FONT', 'text' => 'conversation' ),
-		        array( 'type' => 'FONT', 'text' => 'chat' ),
+                array( 'type' => 'FONT', 'text' => 'chat' ),
                 array( 'type' => 'FONT', 'text' => 'chat_2' ),
                 array( 'type' => 'FONT', 'text' => 'chat_3' ),
                 array( 'type' => 'FONT', 'text' => 'chat_4' ),
-	        )),
+            )),
         );
     }
 
     private function render_icon_picker() {
-	    foreach ($this->icons as $type) {
-		    echo '<div class="icon-text-options" id="icon-text-' . esc_attr($type->type) . '">';
-		    foreach ($type->icons as $icons) {
-			    echo '<div class="cnb-button-icon">';
-			    echo '<i class="cnb-font-icon" data-icon-type="' . esc_attr($icons['type']) . '" data-icon-text="' . esc_attr($icons['text']) . '">' . esc_html($icons['text']) . '</i>';
-			    echo '</div>';
-		    }
-		    echo '</div>';
-	    }
+        foreach ($this->icons as $type) {
+            echo '<div class="icon-text-options" id="icon-text-' . esc_attr($type->type) . '">';
+            foreach ($type->icons as $icons) {
+                echo '<div class="cnb-button-icon">';
+                echo '<i class="cnb-font-icon" data-icon-type="' . esc_attr($icons['type']) . '" data-icon-text="' . esc_attr($icons['text']) . '">' . esc_html($icons['text']) . '</i>';
+                echo '</div>';
+            }
+            echo '</div>';
+        }
     }
-	/**
+    /**
      * @param $action CnbAction
      * @param $button CnbButton
      *

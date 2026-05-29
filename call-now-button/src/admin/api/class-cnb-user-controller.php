@@ -10,36 +10,39 @@ use WP_Error;
 
 class CnbUserController {
 
-	/**
-	 * Called via Ajax
-	 *
-	 *
-	 * @return mixed|WP_Error
-	 */
-	public function set_storage_solution( ) {
-		do_action( 'cnb_init', __METHOD__ );
+    /**
+     * Called via Ajax
+     *
+     *
+     * @return void
+     */
+    public function set_storage_solution( ) {
+        do_action( 'cnb_init', __METHOD__ );
 
-		// Verify nonce (die immediately if failed)
-		check_ajax_referer('cnb_set_user_storage_solution');
+        if ( ! current_user_can( 'manage_options' ) ) {
+            do_action( 'cnb_finish' );
+            wp_send_json_error( 'Unauthorized', 403 );
+        }
 
-		$storage_type = filter_input( INPUT_POST, 'storage_type', @FILTER_SANITIZE_STRING );
-		if ($storage_type !== 'GCS' && $storage_type !== 'R2') {
-			wp_send_json( new WP_Error( 'Invalid storage type', __( 'Invalid storage type', 'call-now-button' ) ) );
-			do_action( 'cnb_finish' );
-			wp_die();
-		}
+        // Verify nonce (die immediately if failed)
+        check_ajax_referer('cnb_set_user_storage_solution');
 
-		$remote = new CnbAppRemote();
-		$result = $remote->set_user_storage_type( $storage_type );
+        $storage_type = sanitize_text_field( filter_input( INPUT_POST, 'storage_type' ) );
+        if ($storage_type !== 'GCS' && $storage_type !== 'R2') {
+            do_action( 'cnb_finish' );
+            wp_send_json( new WP_Error( 'Invalid storage type', __( 'Invalid storage type', 'call-now-button' ) ) );
+        }
 
-		// if this is a success, also ensure that these settings are updated
-		if ( ! is_wp_error( $result ) ) {
-			$remote = new CnbAppRemote();
-			$remote->get_wp_info();
-		}
+        $remote = new CnbAppRemote();
+        $result = $remote->set_user_storage_type( $storage_type );
 
-		wp_send_json($result);
-		do_action( 'cnb_finish' );
-		wp_die();
-	}
+        // if this is a success, also ensure that these settings are updated
+        if ( ! is_wp_error( $result ) ) {
+            $remote = new CnbAppRemote();
+            $remote->get_wp_info();
+        }
+
+        do_action( 'cnb_finish' );
+        wp_send_json($result);
+    }
 }

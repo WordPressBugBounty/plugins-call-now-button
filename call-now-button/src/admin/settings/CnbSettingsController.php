@@ -45,7 +45,7 @@ class CnbSettingsController {
             'show_all_buttons_for_domain' => 0,
             'footer_show_traces'          => 0,
             'reporting_enabled'           => 0,
-	        'displaymode'                 => 'MOBILE_ONLY',
+            'displaymode'                 => 'MOBILE_ONLY',
         );
 
         return $this->post_option_cnb( $defaults );
@@ -107,16 +107,16 @@ class CnbSettingsController {
         return $cnb_options['cloud_enabled'] ? 'cloud' : ( $cnb_options['active'] ? 'enabled' : 'disabled' );
     }
 
-	/**
-	 * "Advanced view" shows all available options, validation rules and more, intended for power users
-	 * and Call Now Button administrators.
-	 *
-	 * @return bool
-	 */
-	public static function is_advanced_view() {
-		$cnb_options = get_option( 'cnb' );
-		return isset( $cnb_options['advanced_view'] ) && $cnb_options['advanced_view'] == 1;
-	}
+    /**
+     * "Advanced view" shows all available options, validation rules and more, intended for power users
+     * and Call Now Button administrators.
+     *
+     * @return bool
+     */
+    public static function is_advanced_view() {
+        $cnb_options = get_option( 'cnb' );
+        return isset( $cnb_options['advanced_view'] ) && $cnb_options['advanced_view'] == 1;
+    }
 
     /**
      *
@@ -276,7 +276,16 @@ class CnbSettingsController {
      * @return void
      */
     public function delete_all_settings() {
-        $nonce = filter_input( INPUT_POST, '_wpnonce', @FILTER_SANITIZE_STRING );
+        do_action( 'cnb_init', __METHOD__ );
+        if ( ! current_user_can( 'manage_options' ) ) {
+            do_action( 'cnb_finish' );
+            wp_die(
+                esc_html__( 'You do not have sufficient permissions to access this page.' ),
+                esc_html__( 'Unauthorized' ),
+                array( 'response' => 403 )
+            );
+        }
+        $nonce = sanitize_text_field( filter_input( INPUT_POST, '_wpnonce' ) );
         $success = 0;
         if ( $nonce && wp_verify_nonce( $nonce, 'cnb_delete_all_settings' ) ) {
 
@@ -290,7 +299,7 @@ class CnbSettingsController {
                 // Delete site options in Multisite
                 delete_site_option( $option_name );
             }
-            $this->set_default_settings();
+            Activation::onActivation( null, false );
 
             // Delete notice dismissals
             $options_slug = 'call-now-button';
@@ -316,7 +325,16 @@ class CnbSettingsController {
      * @return void
      */
     public function set_default_settings() {
-        $nonce   = filter_input( INPUT_POST, '_wpnonce', @FILTER_SANITIZE_STRING );
+        do_action( 'cnb_init', __METHOD__ );
+        if ( ! current_user_can( 'manage_options' ) ) {
+            do_action( 'cnb_finish' );
+            wp_die(
+                esc_html__( 'You do not have sufficient permissions to access this page.' ),
+                esc_html__( 'Unauthorized' ),
+                array( 'response' => 403 )
+            );
+        }
+        $nonce   = sanitize_text_field( filter_input( INPUT_POST, '_wpnonce' ) );
         $success = 0;
         if ( $nonce && wp_verify_nonce( $nonce, 'cnb_set_default_settings' ) ) {
             Activation::onActivation( null, false );
@@ -332,10 +350,19 @@ class CnbSettingsController {
      * @return void
      */
     public function override_changelog_version() {
-        $nonce   = filter_input( INPUT_POST, '_wpnonce', @FILTER_SANITIZE_STRING );
+        do_action( 'cnb_init', __METHOD__ );
+        if ( ! current_user_can( 'manage_options' ) ) {
+            do_action( 'cnb_finish' );
+            wp_die(
+                esc_html__( 'You do not have sufficient permissions to access this page.' ),
+                esc_html__( 'Unauthorized' ),
+                array( 'response' => 403 )
+            );
+        }
+        $nonce   = sanitize_text_field( filter_input( INPUT_POST, '_wpnonce' ) );
         $success = 0;
         if ( $nonce && wp_verify_nonce( $nonce, 'cnb_set_default_settings' ) ) {
-            $changelog_version   = filter_input( INPUT_POST, 'changelog_version', @FILTER_SANITIZE_STRING );
+            $changelog_version   = sanitize_text_field( filter_input( INPUT_POST, 'changelog_version' ) );
             $options = array( 'changelog_version' => $changelog_version );
             update_option('cnb', $options);
             $success = 3;
@@ -357,6 +384,7 @@ class CnbSettingsController {
         $redirect_url  = esc_url_raw( $redirect_link );
         do_action( 'cnb_finish' );
         wp_safe_redirect( $redirect_url );
+        exit;
 
     }
 }

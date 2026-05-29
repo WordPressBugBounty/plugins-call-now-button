@@ -20,11 +20,15 @@ class CnbAdminAjax {
      */
     public function domain_upgrade_get_checkout() {
         do_action( 'cnb_init', __METHOD__ );
-        $planId   = filter_input( INPUT_POST, 'planId', @FILTER_SANITIZE_STRING );
-        $domainId = filter_input( INPUT_POST, 'domainId', @FILTER_SANITIZE_STRING );
+        if ( ! current_user_can( 'manage_options' ) ) {
+            do_action( 'cnb_finish' );
+            wp_send_json_error( 'Unauthorized', 403 );
+        }
+        // Verify nonce (die immediately if failed)
+        check_ajax_referer('cnb_get_checkout');
 
-	    // Verify nonce (die immediately if failed)
-	    check_ajax_referer('cnb_get_checkout');
+        $planId   = sanitize_text_field( filter_input( INPUT_POST, 'planId' ) );
+        $domainId = sanitize_text_field( filter_input( INPUT_POST, 'domainId' ) );
 
         $cnb_subscription_api = new CnbAppRemotePayment();
 
@@ -40,10 +44,8 @@ class CnbAdminAjax {
                 $url )
         );
         $checkoutSession = $cnb_subscription_api->cnb_remote_post_subscription( $planId, $domainId, $callbackUri );
-        $this->handle_checkout_session( $checkoutSession );
-
         do_action( 'cnb_finish' );
-        wp_die();
+        $this->handle_checkout_session( $checkoutSession );
     }
 
     /**
@@ -53,13 +55,17 @@ class CnbAdminAjax {
      */
     public function agency_upgrade_get_checkout() {
         do_action( 'cnb_init', __METHOD__ );
-	    $planId   = filter_input( INPUT_POST, 'planId', @FILTER_SANITIZE_STRING );
-	    $currency = filter_input( INPUT_POST, 'currency', @FILTER_SANITIZE_STRING );
+        if ( ! current_user_can( 'manage_options' ) ) {
+            do_action( 'cnb_finish' );
+            wp_send_json_error( 'Unauthorized', 403 );
+        }
+        // Verify nonce (die immediately if failed)
+        check_ajax_referer('cnb_get_agency_checkout');
 
-	    // Verify nonce (die immediately if failed)
-	    check_ajax_referer('cnb_get_agency_checkout');
+        $planId   = sanitize_text_field( filter_input( INPUT_POST, 'planId' ) );
+        $currency = sanitize_text_field( filter_input( INPUT_POST, 'currency' ) );
 
-	    $cnb_subscription_api = new CnbAppRemotePayment();
+        $cnb_subscription_api = new CnbAppRemotePayment();
 
         $url             = admin_url( 'admin.php' );
         $callbackUri   = esc_url_raw(
@@ -73,10 +79,8 @@ class CnbAdminAjax {
         );
         $checkoutSession = $cnb_subscription_api->cnb_remote_post_agency_subscription( $planId, $callbackUri, $currency );
 
-        $this->handle_checkout_session( $checkoutSession );
-
         do_action( 'cnb_finish' );
-        wp_die();
+        $this->handle_checkout_session( $checkoutSession );
     }
 
     private function handle_checkout_session( $checkoutSession ) {
@@ -112,17 +116,21 @@ class CnbAdminAjax {
 
     public function cnb_email_activation() {
         do_action( 'cnb_init', __METHOD__ );
+        if ( ! current_user_can( 'manage_options' ) ) {
+            do_action( 'cnb_finish' );
+            wp_send_json_error( 'Unauthorized', 403 );
+        }
 
-	    // Verify nonce (die immediately if failed)
-	    check_ajax_referer('cnb_email_activation');
+        // Verify nonce (die immediately if failed)
+        check_ajax_referer('cnb_email_activation');
 
         $cnb_remote = new CnbAppRemote();
         $admin_url = esc_url( admin_url( 'admin-post.php' ) );
 
-        $custom_email = trim( filter_input( INPUT_POST, 'admin_email', @FILTER_SANITIZE_STRING ) );
+        $custom_email = trim( sanitize_text_field( filter_input( INPUT_POST, 'admin_email' ) ) );
         if ( is_email( $custom_email ) ) {
-			$wpnonce = wp_create_nonce('cnb_email_activation');
-	        update_option('cnb_email_activation_wp_nonce', $wpnonce);
+            $wpnonce = wp_create_nonce('cnb_email_activation');
+            update_option('cnb_email_activation_wp_nonce', $wpnonce);
             $data = $cnb_remote->create_email_activation( $custom_email, $wpnonce, $admin_url );
         } else {
             $data = new WP_Error( 'CNB_EMAIL_INVALID', __( 'Please enter a valid e-mail address.' ) );
@@ -130,9 +138,8 @@ class CnbAdminAjax {
                 $data = new WP_Error( 'CNB_EMAIL_EMPTY', __( 'Please enter a valid e-mail address.' ) );
             }
         }
-        wp_send_json( $data );
         do_action( 'cnb_finish' );
-        wp_die();
+        wp_send_json( $data );
     }
 
     private static function cnb_time_format_( $time ) {
@@ -144,27 +151,34 @@ class CnbAdminAjax {
 
     public function time_format() {
         do_action( 'cnb_init', __METHOD__ );
-        $start = trim( filter_input( INPUT_POST, 'start', @FILTER_SANITIZE_STRING ) );
-	    $stop  = trim( filter_input( INPUT_POST, 'stop', @FILTER_SANITIZE_STRING ) );
+        if ( ! current_user_can( 'manage_options' ) ) {
+            do_action( 'cnb_finish' );
+            wp_send_json_error( 'Unauthorized', 403 );
+        }
+        // Verify nonce (die immediately if failed)
+        check_ajax_referer( 'cnb_time_format' );
 
-	    // Verify nonce (die immediately if failed)
-	    check_ajax_referer( 'cnb_time_format' );
+        $start = trim( sanitize_text_field( filter_input( INPUT_POST, 'start' ) ) );
+        $stop  = trim( sanitize_text_field( filter_input( INPUT_POST, 'stop' ) ) );
 
+        do_action( 'cnb_finish' );
         wp_send_json( array(
                 'start' => self::cnb_time_format_( $start ),
                 'stop'  => self::cnb_time_format_( $stop ),
             )
         );
-        do_action( 'cnb_finish' );
-        wp_die();
     }
 
     public function get_plans() {
         do_action( 'cnb_init', __METHOD__ );
+        if ( ! current_user_can( 'manage_options' ) ) {
+            do_action( 'cnb_finish' );
+            wp_send_json_error( 'Unauthorized', 403 );
+        }
         global $cnb_plans;
 
-	    // Verify nonce (die immediately if failed)
-	    check_ajax_referer('cnb_get_plans');
+        // Verify nonce (die immediately if failed)
+        check_ajax_referer('cnb_get_plans');
 
         $domain_controller    = new CnbDomainController();
 
@@ -209,6 +223,7 @@ class CnbAdminAjax {
             $usd_trial_period_days = $usd_yearly_plan->trialPeriodDays;
         }
 
+        do_action( 'cnb_finish' );
         wp_send_json( array(
             'eur_per_year' => $eur_yearly_plan_year,
             'eur_per_month' => $eur_yearly_per_month,
@@ -219,49 +234,56 @@ class CnbAdminAjax {
             'usd_discount'  => $usd_discount,
             'usd_trial_period_days' => $usd_trial_period_days,
         ) );
-        do_action( 'cnb_finish' );
-        wp_die();
     }
 
     public function get_billing_portal() {
         do_action( 'cnb_init', __METHOD__ );
+        if ( ! current_user_can( 'manage_options' ) ) {
+            do_action( 'cnb_finish' );
+            wp_send_json_error( 'Unauthorized', 403 );
+        }
 
-	    // Verify nonce (die immediately if failed)
-	    check_ajax_referer('cnb_get_billing_portal');
+        // Verify nonce (die immediately if failed)
+        check_ajax_referer('cnb_get_billing_portal');
 
         $cnb_remote = new CnbAppRemote();
-        wp_send_json_success( $cnb_remote->create_billing_portal() );
         do_action( 'cnb_finish' );
-        wp_die();
+        wp_send_json_success( $cnb_remote->create_billing_portal() );
     }
 
     public function request_billing_portal() {
         do_action( 'cnb_init', __METHOD__ );
+        if ( ! current_user_can( 'manage_options' ) ) {
+            do_action( 'cnb_finish' );
+            wp_send_json_error( 'Unauthorized', 403 );
+        }
 
-	    // Verify nonce (die immediately if failed)
-	    check_ajax_referer('cnb_request_billing_portal');
+        // Verify nonce (die immediately if failed)
+        check_ajax_referer('cnb_request_billing_portal');
 
-	    $cnb_remote = new CnbAppRemote();
-	    wp_send_json_success( $cnb_remote->request_billing_portal() );
+        $cnb_remote = new CnbAppRemote();
         do_action( 'cnb_finish' );
-        wp_die();
+        wp_send_json_success( $cnb_remote->request_billing_portal() );
     }
 
     public function upgrade_to_yearly() {
         do_action( 'cnb_init', __METHOD__ );
-        $subscriptionId = trim( filter_input( INPUT_POST, 'subscriptionId', @FILTER_SANITIZE_STRING ) );
+        if ( ! current_user_can( 'manage_options' ) ) {
+            do_action( 'cnb_finish' );
+            wp_send_json_error( 'Unauthorized', 403 );
+        }
+        // Verify nonce (die immediately if failed)
+        check_ajax_referer('cnb_upgrade_to_yearly');
 
-	    // Verify nonce (die immediately if failed)
-	    check_ajax_referer('cnb_upgrade_to_yearly');
+        $subscriptionId = trim( sanitize_text_field( filter_input( INPUT_POST, 'subscriptionId' ) ) );
 
-	    $cnb_remote = new CnbAppRemote();
-		$result = $cnb_remote->upgrade_subscription_to_yearly( $subscriptionId );
-		if ( ! is_wp_error( $result ) && $result->success === true ) {
-			wp_send_json_success( $result );
-		} else {
-			wp_send_json_error( $result );
-		}
+        $cnb_remote = new CnbAppRemote();
+        $result = $cnb_remote->upgrade_subscription_to_yearly( $subscriptionId );
         do_action( 'cnb_finish' );
-        wp_die();
+        if ( ! is_wp_error( $result ) && $result->success === true ) {
+            wp_send_json_success( $result );
+        } else {
+            wp_send_json_error( $result );
+        }
     }
 }

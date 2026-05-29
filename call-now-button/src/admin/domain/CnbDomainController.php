@@ -18,7 +18,15 @@ class CnbDomainController {
      */
     public function create() {
         do_action( 'cnb_init', __METHOD__ );
-        $nonce          = filter_input( INPUT_POST, '_wpnonce', @FILTER_SANITIZE_STRING );
+        if ( ! current_user_can( 'manage_options' ) ) {
+            do_action( 'cnb_finish' );
+            wp_die(
+                esc_html__( 'You do not have sufficient permissions to access this page.' ),
+                esc_html__( 'Unauthorized' ),
+                array( 'response' => 403 )
+            );
+        }
+        $nonce          = sanitize_text_field( filter_input( INPUT_POST, '_wpnonce' ) );
         $action         = 'cnb_create_domain';
         $nonce_verified = wp_verify_nonce( $nonce, $action );
         if ( $nonce_verified ) {
@@ -26,8 +34,11 @@ class CnbDomainController {
             $domain                  = filter_input(
                 INPUT_POST,
                 'domain',
-                @FILTER_SANITIZE_STRING,
+                FILTER_DEFAULT,
                 FILTER_REQUIRE_ARRAY | FILTER_FLAG_NO_ENCODE_QUOTES );
+            if ( ! is_array( $domain ) ) {
+                $domain = array();
+            }
             $cnb_cloud_notifications = array();
 
             $processed_domain = CnbDomain::fromObject( $domain );
@@ -36,39 +47,39 @@ class CnbDomainController {
             // do the processing
             $result = CnbAdminCloud::cnb_create_domain( $cnb_cloud_notifications, $processed_domain );
 
-	        // Create link
-	        $url = admin_url( 'admin.php' );
-	        // redirect the user to the appropriate page
-			if ( is_wp_error( $result ) ) {
-				$transient_id = (new CnbHeaderNotices())->generate_notice_id();
-				$notice = CnbAdminCloud::cnb_admin_get_error_message('create', 'domain', $result);
-				set_transient( $transient_id, array( $notice ), HOUR_IN_SECONDS );
+            // Create link
+            $url = admin_url( 'admin.php' );
+            // redirect the user to the appropriate page
+            if ( is_wp_error( $result ) ) {
+                $transient_id = (new CnbHeaderNotices())->generate_notice_id();
+                $notice = CnbAdminCloud::cnb_admin_get_error_message('create', 'domain', $result);
+                set_transient( $transient_id, array( $notice ), HOUR_IN_SECONDS );
 
-				$redirect_link = add_query_arg(
-					array(
-						'page'     => CNB_SLUG . '-domains',
-						'tid'      => $transient_id,
-						'_wpnonce' => wp_create_nonce( $transient_id ),
-					),
-					$url );
-				$redirect_url = esc_url_raw( $redirect_link );
-				do_action( 'cnb_finish' );
-				wp_safe_redirect( $redirect_url );
-				exit;
-			} else {
-				$redirect_link =
-					add_query_arg(
-						array(
-							'page'   => CNB_SLUG . '-domains',
-							'action' => 'edit',
-							'id'     => $result->id,
-						),
-						$url );
-				$redirect_url  = esc_url_raw( $redirect_link );
-				do_action( 'cnb_finish' );
-				wp_safe_redirect( $redirect_url );
-				exit;
-			}
+                $redirect_link = add_query_arg(
+                    array(
+                        'page'     => CNB_SLUG . '-domains',
+                        'tid'      => $transient_id,
+                        '_wpnonce' => wp_create_nonce( $transient_id ),
+                    ),
+                    $url );
+                $redirect_url = esc_url_raw( $redirect_link );
+                do_action( 'cnb_finish' );
+                wp_safe_redirect( $redirect_url );
+                exit;
+            } else {
+                $redirect_link =
+                    add_query_arg(
+                        array(
+                            'page'   => CNB_SLUG . '-domains',
+                            'action' => 'edit',
+                            'id'     => $result->id,
+                        ),
+                        $url );
+                $redirect_url  = esc_url_raw( $redirect_link );
+                do_action( 'cnb_finish' );
+                wp_safe_redirect( $redirect_url );
+                exit;
+            }
         } else {
             do_action( 'cnb_finish' );
             wp_die( esc_html__( 'Invalid nonce specified' ), esc_html__( 'Error' ), array(
@@ -80,7 +91,15 @@ class CnbDomainController {
 
     public function update() {
         do_action( 'cnb_init', __METHOD__ );
-        $nonce          = filter_input( INPUT_POST, '_wpnonce', @FILTER_SANITIZE_STRING );
+        if ( ! current_user_can( 'manage_options' ) ) {
+            do_action( 'cnb_finish' );
+            wp_die(
+                esc_html__( 'You do not have sufficient permissions to access this page.' ),
+                esc_html__( 'Unauthorized' ),
+                array( 'response' => 403 )
+            );
+        }
+        $nonce          = sanitize_text_field( filter_input( INPUT_POST, '_wpnonce' ) );
         $action         = 'cnb_update_domain';
         $nonce_verified = wp_verify_nonce( $nonce, $action );
         if ( $nonce_verified ) {
@@ -136,13 +155,21 @@ class CnbDomainController {
      */
     public function handle_bulk_actions() {
         do_action( 'cnb_init', __METHOD__ );
+        if ( ! current_user_can( 'manage_options' ) ) {
+            do_action( 'cnb_finish' );
+            wp_die(
+                esc_html__( 'You do not have sufficient permissions to access this page.' ),
+                esc_html__( 'Unauthorized' ),
+                array( 'response' => 403 )
+            );
+        }
         $cnb_utils      = new CnbUtils();
         $nonce          = $cnb_utils->get_post_val( '_wpnonce' );
         $action         = 'bulk-cnb_list_domains';
         $nonce_verified = wp_verify_nonce( $nonce, $action );
 
         if ( $nonce_verified ) {
-            $domainIds = filter_input( INPUT_POST, 'cnb_list_domain', @FILTER_SANITIZE_STRING, FILTER_REQUIRE_ARRAY );
+            $domainIds = $cnb_utils->get_post_array( 'cnb_list_domain' );
             if ( $cnb_utils->get_post_val( 'bulk-action' ) === 'delete' ) {
                 $cnb_cloud_notifications = array();
                 foreach ( $domainIds as $domainId ) {
@@ -183,6 +210,7 @@ class CnbDomainController {
                 );
             }
         } else {
+            do_action( 'cnb_finish' );
             wp_die(
                 esc_html__( 'Invalid nonce specified' ),
                 esc_html__( 'Error' ),
@@ -194,24 +222,28 @@ class CnbDomainController {
         }
     }
 
-	public function update_timezone() {
-		global $cnb_domain;
-		do_action( 'cnb_init', __METHOD__ );
+    public function update_timezone() {
+        global $cnb_domain;
+        do_action( 'cnb_init', __METHOD__ );
+        if ( ! current_user_can( 'manage_options' ) ) {
+            do_action( 'cnb_finish' );
+            wp_send_json_error( 'Unauthorized', 403 );
+        }
 
-		// Verify nonce (die immediately if failed)
-		check_ajax_referer( 'cnb_update_domain_timezone' );
+        // Verify nonce (die immediately if failed)
+        check_ajax_referer( 'cnb_update_domain_timezone' );
 
-		$timezone             = filter_input( INPUT_POST, 'timezone', @FILTER_SANITIZE_STRING );
-		$cnb_domain->timezone = $timezone;
-		$notifications        = array();
-		CnbAdminCloud::cnb_update_domain( $notifications, $cnb_domain );
-		wp_send_json_success( array(
-			'domain'       => $cnb_domain,
-			'notification' => $notifications,
-			'timezone'     => esc_html( $timezone ),
-		) );
-		do_action( 'cnb_finish' );
-	}
+        $timezone             = sanitize_text_field( filter_input( INPUT_POST, 'timezone' ) );
+        $cnb_domain->timezone = $timezone;
+        $notifications        = array();
+        CnbAdminCloud::cnb_update_domain( $notifications, $cnb_domain );
+        do_action( 'cnb_finish' );
+        wp_send_json_success( array(
+            'domain'       => $cnb_domain,
+            'notification' => $notifications,
+            'timezone'     => esc_html( $timezone ),
+        ) );
+    }
 
     private function getDomainFromRequest() {
         $domain_controller = new CnbDomainController();
@@ -219,8 +251,11 @@ class CnbDomainController {
         $domain = filter_input(
             INPUT_POST,
             'domain',
-            @FILTER_SANITIZE_STRING,
+            FILTER_DEFAULT,
             FILTER_REQUIRE_ARRAY | FILTER_FLAG_NO_ENCODE_QUOTES );
+        if ( ! is_array( $domain ) ) {
+            $domain = array();
+        }
 
         $processed_domain = CnbDomain::fromObject( $domain );
         // Alligator alert - this is different from other update functions!!
@@ -238,49 +273,59 @@ class CnbDomainController {
         return $cnb_cloud_notifications;
     }
 
-	/**
-	 * Via the quick action "Delete" (called admin_post_cnb_delete_domain), to be able to delete a Domain.
-	 *
-	 * Since "admin-post.php" is used, that means there is no output (and we can/should safely redirect to the Button overview after deleting).
-	 *
-	 * @return void
-	 */
-	public function delete() {
-		$cnb_utils = new CnbUtils();
-		$id        = $cnb_utils->get_query_val( 'id', null );
-		$nonce     = $cnb_utils->get_query_val( '_wpnonce', null );
-		$action    = 'cnb_delete_domain';
+    /**
+     * Via the quick action "Delete" (called admin_post_cnb_delete_domain), to be able to delete a Domain.
+     *
+     * Since "admin-post.php" is used, that means there is no output (and we can/should safely redirect to the Button overview after deleting).
+     *
+     * @return void
+     */
+    public function delete() {
+        do_action( 'cnb_init', __METHOD__ );
+        if ( ! current_user_can( 'manage_options' ) ) {
+            do_action( 'cnb_finish' );
+            wp_die(
+                esc_html__( 'You do not have sufficient permissions to access this page.' ),
+                esc_html__( 'Unauthorized' ),
+                array( 'response' => 403 )
+            );
+        }
+        $cnb_utils = new CnbUtils();
+        $id        = $cnb_utils->get_query_val( 'id', null );
+        $nonce     = $cnb_utils->get_query_val( '_wpnonce', null );
+        $action    = 'cnb_delete_domain';
 
-		if ( ! wp_verify_nonce( $nonce, $action ) ) {
-			do_action( 'cnb_finish' );
-			wp_die( esc_html__( 'Invalid nonce specified' ), esc_html__( 'Error' ), array(
-				'response'  => 403,
-				'back_link' => true,
-			) );
-		}
+        if ( ! wp_verify_nonce( $nonce, $action ) ) {
+            do_action( 'cnb_finish' );
+            wp_die( esc_html__( 'Invalid nonce specified' ), esc_html__( 'Error' ), array(
+                'response'  => 403,
+                'back_link' => true,
+            ) );
+        }
 
-		$cnb_cloud_notifications = array();
-		$domain                  = new CnbDomain();
-		$domain->id              = $id;
-		CnbAdminCloud::cnb_delete_domain( $cnb_cloud_notifications, $domain );
+        $cnb_cloud_notifications = array();
+        $domain                  = new CnbDomain();
+        $domain->id              = $id;
+        CnbAdminCloud::cnb_delete_domain( $cnb_cloud_notifications, $domain );
 
-		// Save notices
-		$transient_id = (new CnbHeaderNotices())->generate_notice_id();
-		set_transient( $transient_id, $cnb_cloud_notifications, HOUR_IN_SECONDS );
+        // Save notices
+        $transient_id = (new CnbHeaderNotices())->generate_notice_id();
+        set_transient( $transient_id, $cnb_cloud_notifications, HOUR_IN_SECONDS );
 
-		// Create link
-		$redirect_link =
-			add_query_arg(
-				array(
-					'page'     => 'call-now-button-domains',
-					'tid'      => $transient_id,
-					'_wpnonce' => wp_create_nonce( $transient_id ),
-				),
-				admin_url( 'admin.php' ) );
-		$redirect_url  = esc_url_raw( $redirect_link );
-		do_action( 'cnb_finish' );
-		wp_safe_redirect( $redirect_url );
-	}
+        // Create link
+        $redirect_link =
+            add_query_arg(
+                array(
+                    'page'     => 'call-now-button-domains',
+                    'tid'      => $transient_id,
+                    '_wpnonce' => wp_create_nonce( $transient_id ),
+                ),
+                admin_url( 'admin.php' ) );
+        $redirect_url  = esc_url_raw( $redirect_link );
+        do_action( 'cnb_finish' );
+        wp_safe_redirect( $redirect_url );
+        exit;
+    }
 
     /**
      * Convert an "order" integer into a proper zIndex (10 to 2147483647, for example)

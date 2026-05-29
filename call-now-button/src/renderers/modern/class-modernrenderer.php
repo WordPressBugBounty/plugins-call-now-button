@@ -125,7 +125,7 @@ class ModernRenderer extends Renderer {
 
         $cnb_aria_label = $cnb_has_text ? '' : 'aria-label="Call Now Button"';
 
-	    $cnb_call_link = '<a ' . $cnb_aria_label;
+        $cnb_call_link = '<a ' . $cnb_aria_label;
         $cnb_call_link .= ' href="tel:' . esc_attr( $cnb_number ) . '"';
         $cnb_call_link .= ' id="callnowbutton"';
         $cnb_call_link .= ' class="' . esc_attr( implode(' ', $cnb_classnames ) ) . '"';
@@ -254,7 +254,7 @@ class ModernRenderer extends Renderer {
     private function create_button_text() {
         $cnb_options = get_option( 'cnb' );
 
-	    $cnb_has_text = isset( $cnb_options['text'] ) && $cnb_options['text'] !== '';
+        $cnb_has_text = isset( $cnb_options['text'] ) && $cnb_options['text'] !== '';
         $cnb_is_full_width = $cnb_options['appearance'] == 'full' || $cnb_options['appearance'] == 'tfull';
         $cnb_hide_icon     = isset( $cnb_options['hideIcon'] ) && $cnb_options['hideIcon'] == 1;
 
@@ -329,7 +329,7 @@ class ModernRenderer extends Renderer {
         $cnb_classnames[] = ' cnb-zindex-' . esc_attr( $this->get_zindex() );
 
         // Button has text?
-	    if ( isset( $cnb_options['text'] ) && $cnb_options['text'] !== '' ) {
+        if ( isset( $cnb_options['text'] ) && $cnb_options['text'] !== '' ) {
             $cnb_classnames[] = ' cnb-text';
         }
 

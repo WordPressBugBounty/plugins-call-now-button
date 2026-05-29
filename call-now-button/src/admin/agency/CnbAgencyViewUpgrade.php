@@ -18,7 +18,7 @@ class CnbAgencyViewUpgrade {
 
     public function render() {
         wp_enqueue_script( CNB_SLUG . '-profile' );
-	    wp_enqueue_script( CNB_SLUG . '-domain-upgrade' );
+        wp_enqueue_script( CNB_SLUG . '-domain-upgrade' );
 
         add_action( 'cnb_header_name', array( $this, 'header' ) );
         do_action( 'cnb_header' );
@@ -46,17 +46,17 @@ class CnbAgencyViewUpgrade {
             echo '<p>Error: ' . esc_html( $notice->message ) . '!</p>';
             echo '</div>';
         }
-        $upgradeStatus     = filter_input( INPUT_GET, 'upgrade', @FILTER_SANITIZE_STRING );
+        $upgradeStatus     = sanitize_text_field( filter_input( INPUT_GET, 'upgrade' ) );
 
-	    /** @var CnbAgencyPlan[] $cnb_agency_plans */
-	    global $cnb_agency_plans;
+        /** @var CnbAgencyPlan[] $cnb_agency_plans */
+        global $cnb_agency_plans;
 
-	    $agency_20_plans = array_filter($cnb_agency_plans, function ($plan) {
-		    return $plan->seats === 20 && $plan->interval === 'monthly';
-	    });
-	    $agency_20_plan = array_shift($agency_20_plans);
+        $agency_20_plans = array_filter($cnb_agency_plans, function ($plan) {
+            return $plan->seats === 20 && $plan->interval === 'monthly';
+        });
+        $agency_20_plan = array_shift($agency_20_plans);
 
-	    if ( $upgradeStatus === 'success?payment=cancelled' ) {
+        if ( $upgradeStatus === 'success?payment=cancelled' ) {
             wp_enqueue_script( CNB_SLUG . '-tally' ); ?>
             
             <div class="cnb-welcome-blocks  cnb_font_light">
@@ -137,8 +137,8 @@ class CnbAgencyViewUpgrade {
      * @return CnbNotice
      */
     private function get_upgrade_notice( ) {
-        $upgradeStatus     = filter_input( INPUT_GET, 'upgrade', @FILTER_SANITIZE_STRING );
-        $checkoutSessionId = filter_input( INPUT_GET, 'checkout_session_id', @FILTER_SANITIZE_STRING );
+        $upgradeStatus     = sanitize_text_field( filter_input( INPUT_GET, 'upgrade' ) );
+        $checkoutSessionId = sanitize_text_field( filter_input( INPUT_GET, 'checkout_session_id' ) );
         $remote_payment_api = new CnbAppRemotePayment();
         if ( $upgradeStatus === 'success?payment=success' ) {
             // Get checkout Session Details

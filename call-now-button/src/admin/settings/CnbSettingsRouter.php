@@ -15,10 +15,10 @@ class CnbSettingsRouter {
      * @return void
      */
     public function render() {
-		add_filter('cnb_admin_notice_filter', function ($notice) {
-			if ($notice && $notice->name === 'cnb-timezone-missing') return null;
-			return $notice;
-		});
+        add_filter('cnb_admin_notice_filter', function ($notice) {
+            if ($notice && $notice->name === 'cnb-timezone-missing') return null;
+            return $notice;
+        });
         do_action( 'cnb_init', __METHOD__ );
 
         $action = ( new CnbUtils() )->get_query_val( 'action', null );

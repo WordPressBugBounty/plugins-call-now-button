@@ -141,13 +141,13 @@ class CnbConditionViewEdit {
                             </option>
                         <?php } ?>
 
-	                    <?php
-	                    foreach ( ( new CnbAdminFunctions() )->cnb_get_condition_match_types_chat() as $condition_match_type_key => $condition_match_type_value ) { ?>
+                        <?php
+                        foreach ( ( new CnbAdminFunctions() )->cnb_get_condition_match_types_chat() as $condition_match_type_key => $condition_match_type_value ) { ?>
                             <option class="conditionType conditionType_CHAT"
                                     value="<?php echo esc_attr( $condition_match_type_key ) ?>"<?php selected( $condition_match_type_key, $condition->matchType ) ?>>
-			                    <?php echo esc_html( $condition_match_type_value ) ?>
+                                <?php echo esc_html( $condition_match_type_value ) ?>
                             </option>
-	                    <?php } ?>
+                        <?php } ?>
                     </select>
                     <?php if ( $cnb_domain->type === 'STARTER' ) { ?>
                         <p class="description">
@@ -174,7 +174,7 @@ class CnbConditionViewEdit {
     function render() {
         $cnb_utils    = new CnbUtils();
         $cnb_remote   = new CnbAppRemote();
-        $condition_id = filter_input( INPUT_GET, 'id', @FILTER_SANITIZE_STRING );
+        $condition_id = sanitize_text_field( filter_input( INPUT_GET, 'id' ) );
         $condition    = new CnbCondition();
         if ( strlen( $condition_id ) > 0 && $condition_id !== 'new' ) {
             $condition = $cnb_remote->get_condition( $condition_id );

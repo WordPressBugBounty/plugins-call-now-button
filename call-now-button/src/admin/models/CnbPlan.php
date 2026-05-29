@@ -85,13 +85,13 @@ class CnbPlan {
         );
     }
 
-	/**
-	 * @param float $amount 6.03
-	 * @param string $currency eur or usd
-	 *
-	 * @return string formatted in the proper language format (6.03 $, or €6,03, etc)
-	 */
-	public static function get_formatted_amount( $amount, $currency ) {
-		return cnb_get_formatted_amount($amount, $currency);
-	}
+    /**
+     * @param float $amount 6.03
+     * @param string $currency eur or usd
+     *
+     * @return string formatted in the proper language format (6.03 $, or €6,03, etc)
+     */
+    public static function get_formatted_amount( $amount, $currency ) {
+        return cnb_get_formatted_amount($amount, $currency);
+    }
 }

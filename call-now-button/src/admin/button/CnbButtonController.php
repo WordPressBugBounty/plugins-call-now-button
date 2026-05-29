@@ -23,6 +23,14 @@ class CnbButtonController {
      */
     public function create() {
         do_action( 'cnb_init', __METHOD__ );
+        if ( ! current_user_can( 'manage_options' ) ) {
+            do_action( 'cnb_finish' );
+            wp_die(
+                esc_html__( 'You do not have sufficient permissions to access this page.' ),
+                esc_html__( 'Unauthorized' ),
+                array( 'response' => 403 )
+            );
+        }
         /**
          * @param $button CnbButton|WP_Error
          * @param $actions (CnbAction|WP_Error)[]
@@ -34,12 +42,12 @@ class CnbButtonController {
             $cnb_cloud_notifications = array();
             $new_button              = CnbAdminCloud::cnb_create_button( $cnb_cloud_notifications, $button );
 
-			if ($actions != null) {
-				CnbAdminCloud::cnb_update_button_and_conditions( $new_button, $actions );
-			}
+            if ($actions != null) {
+                CnbAdminCloud::cnb_update_button_and_conditions( $new_button, $actions );
+            }
 
-	        // redirect the user to the appropriate page
-            $tab          = filter_input( INPUT_POST, 'tab', @FILTER_SANITIZE_STRING );
+            // redirect the user to the appropriate page
+            $tab          = sanitize_text_field( filter_input( INPUT_POST, 'tab' ) );
             $transient_id = (new CnbHeaderNotices())->generate_notice_id();
             set_transient( $transient_id, $cnb_cloud_notifications, HOUR_IN_SECONDS );
 
@@ -73,61 +81,64 @@ class CnbButtonController {
         do_action( 'cnb_finish' );
     }
 
-	/**
-	 * This is called to update the button
-	 * via `call-now-button.php#cnb_create_<type>_button`
-	 */
-	public function create_ajax() {
-		do_action( 'cnb_init', __METHOD__ );
-		/**
-		 * @param $button CnbButton
-		 * @param $actions CnbAction[]
-		 *
-		 * @return void
-		 */
-		$inner = function ( $button, $actions ) {
-			// Do the processing
-			$cnb_cloud_notifications = array();
-			$new_button              = CnbAdminCloud::cnb_create_button( $cnb_cloud_notifications, $button );
+    /**
+     * This is called to update the button
+     * via `call-now-button.php#cnb_create_<type>_button`
+     */
+    public function create_ajax() {
+        do_action( 'cnb_init', __METHOD__ );
+        if ( ! current_user_can( 'manage_options' ) ) {
+            do_action( 'cnb_finish' );
+            wp_send_json_error( 'Unauthorized', 403 );
+        }
+        /**
+         * @param $button CnbButton
+         * @param $actions CnbAction[]
+         *
+         * @return void
+         */
+        $inner = function ( $button, $actions ) {
+            // Do the processing
+            $cnb_cloud_notifications = array();
+            $new_button              = CnbAdminCloud::cnb_create_button( $cnb_cloud_notifications, $button );
 
-			if ($actions != null) {
-				CnbAdminCloud::cnb_update_button_and_conditions( $new_button, $actions );
-			}
+            if ($actions != null) {
+                CnbAdminCloud::cnb_update_button_and_conditions( $new_button, $actions );
+            }
 
-			// redirect the user to the appropriate page
-			$tab          = filter_input( INPUT_POST, 'tab', @FILTER_SANITIZE_STRING );
-			$transient_id = (new CnbHeaderNotices())->generate_notice_id();
-			set_transient( $transient_id, $cnb_cloud_notifications, HOUR_IN_SECONDS );
+            // redirect the user to the appropriate page
+            $tab          = sanitize_text_field( filter_input( INPUT_POST, 'tab' ) );
+            $transient_id = (new CnbHeaderNotices())->generate_notice_id();
+            set_transient( $transient_id, $cnb_cloud_notifications, HOUR_IN_SECONDS );
 
-			$new_button_type = null;
-			$new_button_id   = null;
-			if ( $new_button instanceof CnbButton ) {
-				$new_button_type = strtolower( $new_button->type );
-				$new_button_id   = $new_button->id;
-			}
+            $new_button_type = null;
+            $new_button_id   = null;
+            if ( $new_button instanceof CnbButton ) {
+                $new_button_type = strtolower( $new_button->type );
+                $new_button_id   = $new_button->id;
+            }
 
-			// Create link
-			$url           = admin_url( 'admin.php' );
-			$redirect_link =
-				add_query_arg(
-					array(
-						'page'     => 'call-now-button',
-						'action'   => 'edit',
-						'type'     => $new_button_type,
-						'id'       => $new_button_id,
-						'tid'      => $transient_id,
-						'tab'      => $tab,
-						'_wpnonce' => wp_create_nonce( $transient_id ),
-					),
-					$url );
-			do_action( 'cnb_finish' );
-			wp_send_json(array( 'redirect_link' => $redirect_link ));
-			exit;
-		};
+            // Create link
+            $url           = admin_url( 'admin.php' );
+            $redirect_link =
+                add_query_arg(
+                    array(
+                        'page'     => 'call-now-button',
+                        'action'   => 'edit',
+                        'type'     => $new_button_type,
+                        'id'       => $new_button_id,
+                        'tid'      => $transient_id,
+                        'tab'      => $tab,
+                        '_wpnonce' => wp_create_nonce( $transient_id ),
+                    ),
+                    $url );
+            do_action( 'cnb_finish' );
+            wp_send_json(array( 'redirect_link' => $redirect_link ));
+        };
 
-		$this->create_and_update( $inner );
-		do_action( 'cnb_finish' );
-	}
+        $this->create_and_update( $inner );
+        do_action( 'cnb_finish' );
+    }
 
     /**
      * This is called to update the button
@@ -135,6 +146,14 @@ class CnbButtonController {
      */
     public function update() {
         do_action( 'cnb_init', __METHOD__ );
+        if ( ! current_user_can( 'manage_options' ) ) {
+            do_action( 'cnb_finish' );
+            wp_die(
+                esc_html__( 'You do not have sufficient permissions to access this page.' ),
+                esc_html__( 'Unauthorized' ),
+                array( 'response' => 403 )
+            );
+        }
         /**
          * @param $button CnbButton|WP_Error
          * @param $actions (CnbAction|WP_Error)[]
@@ -147,7 +166,7 @@ class CnbButtonController {
             $result = CnbAdminCloud::cnb_update_button_and_conditions( $button, $actions, $conditions );
 
             // redirect the user to the appropriate page
-            $tab          = filter_input( INPUT_POST, 'tab', @FILTER_SANITIZE_STRING );
+            $tab          = sanitize_text_field( filter_input( INPUT_POST, 'tab' ) );
             $transient_id = (new CnbHeaderNotices())->generate_notice_id();
             set_transient( $transient_id, $result, HOUR_IN_SECONDS );
 
@@ -175,24 +194,24 @@ class CnbButtonController {
     }
 
     private function create_and_update( $closure ) {
-        $nonce = filter_input( INPUT_POST, '_wpnonce_button', @FILTER_SANITIZE_STRING );
-        if ( isset( $_REQUEST['_wpnonce_button'] ) && wp_verify_nonce( $nonce, 'cnb-button-edit' ) ) {
+        $nonce = sanitize_text_field( filter_input( INPUT_POST, '_wpnonce_button' ) );
+        if ( isset( $_POST['_wpnonce_button'] ) && wp_verify_nonce( $nonce, 'cnb-button-edit' ) ) {
 
             // sanitize the input
             $button     = filter_input(
                 INPUT_POST,
                 'button',
-                @FILTER_SANITIZE_STRING,
+                FILTER_DEFAULT,
                 FILTER_REQUIRE_ARRAY | FILTER_FLAG_NO_ENCODE_QUOTES );
             $actions    = filter_input(
                 INPUT_POST,
                 'actions',
-                @FILTER_SANITIZE_STRING,
+                FILTER_DEFAULT,
                 FILTER_REQUIRE_ARRAY | FILTER_FLAG_NO_ENCODE_QUOTES );
             $conditions = filter_input(
                 INPUT_POST,
                 'conditions',
-                @FILTER_SANITIZE_STRING,
+                FILTER_DEFAULT,
                 FILTER_REQUIRE_ARRAY | FILTER_FLAG_NO_ENCODE_QUOTES );
 
             if ( $conditions === null ) {
@@ -251,6 +270,14 @@ class CnbButtonController {
      */
     public function handle_bulk_actions() {
         do_action( 'cnb_init', __METHOD__ );
+        if ( ! current_user_can( 'manage_options' ) ) {
+            do_action( 'cnb_finish' );
+            wp_die(
+                esc_html__( 'You do not have sufficient permissions to access this page.' ),
+                esc_html__( 'Unauthorized' ),
+                array( 'response' => 403 )
+            );
+        }
         $cnb_utils      = new CnbUtils();
         $cnb_remote     = new CnbAppRemote();
         $nonce          = $cnb_utils->get_post_val( '_wpnonce' );
@@ -258,8 +285,8 @@ class CnbButtonController {
         $nonce_verified = wp_verify_nonce( $nonce, $action );
 
         if ( $nonce_verified ) {
-            $buttonIds      = filter_input( INPUT_POST, 'cnb_list_button', @FILTER_SANITIZE_STRING, FILTER_REQUIRE_ARRAY );
-            $current_action = filter_input( INPUT_POST, 'bulk-action', @FILTER_SANITIZE_STRING );
+            $buttonIds = $cnb_utils->get_post_array( 'cnb_list_button' );
+            $current_action = sanitize_text_field( filter_input( INPUT_POST, 'bulk-action' ) );
 
             switch ( $current_action ) {
                 case 'enable':
@@ -324,6 +351,15 @@ class CnbButtonController {
      * @return void
      */
     public function enable_disable() {
+        do_action( 'cnb_init', __METHOD__ );
+        if ( ! current_user_can( 'manage_options' ) ) {
+            do_action( 'cnb_finish' );
+            wp_die(
+                esc_html__( 'You do not have sufficient permissions to access this page.' ),
+                esc_html__( 'Unauthorized' ),
+                array( 'response' => 403 )
+            );
+        }
         $cnb_utils = new CnbUtils();
         $cnb_remote = new CnbAppRemote();
         // "enable" or "disable"
@@ -347,51 +383,67 @@ class CnbButtonController {
                 $notice = CnbAdminCloud::cnb_admin_get_error_message( $action_verb, 'button', $updated_button );
             }
             CnbAdminNotices::get_instance()->notice( $notice );
+            do_action( 'cnb_finish' );
+        } else {
+            do_action( 'cnb_finish' );
+            wp_die( esc_html__( 'Invalid nonce specified' ), esc_html__( 'Error' ), array(
+                'response'  => 403,
+                'back_link' => true,
+            ) );
         }
     }
 
-	/**
-	 * Via the quick action "Delete" (called admin_post_cnb_delete_button), to be able to delete a Button.
-	 *
-	 * Since "admin-post.php" is used, that means there is no output (and we can/should safely redirect to the Button overview after deleting).
-	 *
-	 * @return void
-	 */
-	public function delete() {
-		do_action( 'cnb_init', __METHOD__ );
-		$cnb_utils = new CnbUtils();
-		$id        = $cnb_utils->get_query_val( 'id', null );
-		$nonce     = $cnb_utils->get_query_val( '_wpnonce', null );
-		$action    = 'cnb_delete_button';
+    /**
+     * Via the quick action "Delete" (called admin_post_cnb_delete_button), to be able to delete a Button.
+     *
+     * Since "admin-post.php" is used, that means there is no output (and we can/should safely redirect to the Button overview after deleting).
+     *
+     * @return void
+     */
+    public function delete() {
+        do_action( 'cnb_init', __METHOD__ );
+        if ( ! current_user_can( 'manage_options' ) ) {
+            do_action( 'cnb_finish' );
+            wp_die(
+                esc_html__( 'You do not have sufficient permissions to access this page.' ),
+                esc_html__( 'Unauthorized' ),
+                array( 'response' => 403 )
+            );
+        }
+        $cnb_utils = new CnbUtils();
+        $id        = $cnb_utils->get_query_val( 'id', null );
+        $nonce     = $cnb_utils->get_query_val( '_wpnonce', null );
+        $action    = 'cnb_delete_button';
 
-		if ( ! wp_verify_nonce( $nonce, $action ) ) {
-			do_action( 'cnb_finish' );
-			wp_die( esc_html__( 'Invalid nonce specified' ), esc_html__( 'Error' ), array(
-				'response'  => 403,
-				'back_link' => true,
-			) );
-		}
+        if ( ! wp_verify_nonce( $nonce, $action ) ) {
+            do_action( 'cnb_finish' );
+            wp_die( esc_html__( 'Invalid nonce specified' ), esc_html__( 'Error' ), array(
+                'response'  => 403,
+                'back_link' => true,
+            ) );
+        }
 
-		$cnb_cloud_notifications = array();
-		$button                  = new CnbButton();
-		$button->id              = $id;
-		CnbAdminCloud::cnb_delete_button( $cnb_cloud_notifications, $button );
+        $cnb_cloud_notifications = array();
+        $button                  = new CnbButton();
+        $button->id              = $id;
+        CnbAdminCloud::cnb_delete_button( $cnb_cloud_notifications, $button );
 
-		// Save notices
-		$transient_id = (new CnbHeaderNotices())->generate_notice_id();
-		set_transient( $transient_id, $cnb_cloud_notifications, HOUR_IN_SECONDS );
+        // Save notices
+        $transient_id = (new CnbHeaderNotices())->generate_notice_id();
+        set_transient( $transient_id, $cnb_cloud_notifications, HOUR_IN_SECONDS );
 
-		// Create link
-		$redirect_link =
-			add_query_arg(
-				array(
-					'page'     => 'call-now-button',
-					'tid'      => $transient_id,
-					'_wpnonce' => wp_create_nonce( $transient_id ),
-				),
-				admin_url( 'admin.php' ) );
-		$redirect_url  = esc_url_raw( $redirect_link );
-		do_action( 'cnb_finish' );
-		wp_safe_redirect( $redirect_url );
-	}
+        // Create link
+        $redirect_link =
+            add_query_arg(
+                array(
+                    'page'     => 'call-now-button',
+                    'tid'      => $transient_id,
+                    '_wpnonce' => wp_create_nonce( $transient_id ),
+                ),
+                admin_url( 'admin.php' ) );
+        $redirect_url  = esc_url_raw( $redirect_link );
+        do_action( 'cnb_finish' );
+        wp_safe_redirect( $redirect_url );
+        exit;
+    }
 }

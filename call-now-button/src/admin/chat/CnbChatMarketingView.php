@@ -7,16 +7,16 @@ defined( 'ABSPATH' ) || die( '-1' );
 
 class CnbChatMarketingView {
     public function render() {
-	    // Remove the notice, this payment page will explain it further
-	    add_filter( 'cnb_admin_notice_filter', function ( $notice ) {
-		    if ( $notice && $notice->name === 'cnb-pro-chat-notice' ) return null;
-		    if ( $notice && $notice->name === 'cnb-starter-chat-notice' ) return null;
-		    if ( $notice && $notice->name === 'cnb-show-advanced-notice' ) return null;
+        // Remove the notice, this payment page will explain it further
+        add_filter( 'cnb_admin_notice_filter', function ( $notice ) {
+            if ( $notice && $notice->name === 'cnb-pro-chat-notice' ) return null;
+            if ( $notice && $notice->name === 'cnb-starter-chat-notice' ) return null;
+            if ( $notice && $notice->name === 'cnb-show-advanced-notice' ) return null;
 
-		    return $notice;
-	    } );
+            return $notice;
+        } );
 
-	    add_action('cnb_header_name', array( $this, 'header' ));
+        add_action('cnb_header_name', array( $this, 'header' ));
         do_action('cnb_header');
 
         $this->render_content();

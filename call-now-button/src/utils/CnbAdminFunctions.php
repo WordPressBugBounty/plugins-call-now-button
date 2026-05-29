@@ -42,7 +42,7 @@ class CnbAdminFunctions {
             'SINGLE' => 'Single button',
             'FULL'   => 'Buttonbar',
             'MULTI'  => 'Multibutton',
-	        'DOTS'   => 'Dots',
+            'DOTS'   => 'Dots',
         );
     }
 
@@ -57,8 +57,8 @@ class CnbAdminFunctions {
      */
     function cnb_get_action_types(): array {
         $all_types = array(
-	        'PHONE'    => new CnbActionType('PHONE', '💬 Phone', array( 'STARTER', 'PRO', 'FREE' )),
-	        'BOOKING'  => new CnbActionType('BOOKING', '💬 Booking slots', array( 'PRO' )),
+            'PHONE'    => new CnbActionType('PHONE', '💬 Phone', array( 'STARTER', 'PRO', 'FREE' )),
+            'BOOKING'  => new CnbActionType('BOOKING', '💬 Booking slots', array( 'PRO' )),
             'CHAT'     => new CnbActionType('CHAT', '💬 Live chat', array( 'PRO' )),
             'EMAIL'    => new CnbActionType('EMAIL', '✉️ Email', array( 'STARTER', 'PRO', 'FREE' )),
             'SMS'      => new CnbActionType('SMS', '💬 SMS/Text', array( 'STARTER', 'PRO', 'FREE' )),
@@ -79,16 +79,16 @@ class CnbAdminFunctions {
             'WECHAT'   => new CnbActionType('WECHAT', '💬 WeChat', array( 'STARTER', 'PRO', 'FREE' )),
         );
 
-		return apply_filters('cnb_get_action_types', $all_types);
+        return apply_filters('cnb_get_action_types', $all_types);
     }
 
-	function get_display_modes() {
-		return array(
-			'MOBILE_ONLY' => 'Mobile only',
-			'DESKTOP_ONLY' => 'Desktop only',
-			'ALWAYS' => 'All screens',
-		);
-	}
+    function get_display_modes() {
+        return array(
+            'MOBILE_ONLY' => 'Mobile only',
+            'DESKTOP_ONLY' => 'Desktop only',
+            'ALWAYS' => 'All screens',
+        );
+    }
 
     function cnb_get_condition_filter_types() {
         return array(
@@ -98,7 +98,7 @@ class CnbAdminFunctions {
     }
 
     function cnb_get_condition_types() {
-		//TODO Check the ROLE_CHAT_USER and only include the chat condition if the user has the role
+        //TODO Check the ROLE_CHAT_USER and only include the chat condition if the user has the role
 
         $all_types = array(
             'URL' => array(
@@ -110,30 +110,30 @@ class CnbAdminFunctions {
                 'proOnly' => true,
                 ),
             'CHAT' => array(
-	            'name' => 'Chat',
-	            'proOnly' => true,
+                'name' => 'Chat',
+                'proOnly' => true,
             ),
         );
-		return apply_filters('cnb_get_condition_types', $all_types);
+        return apply_filters('cnb_get_condition_types', $all_types);
     }
 
-	/**
-	 * Only users with the CHAT_USER role can create CHAT conditions
-	 *
-	 * @param array $condition_types
-	 *
-	 * @return array
-	 */
-	function filter_condition_types( $condition_types ) {
-		$chat_enabled = (new CnbUtils())->is_chat_api_enabled();
+    /**
+     * Only users with the CHAT_USER role can create CHAT conditions
+     *
+     * @param array $condition_types
+     *
+     * @return array
+     */
+    function filter_condition_types( $condition_types ) {
+        $chat_enabled = (new CnbUtils())->is_chat_api_enabled();
 
-		// remove CHAT key if chat is not enabled for this user
-		if ( !$chat_enabled ) {
-			unset( $condition_types['CHAT'] );
-		}
+        // remove CHAT key if chat is not enabled for this user
+        if ( !$chat_enabled ) {
+            unset( $condition_types['CHAT'] );
+        }
 
-		return $condition_types;
-	}
+        return $condition_types;
+    }
 
     /**
      * These apply to URL only
@@ -171,16 +171,16 @@ class CnbAdminFunctions {
         );
     }
 
-	/**
-	 * These apply to GEO only
-	 *
-	 * @return string[]
-	 */
-	function cnb_get_condition_match_types_chat() {
-		return array(
-			'AGENTS_AVAILABLE'    => 'Agents are available',
-		);
-	}
+    /**
+     * These apply to GEO only
+     *
+     * @return string[]
+     */
+    function cnb_get_condition_match_types_chat() {
+        return array(
+            'AGENTS_AVAILABLE'    => 'Agents are available',
+        );
+    }
     /**
      * @param array $original Array of "daysOfWeek", index 0 == Monday, values should be strings and contain "true"
      * in order to be evaulated correctly.

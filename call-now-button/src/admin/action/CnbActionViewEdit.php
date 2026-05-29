@@ -151,7 +151,7 @@ class CnbActionViewEdit {
         // For the image selector
         wp_enqueue_media();
 
-	    (new Preview())->register_preview_data();
+        (new Preview())->register_preview_data();
         // Uses domain timezone if no timezone can be found
         $timezone                        = ( isset( $action->schedule ) && ! empty( $action->schedule->timezone ) ) ? $action->schedule->timezone : ( isset( $domain ) ? $domain->timezone : null );
         $action_tz_different_from_domain = isset( $domain ) && ! empty( $domain->timezone ) && $domain->timezone !== $timezone;
@@ -193,8 +193,8 @@ class CnbActionViewEdit {
                             <option
                                     value="<?php echo esc_attr( $action_type_key ) ?>"
                                 <?php selected( $action_type_value->type, $action->actionType ) ?>
-	                            <?php if (!$isPro && !in_array($domain_type, $action_type_value->plans)) { echo ' disabled="disabled"'; } ?>>
-	                            <?php echo esc_html( $action_type_value->name ) ?>
+                                <?php if (!$isPro && !in_array($domain_type, $action_type_value->plans)) { echo ' disabled="disabled"'; } ?>>
+                                <?php echo esc_html( $action_type_value->name ) ?>
                                 <?php if (!$isPro && !in_array($domain_type, $action_type_value->plans)) { echo ' (PRO)'; } ?>
                             </option>
                         <?php } ?>
@@ -236,11 +236,11 @@ class CnbActionViewEdit {
                     <p class="description cnb-action-properties cnb-action-properties-VIBER cnb-action-properties-viber-chat">For Viber Bot change <i>Chat type</i> below.</p>
                 </td>
             </tr>
-	        <?php if ($button->type === 'DOTS') { ?>
+            <?php if ($button->type === 'DOTS') { ?>
         <input id="buttonTextField" type="hidden"
                 name="actions[<?php echo esc_attr( $action->id ) ?>][labelText]"
                 value="<?php echo esc_attr( $action->labelText ) ?>"/>
-	        <?php } else { ?>
+            <?php } else { ?>
             <tr class="button-text cnb_hide_on_modal">
                 <th scope="row"><label for="buttonTextField">Button label</label></th>
                 <td>
@@ -402,32 +402,32 @@ class CnbActionViewEdit {
         <?php
     }
 
-	/**
+    /**
      * @param $action CnbAction
-	 * @param $button CnbButton
+     * @param $button CnbButton
      *
-	 * @return void
-	 */
+     * @return void
+     */
     private function render_action_settings($action, $button) {
-	    $icon_picker = new ActionIconPicker();
-	    $icon_picker->render($action, $button);
-	    $icon_picker->render_icon_color_chooser($action, $button);
+        $icon_picker = new ActionIconPicker();
+        $icon_picker->render($action, $button);
+        $icon_picker->render_icon_color_chooser($action, $button);
 
-	    (new ActionSettingsSms())->render($action);
-	    (new ActionSettingsWhatsapp())->render($action, $button);
-	    (new ActionSettingsFacebook())->render($action, $button);
-	    (new ActionSettingsEmail())->render($action);
-	    (new ActionSettingsLink())->render($action);
-	    (new ActionSettingsMap())->render($action);
+        (new ActionSettingsSms())->render($action);
+        (new ActionSettingsWhatsapp())->render($action, $button);
+        (new ActionSettingsFacebook())->render($action, $button);
+        (new ActionSettingsEmail())->render($action);
+        (new ActionSettingsLink())->render($action);
+        (new ActionSettingsMap())->render($action);
         (new ActionSettingsBooking())->render( $action, $button );
-	    (new ActionSettingsIframe())->render($action);
-	    (new ActionSettingsTally())->render($action);
-	    (new ActionSettingsIntercom())->render($action);
-	    (new ActionSettingsSkype())->render($action);
-	    (new ActionSettingsZalo())->render($action);
-	    (new ActionSettingsViber())->render($action);
-	    (new ActionSettingsLine())->render($action);
-	    (new ActionSettingsWeChat())->render($action);
+        (new ActionSettingsIframe())->render($action);
+        (new ActionSettingsTally())->render($action);
+        (new ActionSettingsIntercom())->render($action);
+        (new ActionSettingsSkype())->render($action);
+        (new ActionSettingsZalo())->render($action);
+        (new ActionSettingsViber())->render($action);
+        (new ActionSettingsLine())->render($action);
+        (new ActionSettingsWeChat())->render($action);
         (new ActionSettingsChat())->render( $action );
     }
     /**
@@ -464,7 +464,7 @@ class CnbActionViewEdit {
 
     public function render() {
         $cnb_remote          = new CnbAppRemote();
-        $action_id           = filter_input( INPUT_GET, 'id', @FILTER_SANITIZE_STRING );
+        $action_id           = sanitize_text_field( filter_input( INPUT_GET, 'id' ) );
         $action              = new CnbAction();
         $action->id          = 'new';
         $action->actionType  = 'PHONE';
@@ -519,7 +519,7 @@ class CnbActionViewEdit {
         wp_enqueue_script( CNB_SLUG . '-action-edit' );
 
 
-	    do_action( 'cnb_header' );
+        do_action( 'cnb_header' );
 
         if ( is_wp_error( $action ) ) {
             return;

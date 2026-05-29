@@ -110,8 +110,8 @@ class CnbButtonView {
 
         // If users come to this page before activating, we need the -settings/-premium-activation JS for the activation notice
         wp_enqueue_script( CNB_SLUG . '-settings' );
-	    wp_enqueue_script( CNB_SLUG . '-premium-activation' );
-	    wp_enqueue_script( CNB_SLUG . '-button-overview' );
+        wp_enqueue_script( CNB_SLUG . '-premium-activation' );
+        wp_enqueue_script( CNB_SLUG . '-button-overview' );
 
         add_action( 'cnb_header_name', array( $this, 'header' ) );
 

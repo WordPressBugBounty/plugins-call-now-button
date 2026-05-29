@@ -23,7 +23,7 @@ class CnbAdminNotices {
         $this->admin_notices = new CnbNotices();
 
         add_action( 'cnb_admin_notices', array( $this, 'action_admin_notices' ) );
-	    add_filter('cnb_admin_notice_filter', array( $this, 'dismiss_filter' ) );
+        add_filter('cnb_admin_notice_filter', array( $this, 'dismiss_filter' ) );
     }
 
     public static function get_instance() {
@@ -41,26 +41,32 @@ class CnbAdminNotices {
      *
      * @return void
      */
-	public function hide_notice() {
-		do_action( 'cnb_init', __METHOD__ );
+    public function hide_notice() {
+        do_action( 'cnb_init', __METHOD__ );
 
-		// Verify nonce (die immediately if failed)
-		check_ajax_referer( 'cnb_hide_notice' );
+        if ( ! current_user_can( 'manage_options' ) ) {
+            do_action( 'cnb_finish' );
+            wp_send_json_error( 'Unauthorized', 403 );
+        }
 
-		$dismiss_option = filter_input( INPUT_POST, 'dismiss_option', @FILTER_SANITIZE_STRING );
-		if ( is_string( $dismiss_option ) && ! empty( $dismiss_option ) ) {
-			update_option( CNB_SLUG . '_dismissed_' . $dismiss_option, true );
-			// For example, do_action(cnb_update_' . CNB_VERSION), which calls the Settings Controller (update_version)
-			do_action( $dismiss_option );
-			do_action( 'cnb_finish' );
-			wp_die(
-				esc_html( 'Dismissed notice: ' . $dismiss_option ), esc_html__( 'Dismissed notice' ),
-				array(
-					'response' => 200,
-				)
-			);
-		}
-	}
+        // Verify nonce (die immediately if failed)
+        check_ajax_referer( 'cnb_hide_notice' );
+
+        $dismiss_option = sanitize_text_field( filter_input( INPUT_POST, 'dismiss_option' ) );
+        if ( is_string( $dismiss_option ) && ! empty( $dismiss_option ) ) {
+            update_option( CNB_SLUG . '_dismissed_' . $dismiss_option, true );
+            // For example, do_action(cnb_update_' . CNB_VERSION), which calls the Settings Controller (update_version)
+            do_action( $dismiss_option );
+            do_action( 'cnb_finish' );
+            wp_die(
+                esc_html( 'Dismissed notice: ' . $dismiss_option ), esc_html__( 'Dismissed notice' ),
+                array(
+                    'response' => 200,
+                )
+            );
+        }
+        do_action( 'cnb_finish' );
+    }
 
     /**
      * @param $notice CnbNotice
@@ -104,27 +110,27 @@ class CnbAdminNotices {
         return get_option( $name );
     }
 
-	/**
-	 * Returns the notice if it has not been previously dismissed.
-	 *
-	 * @param CnbNotice $notice
-	 *
-	 * @return CnbNotice
-	 */
-	public function dismiss_filter($notice) {
-		$option = $this->get_dismiss_option_name( $notice->dismiss_option );
-		if ( ! $notice->dismiss_option || ! $this->is_dismissed( $option ) ) {
-			return $notice;
-		}
-		return null;
-	}
+    /**
+     * Returns the notice if it has not been previously dismissed.
+     *
+     * @param CnbNotice $notice
+     *
+     * @return CnbNotice
+     */
+    public function dismiss_filter($notice) {
+        $option = $this->get_dismiss_option_name( $notice->dismiss_option );
+        if ( ! $notice->dismiss_option || ! $this->is_dismissed( $option ) ) {
+            return $notice;
+        }
+        return null;
+    }
 
     public function action_admin_notices() {
         foreach ( explode( ',', CnbNotices::TYPES ) as $type ) {
             foreach ( $this->admin_notices->{$type} as $admin_notice ) {
                 if (!$admin_notice) return;
-				$notice = apply_filters( 'cnb_admin_notice_filter', $admin_notice );
-				$this->renderNotice( $notice );
+                $notice = apply_filters( 'cnb_admin_notice_filter', $admin_notice );
+                $this->renderNotice( $notice );
             }
         }
     }

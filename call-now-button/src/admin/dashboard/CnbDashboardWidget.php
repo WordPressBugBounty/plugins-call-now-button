@@ -14,10 +14,10 @@ class CnbDashboardWidget {
     private $dashboard_cache;
 
     public function register_dashboard() {
-		$settings = new CnbDashboardSettings();
-		if ( ! $settings->is_dashboard_enabled() ) {
-			return;
-		}
+        $settings = new CnbDashboardSettings();
+        if ( ! $settings->is_dashboard_enabled() ) {
+            return;
+        }
 
         add_action('wp_dashboard_setup', array( $this, 'add_dashboard_widget' ));
         $this->dashboard_cache = new CnbDashboardCache();

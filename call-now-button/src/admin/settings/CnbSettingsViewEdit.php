@@ -207,21 +207,21 @@ class CnbSettingsViewEdit {
         <?php
     }
 
-	/**
-	 * @param $cnb_domain CnbDomain|WP_Error
-	 * @param $cnb_user CnbUser|WP_Error
-	 *
-	 * @return void
-	 */
+    /**
+     * @param $cnb_domain CnbDomain|WP_Error
+     * @param $cnb_user CnbUser|WP_Error
+     *
+     * @return void
+     */
     private function render_advanced_options( $cnb_domain, $cnb_user ) {
         $cnb_options = get_option( 'cnb' );
         global $cnb_domains;
         /** @var $cnb_settings UrlSettings */
-	    global $cnb_settings;
+        global $cnb_settings;
 
         $adminFunctions     = new CnbAdminFunctions();
         $cnbAppRemote       = new CnbAppRemote();
-	    $cnb_utils          = new CnbUtils();
+        $cnb_utils          = new CnbUtils();
         $cnb_clean_site_url = $cnbAppRemote->cnb_clean_site_url();
         $status             = CnbSettingsController::getStatus( $cnb_options );
 
@@ -323,12 +323,12 @@ class CnbSettingsViewEdit {
                             </div>
                         </td>
                     </tr>
-    		    <?php } ?>
-	            <?php if ( ! is_wp_error( $cnb_user ) && isset( $cnb_domain ) ) { // Aliases ?>
+                <?php } ?>
+                <?php if ( ! is_wp_error( $cnb_user ) && isset( $cnb_domain ) ) { // Aliases ?>
                     <tr class="when-cloud-enabled cnb_advanced_view">
                         <th scope="row"><label for="add-alias-input">Aliases</label></th>
                         <td>
-            			    <?php if (!empty($cnb_domain->aliases)) { ?>
+                            <?php if (!empty($cnb_domain->aliases)) { ?>
                             Current aliases:
                             <ul>
                                 <?php foreach ($cnb_domain->aliases as $alias) { ?>
@@ -339,7 +339,7 @@ class CnbSettingsViewEdit {
                                     </li>
                                 <?php } ?>
                             </ul>
-			                <?php } ?>
+                            <?php } ?>
                             <?php if (empty($cnb_domain->aliases)) { ?>
                                 <div>You have no aliases (yet?).</div>
                             <?php } ?>

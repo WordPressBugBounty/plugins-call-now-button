@@ -24,9 +24,9 @@ class CnbDomainRouter {
             case 'upgrade':
                 ( new CnbDomainViewUpgrade() )->render();
                 break;
-	        case 'payment':
-		        ( new PaymentView() )->render();
-		        break;
+            case 'payment':
+                ( new PaymentView() )->render();
+                break;
             default:
                 ( new CnbDomainView() )->render();
                 break;

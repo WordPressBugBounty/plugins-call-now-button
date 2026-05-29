@@ -29,7 +29,7 @@ class CnbDomainViewEdit {
      */
     function render() {
         $cnb_remote = new CnbAppRemote();
-        $domain_id = filter_input( INPUT_GET, 'id', @FILTER_SANITIZE_STRING );
+        $domain_id = sanitize_text_field( filter_input( INPUT_GET, 'id' ) );
 
         $domain = new CnbDomain();
         if ( strlen( $domain_id ) > 0 && $domain_id !== 'new' ) {
@@ -72,7 +72,7 @@ class CnbDomainViewEdit {
      * @return void
      */
     function render_form_plan_details( $domain ) {
-	    global $cnb_subscription_data, $cnb_domain;
+        global $cnb_subscription_data, $cnb_domain;
         /** @var CnbUser $cnb_user */
         global $cnb_user;
         $url          = admin_url( 'admin.php' );
@@ -83,12 +83,12 @@ class CnbDomainViewEdit {
                 'id'     => $domain->id,
             ),
                 $url );
-	    $payment_link =
-		    add_query_arg( array(
-			    'page'   => 'call-now-button-domains',
-			    'action' => 'payment',
-		    ),
-			    $url );
+        $payment_link =
+            add_query_arg( array(
+                'page'   => 'call-now-button-domains',
+                'action' => 'payment',
+            ),
+                $url );
         ?>
         <tr>
             <th>Plan</th>
@@ -103,7 +103,7 @@ class CnbDomainViewEdit {
                     echo '(via PRO account)';
                 }
                 if ( $cnb_subscription_data && $cnb_subscription_data->invoiceUrl ) {
-	                echo '⚠️<p class="description"><span class="cnb-alert-text"><a class="button button-primary" href="' . esc_url( $payment_link ) . '">Pay now</a> to reactivate Pro features.</span><br>(You have an outstanding invoice. Pro features are disabled until payment is received.)</p> ';
+                    echo '⚠️<p class="description"><span class="cnb-alert-text"><a class="button button-primary" href="' . esc_url( $payment_link ) . '">Pay now</a> to reactivate Pro features.</span><br>(You have an outstanding invoice. Pro features are disabled until payment is received.)</p> ';
                 } else if ( $domain->type !== 'PRO' && ! empty( $domain->id ) ) {
                     echo '<p class="description"><a href="' . esc_url( $upgrade_link ) . '">Upgrade</a> to <span class="cnb-pro-badge">Pro</span> to get tons of buttons, more features and extra button types.</p>';
                 }
@@ -125,10 +125,10 @@ class CnbDomainViewEdit {
             </td>
         </tr>
         <?php
-	    if ( isset( $cnb_subscription_data ) && isset( $cnb_domain ) &&
-			! is_wp_error( $cnb_subscription_data ) && ! is_wp_error( $cnb_domain ) &&
-			$cnb_subscription_data->interval === 'monthly' &&
-			$cnb_domain->type === 'PRO' ) { ?>
+        if ( isset( $cnb_subscription_data ) && isset( $cnb_domain ) &&
+            ! is_wp_error( $cnb_subscription_data ) && ! is_wp_error( $cnb_domain ) &&
+            $cnb_subscription_data->interval === 'monthly' &&
+            $cnb_domain->type === 'PRO' ) { ?>
             <tr>
                 <th scope="row">Change plan</th>
                 <td>
@@ -142,7 +142,7 @@ class CnbDomainViewEdit {
                     <div class="notice inline hidden cnb-upgrade-to-yearly-result"></div>
                 </td>
             </tr>
-	    <?php } ?>
+        <?php } ?>
 
         <?php if ( $cnb_user->is_pro_user() ) { ?>
             <tr>

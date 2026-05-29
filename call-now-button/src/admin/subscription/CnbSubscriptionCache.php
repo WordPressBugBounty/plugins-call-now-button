@@ -9,10 +9,10 @@ defined( 'ABSPATH' ) || die( '-1' );
 
 
 class CnbSubscriptionCache {
-	/**
-	 * @var string The name of the transient that stores the CnbSubscription data.
-	 */
-	private $cache_name = 'cnb_subscription_cache';
+    /**
+     * @var string The name of the transient that stores the CnbSubscription data.
+     */
+    private $cache_name = 'cnb_subscription_cache';
     private static $expiration = DAY_IN_SECONDS;
 
     /**

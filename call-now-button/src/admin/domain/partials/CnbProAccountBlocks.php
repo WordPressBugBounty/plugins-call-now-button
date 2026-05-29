@@ -40,19 +40,19 @@ class CnbProAccountBlocks {
         /** @var CnbAgencyPlan[] $cnb_agency_plans */
         global $cnb_agency_plans;
 
-	    $cnb_utils = new CnbUtils();
+        $cnb_utils = new CnbUtils();
 
         $agency_20_monthly_plans = array_filter($cnb_agency_plans, function ($plan) {
             return $plan->seats === 20 && $plan->interval === 'monthly';
         });
         $agency_20_monthly_plan = array_shift($agency_20_monthly_plans);
 
-	    $agency_20_yearly_plans = array_filter($cnb_agency_plans, function ($plan) {
-		    return $plan->seats === 20 && $plan->interval === 'yearly';
-	    });
-	    $agency_20_yearly_plan = array_shift($agency_20_yearly_plans);
+        $agency_20_yearly_plans = array_filter($cnb_agency_plans, function ($plan) {
+            return $plan->seats === 20 && $plan->interval === 'yearly';
+        });
+        $agency_20_yearly_plan = array_shift($agency_20_yearly_plans);
 
-	    ?>
+        ?>
 
         <?php if ( ! $this->active_currency ) { ?>
             <div class="cnb-currency-toggle">

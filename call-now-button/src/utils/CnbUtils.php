@@ -20,21 +20,21 @@ class CnbUtils {
         return CnbUtils::getPropertyOr( $object, $property, null);
     }
 
-	public static function getPropertyOr( $object, $property, $default ) {
-		if ( $object === null ) {
-			return $default;
-		}
+    public static function getPropertyOr( $object, $property, $default ) {
+        if ( $object === null ) {
+            return $default;
+        }
 
-		if ( is_array( $object ) && array_key_exists( $property, $object ) ) {
-			return $object[ $property ];
-		}
+        if ( is_array( $object ) && array_key_exists( $property, $object ) ) {
+            return $object[ $property ];
+        }
 
-		if ( $object instanceof stdClass && property_exists( $object, $property ) ) {
-			return $object->$property;
-		}
+        if ( $object instanceof stdClass && property_exists( $object, $property ) ) {
+            return $object->$property;
+        }
 
-		return $default;
-	}
+        return $default;
+    }
 
     /**
      * Returns true if the `active` flag is set and is enabled
@@ -85,9 +85,9 @@ class CnbUtils {
      */
     function cnb_actiontype_to_icontext( $actionType ) {
         switch ( $actionType ) {
-	        case 'ANCHOR': return 'anchor';
-	        case 'BOOKING': return 'calendar';
-	        case 'CHAT': return 'chat';
+            case 'ANCHOR': return 'anchor';
+            case 'BOOKING': return 'calendar';
+            case 'CHAT': return 'chat';
             case 'EMAIL': return 'email';
             case 'HOURS': return 'access_time';
             case 'LINK': return 'link';
@@ -100,11 +100,11 @@ class CnbUtils {
             case 'IFRAME': return 'open_modal';
             case 'TALLY': return 'call3';
             case 'INTERCOM': return 'intercom';
-	        case 'SKYPE': return 'skype';
-	        case 'ZALO': return 'zalo';
-	        case 'VIBER': return 'viber';
-	        case 'LINE': return 'line';
-	        case 'WECHAT': return 'wechat';
+            case 'SKYPE': return 'skype';
+            case 'ZALO': return 'zalo';
+            case 'VIBER': return 'viber';
+            case 'LINE': return 'line';
+            case 'WECHAT': return 'wechat';
             case 'PHONE':
             default:
                 return 'call';
@@ -252,6 +252,29 @@ class CnbUtils {
     }
 
     /**
+     * Get a sanitized array of text values from a POST parameter.
+     *
+     * @param string $key The POST parameter to get.
+     *
+     * @return string[] Sanitized array of values, empty array if not present.
+     */
+    function get_post_array( $key ) {
+        $input = filter_input( INPUT_POST, $key, FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
+
+        if ( ! is_array( $input ) ) {
+            return array();
+        }
+
+        $result = array();
+        foreach ( $input as $value ) {
+            if ( is_scalar( $value ) ) {
+                $result[] = sanitize_text_field( $value );
+            }
+        }
+        return $result;
+    }
+
+    /**
      * Check if the error_reporting settings is set and enabled.
      *
      * @return bool
@@ -261,16 +284,16 @@ class CnbUtils {
         return ( key_exists( 'error_reporting', $cnb_options ) && $cnb_options['error_reporting'] );
     }
 
-	/**
-	 * Feature flag for the new Chat API
-	 */
-	function is_chat_api_enabled() {
-		/** @type CnbUser|WP_Error|null $cnb_user */
-		global $cnb_user;
+    /**
+     * Feature flag for the new Chat API
+     */
+    function is_chat_api_enabled() {
+        /** @type CnbUser|WP_Error|null $cnb_user */
+        global $cnb_user;
 
-		if ( $cnb_user && ! is_wp_error( $cnb_user ) && $cnb_user->has_role( 'ROLE_CHAT_USER' ) ) {
-			return true;
-		}
-		return false;
-	}
+        if ( $cnb_user && ! is_wp_error( $cnb_user ) && $cnb_user->has_role( 'ROLE_CHAT_USER' ) ) {
+            return true;
+        }
+        return false;
+    }
 }

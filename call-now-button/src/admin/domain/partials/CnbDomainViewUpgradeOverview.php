@@ -34,8 +34,8 @@ class CnbDomainViewUpgradeOverview {
      * @return void
      */
     function render( $domain ) {
-	    wp_enqueue_script( CNB_SLUG . '-tally' );
-	    wp_enqueue_script( CNB_SLUG . '-settings' );
+        wp_enqueue_script( CNB_SLUG . '-tally' );
+        wp_enqueue_script( CNB_SLUG . '-settings' );
 
         global $cnb_plans, $cnb_user;
 

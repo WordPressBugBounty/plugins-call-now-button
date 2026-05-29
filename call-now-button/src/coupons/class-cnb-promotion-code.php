@@ -150,9 +150,9 @@ class CnbPromotionCode {
         if ( is_wp_error( $object ) ) {
             return $object;
         }
-		if ($object === null) {
-			return null;
-		}
+        if ($object === null) {
+            return null;
+        }
 
         $promo_code                   = new CnbPromotionCode();
         $promo_code->code             = CnbUtils::getPropertyOrNull( $object, 'code' );

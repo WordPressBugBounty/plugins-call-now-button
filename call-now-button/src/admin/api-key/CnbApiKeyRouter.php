@@ -16,16 +16,16 @@ defined( 'ABSPATH' ) || die( '-1' );
 class CnbApiKeyRouter {
     public function render() {
         do_action( 'cnb_init', __METHOD__ );
-	    $page = ( new CnbUtils() )->get_query_val( 'page', null );
-		switch ( $page ) {
-			case 'call-now-button-activated':
-				( new CnbApiKeyActivatedView() )->render();
-				break;
-			case 'call-now-button-apikeys':
-			default:
-				( new CnbApiKeyView() )->render();
-				break;
-		}
+        $page = ( new CnbUtils() )->get_query_val( 'page', null );
+        switch ( $page ) {
+            case 'call-now-button-activated':
+                ( new CnbApiKeyActivatedView() )->render();
+                break;
+            case 'call-now-button-apikeys':
+            default:
+                ( new CnbApiKeyView() )->render();
+                break;
+        }
 
         do_action( 'cnb_finish' );
     }

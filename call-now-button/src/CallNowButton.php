@@ -52,8 +52,8 @@ class CallNowButton {
     public function register_admin_pages() {
         global $wp_version;
 
-		$cnb_domain_cache = new CnbDomainCache();
-		$cnb_domain = $cnb_domain_cache->get_domain_data();
+        $cnb_domain_cache = new CnbDomainCache();
+        $cnb_domain = $cnb_domain_cache->get_domain_data();
 
         $cnb_options       = get_option( 'cnb' );
         $utils             = new CnbUtils();
@@ -67,7 +67,7 @@ class CallNowButton {
             array( $legacy_edit, 'render' );
 
         $counter            = 0;
-	    $menu_page_header   = $cnb_cloud_hosting ? 'Buttons' : 'Call Now Button';
+        $menu_page_header   = $cnb_cloud_hosting ? 'Buttons' : 'Call Now Button';
         $menu_page_title    = $menu_page_header . '<span class="awaiting-mod" id="cnb-nav-counter" style="display: none">' . $counter . '</span>';
 
         $menu_page_position = $cnb_cloud_hosting ? 30 : 66;
@@ -78,21 +78,21 @@ class CallNowButton {
         if ($has_changelog && !$is_dismissed) $counter++;
 
         // Detect errors (specific, - Premium enabled, but API key is not present yet)
-	    $cnb_cloud_hosting_not_yet_setup = $cnb_cloud_hosting && ( !array_key_exists( 'api_key', $cnb_options ) || $cnb_options['api_key'] === '' );
+        $cnb_cloud_hosting_not_yet_setup = $cnb_cloud_hosting && ( !array_key_exists( 'api_key', $cnb_options ) || $cnb_options['api_key'] === '' );
 
-	    if ( $cnb_cloud_hosting_not_yet_setup ) {
+        if ( $cnb_cloud_hosting_not_yet_setup ) {
             $counter = '!';
         }
 
-		// Check if there is an outstanding payment
-	    $cnb_remote = new CnbAppRemote();
-	    $wp_info = $cnb_remote->get_subscription_data();
-		if ($wp_info && $wp_info->has_outstanding_payment()) {
-			$counter = '!';
-		}
+        // Check if there is an outstanding payment
+        $cnb_remote = new CnbAppRemote();
+        $wp_info = $cnb_remote->get_subscription_data();
+        if ($wp_info && $wp_info->has_outstanding_payment()) {
+            $counter = '!';
+        }
 
         if ( $counter ) {
-	        $menu_page_header_small   = $cnb_cloud_hosting ? 'Buttons' : 'Call Now Bu...';
+            $menu_page_header_small   = $cnb_cloud_hosting ? 'Buttons' : 'Call Now Bu...';
             $menu_page_title = $menu_page_header_small . ' <span class="awaiting-mod" id="cnb-nav-counter">' . $counter . '</span>';
         }
 
@@ -110,41 +110,41 @@ class CallNowButton {
             $menu_page_position
         );
 
-	    $api_key_router = new CnbApiKeyRouter();
+        $api_key_router = new CnbApiKeyRouter();
         if ( $cnb_cloud_hosting ) {
             // Button overview
             add_submenu_page( CNB_SLUG, $plugin_title, 'All buttons', 'manage_options', CNB_SLUG, array( $button_router, 'render' ) );
 
-	        add_submenu_page( CNB_SLUG, $plugin_title, 'Add New', 'manage_options', CNB_SLUG . '&action=new', array( $button_router, 'render' ) );
+            add_submenu_page( CNB_SLUG, $plugin_title, 'Add New', 'manage_options', CNB_SLUG . '&action=new', array( $button_router, 'render' ) );
 
-			if ( ! $cnb_cloud_hosting_not_yet_setup ) {
-				// Only for WordPress 5.2 and higher (Gutenberg + React 16.8)
-				$has_gutenberg = version_compare( $wp_version, '5.2.0', '>=' );
-				if ( $has_gutenberg ) {
-					$template_router     = new Template_Router();
-					$template_controller = new Template_Controller();
-					add_submenu_page( CNB_SLUG, $plugin_title, 'Templates', 'manage_options', $template_controller->get_slug(), array(
-						$template_router,
-						'render',
-					) );
-				}
+            if ( ! $cnb_cloud_hosting_not_yet_setup ) {
+                // Only for WordPress 5.2 and higher (Gutenberg + React 16.8)
+                $has_gutenberg = version_compare( $wp_version, '5.2.0', '>=' );
+                if ( $has_gutenberg ) {
+                    $template_router     = new Template_Router();
+                    $template_controller = new Template_Controller();
+                    add_submenu_page( CNB_SLUG, $plugin_title, 'Templates', 'manage_options', $template_controller->get_slug(), array(
+                        $template_router,
+                        'render',
+                    ) );
+                }
 
-				// Add Chat Marketing page for PRO users without chat enabled
-				$chat_controller = new CnbChatController();
-				if ( ! $chat_controller->has_chat_enabled() || ( $cnb_domain && ! $cnb_domain->is_pro() ) ) {
-					$chat_router = new CnbChatRouter();
-					add_submenu_page( CNB_SLUG, $plugin_title, 'Live Chat', 'manage_options', CNB_SLUG . '-marketing-chat', array(
-						$chat_router,
-						'render_marketing',
-					) );
-				} else {
-					$chat_router = new CnbChatRouter();
-					add_submenu_page( CNB_SLUG, $plugin_title, 'Live Chat', 'manage_options', $chat_router->get_slug(), array(
-						$chat_router,
-						'render',
-					) );
-				}
-			}
+                // Add Chat Marketing page for PRO users without chat enabled
+                $chat_controller = new CnbChatController();
+                if ( ! $chat_controller->has_chat_enabled() || ( $cnb_domain && ! $cnb_domain->is_pro() ) ) {
+                    $chat_router = new CnbChatRouter();
+                    add_submenu_page( CNB_SLUG, $plugin_title, 'Live Chat', 'manage_options', CNB_SLUG . '-marketing-chat', array(
+                        $chat_router,
+                        'render_marketing',
+                    ) );
+                } else {
+                    $chat_router = new CnbChatRouter();
+                    add_submenu_page( CNB_SLUG, $plugin_title, 'Live Chat', 'manage_options', $chat_router->get_slug(), array(
+                        $chat_router,
+                        'render',
+                    ) );
+                }
+            }
 
             $domain_router = new CnbDomainRouter();
             $action_router = new CnbActionRouter();
@@ -184,9 +184,9 @@ class CallNowButton {
                 if ( $utils->get_query_val( 'page' ) === 'call-now-button-domains' && $utils->get_query_val( 'action' ) === 'upgrade' ) {
                     add_submenu_page( CNB_SLUG, $plugin_title, 'Upgrade domain', 'manage_options', CNB_SLUG . '-domains', array( $domain_router, 'render' ) );
                 }
-	            if ( $utils->get_query_val( 'page' ) === 'call-now-button-domains' && $utils->get_query_val( 'action' ) === 'payment' ) {
-		            add_submenu_page( CNB_SLUG, $plugin_title, 'Payment', 'manage_options', CNB_SLUG . '-domains', array( $domain_router, 'render' ) );
-	            }
+                if ( $utils->get_query_val( 'page' ) === 'call-now-button-domains' && $utils->get_query_val( 'action' ) === 'payment' ) {
+                    add_submenu_page( CNB_SLUG, $plugin_title, 'Payment', 'manage_options', CNB_SLUG . '-domains', array( $domain_router, 'render' ) );
+                }
             }
         } else {
             // Legacy edit
@@ -196,12 +196,12 @@ class CallNowButton {
             add_submenu_page( CNB_SLUG, $plugin_title, 'Unlock features', 'manage_options', CNB_SLUG . '-upgrade', array( $legacy_upgrade, 'render' ) );
         }
 
-	    // Welcome after Activation
-	    if ( $utils->get_query_val( 'page' ) === CNB_SLUG . '-activated' ) {
-		    add_submenu_page( CNB_SLUG, $plugin_title, 'Cloud activation', 'manage_options', CNB_SLUG . '-activated', array( $api_key_router, 'render' ) );
-	    }
+        // Welcome after Activation
+        if ( $utils->get_query_val( 'page' ) === CNB_SLUG . '-activated' ) {
+            add_submenu_page( CNB_SLUG, $plugin_title, 'Cloud activation', 'manage_options', CNB_SLUG . '-activated', array( $api_key_router, 'render' ) );
+        }
 
-	    // Settings pages
+        // Settings pages
         $settings_router = new CnbSettingsRouter();
         add_submenu_page( CNB_SLUG, $plugin_title, 'Settings', 'manage_options', CNB_SLUG . '-settings', array( $settings_router, 'render' ) );
     }
@@ -322,9 +322,9 @@ class CallNowButton {
      * @return void
      */
     public function unregister_options() {
-	    if (!current_user_can('manage_options')) {
-		    return;
-	    }
+        if (!current_user_can('manage_options')) {
+            return;
+        }
 
         unregister_setting( 'cnb_options', 'cnb' );
     }
@@ -359,27 +359,27 @@ class CallNowButton {
             array( 'wp-color-picker' ),
             CNB_VERSION,
             true );
-	    wp_localize_script(
-		    CNB_SLUG . '-call-now-button',
-		    'cnb_get_plans_data',
-		    array(
-			    'nonce' => wp_create_nonce( 'cnb_get_plans' ),
-		    )
-	    );
+        wp_localize_script(
+            CNB_SLUG . '-call-now-button',
+            'cnb_get_plans_data',
+            array(
+                'nonce' => wp_create_nonce( 'cnb_get_plans' ),
+            )
+        );
 
-	    wp_register_script(
+        wp_register_script(
             CNB_SLUG . '-dismiss',
             plugins_url('resources/js/dismiss.js', CNB_PLUGINS_URL_BASE ),
             array( 'jquery', CNB_SLUG . '-call-now-button' ),
             CNB_VERSION,
             true );
-	    wp_localize_script(
-		    CNB_SLUG . '-dismiss',
-		    'cnb_hide_notice_data',
-		    array(
-			    'nonce' => wp_create_nonce( 'cnb_hide_notice' ),
-		    )
-	    );
+        wp_localize_script(
+            CNB_SLUG . '-dismiss',
+            'cnb_hide_notice_data',
+            array(
+                'nonce' => wp_create_nonce( 'cnb_hide_notice' ),
+            )
+        );
         wp_register_script(
             CNB_SLUG . '-timezone-picker-fix',
             plugins_url('resources/js/timezone-picker-fix.js', CNB_PLUGINS_URL_BASE ),
@@ -411,91 +411,91 @@ class CallNowButton {
             array( 'jquery', CNB_SLUG . '-call-now-button' ),
             CNB_VERSION,
             true );
-	    wp_localize_script(
-		    CNB_SLUG . '-domain-upgrade',
-		    'cnb_get_checkout_data',
-		    array(
-			    'nonce' => wp_create_nonce( 'cnb_get_checkout' ),
-		    )
-	    );
-	    wp_localize_script(
-		    CNB_SLUG . '-domain-upgrade',
-		    'cnb_get_agency_checkout_data',
-		    array(
-			    'nonce' => wp_create_nonce( 'cnb_get_agency_checkout' ),
-		    )
-	    );
+        wp_localize_script(
+            CNB_SLUG . '-domain-upgrade',
+            'cnb_get_checkout_data',
+            array(
+                'nonce' => wp_create_nonce( 'cnb_get_checkout' ),
+            )
+        );
+        wp_localize_script(
+            CNB_SLUG . '-domain-upgrade',
+            'cnb_get_agency_checkout_data',
+            array(
+                'nonce' => wp_create_nonce( 'cnb_get_agency_checkout' ),
+            )
+        );
         wp_register_script(
             CNB_SLUG . '-settings',
             plugins_url('resources/js/settings.js', CNB_PLUGINS_URL_BASE ),
             array( CNB_SLUG . '-call-now-button' ),
             CNB_VERSION,
             true );
-	    wp_localize_script(
-		    CNB_SLUG . '-settings',
-		    'cnb_upgrade_to_yearly_data',
-		    array(
-			    'nonce' => wp_create_nonce( 'cnb_upgrade_to_yearly' ),
-		    )
-	    );
-	    wp_localize_script(
-		    CNB_SLUG . '-settings',
-		    'cnb_set_user_storage_solution_data',
-		    array(
-			    'nonce' => wp_create_nonce( 'cnb_set_user_storage_solution' ),
-		    )
-	    );
-	    wp_register_script(
-		    CNB_SLUG . '-billing-portal',
-		    plugins_url('resources/js/billing-portal.js', CNB_PLUGINS_URL_BASE ),
-		    array( 'jquery' ),
-		    CNB_VERSION,
-		    true );
-	    wp_localize_script(
-		    CNB_SLUG . '-billing-portal',
-		    'cnb_billing_portal',
-		    array(
-			    'cnb_get_billing_portal_nonce' => wp_create_nonce( 'cnb_get_billing_portal' ),
-			    'cnb_request_billing_portal_nonce' => wp_create_nonce( 'cnb_request_billing_portal' ),
-		    )
-	    );
+        wp_localize_script(
+            CNB_SLUG . '-settings',
+            'cnb_upgrade_to_yearly_data',
+            array(
+                'nonce' => wp_create_nonce( 'cnb_upgrade_to_yearly' ),
+            )
+        );
+        wp_localize_script(
+            CNB_SLUG . '-settings',
+            'cnb_set_user_storage_solution_data',
+            array(
+                'nonce' => wp_create_nonce( 'cnb_set_user_storage_solution' ),
+            )
+        );
+        wp_register_script(
+            CNB_SLUG . '-billing-portal',
+            plugins_url('resources/js/billing-portal.js', CNB_PLUGINS_URL_BASE ),
+            array( 'jquery' ),
+            CNB_VERSION,
+            true );
+        wp_localize_script(
+            CNB_SLUG . '-billing-portal',
+            'cnb_billing_portal',
+            array(
+                'cnb_get_billing_portal_nonce' => wp_create_nonce( 'cnb_get_billing_portal' ),
+                'cnb_request_billing_portal_nonce' => wp_create_nonce( 'cnb_request_billing_portal' ),
+            )
+        );
 
-	    wp_register_script(
+        wp_register_script(
             CNB_SLUG . '-premium-activation',
             plugins_url('resources/js/premium-activation.js', CNB_PLUGINS_URL_BASE ),
             array( CNB_SLUG . '-call-now-button' ),
             CNB_VERSION,
             true );
-	    wp_localize_script(
-		    CNB_SLUG . '-premium-activation',
-		    'cnb_email_activation_data',
-		    array(
-			    'nonce' => wp_create_nonce( 'cnb_email_activation' ),
-		    )
-	    );
+        wp_localize_script(
+            CNB_SLUG . '-premium-activation',
+            'cnb_email_activation_data',
+            array(
+                'nonce' => wp_create_nonce( 'cnb_email_activation' ),
+            )
+        );
 
-	    wp_register_script(
-		    CNB_SLUG . '-button-overview',
-		    plugins_url('resources/js/button-overview.js', CNB_PLUGINS_URL_BASE ),
-		    array( CNB_SLUG . '-call-now-button' ),
-		    CNB_VERSION,
-		    true );
+        wp_register_script(
+            CNB_SLUG . '-button-overview',
+            plugins_url('resources/js/button-overview.js', CNB_PLUGINS_URL_BASE ),
+            array( CNB_SLUG . '-call-now-button' ),
+            CNB_VERSION,
+            true );
         wp_register_script(
             CNB_SLUG . '-chat-marketing',
             plugins_url('resources/js/chat-marketing.js', CNB_PLUGINS_URL_BASE ),
             array( 'jquery' ),
             CNB_VERSION,
             true );
-	    // Localize the script with the nonce and chat page URL
-	    wp_localize_script(
-		    CNB_SLUG . '-chat-marketing',
-		    'cnb_chat_marketing_data',
-		    array(
-			    'enable_chat_nonce' => wp_create_nonce('cnb_enable_chat'),
-			    'disable_chat_nonce' => wp_create_nonce('cnb_disable_chat'),
-			    'chat_url' => admin_url('admin.php?page=call-now-button-chat'),
-		    )
-	    );
+        // Localize the script with the nonce and chat page URL
+        wp_localize_script(
+            CNB_SLUG . '-chat-marketing',
+            'cnb_chat_marketing_data',
+            array(
+                'enable_chat_nonce' => wp_create_nonce('cnb_enable_chat'),
+                'disable_chat_nonce' => wp_create_nonce('cnb_disable_chat'),
+                'chat_url' => admin_url('admin.php?page=call-now-button-chat'),
+            )
+        );
 
         wp_register_script(
             CNB_SLUG . '-action-edit-scheduler',
@@ -503,15 +503,15 @@ class CallNowButton {
             array( CNB_SLUG . '-call-now-button' ),
             CNB_VERSION,
             true );
-	    wp_localize_script(
-		    CNB_SLUG . '-action-edit-scheduler',
-		    'cnb_time_format_data',
-		    array(
-			    'nonce' => wp_create_nonce( 'cnb_time_format' ),
-		    )
-	    );
+        wp_localize_script(
+            CNB_SLUG . '-action-edit-scheduler',
+            'cnb_time_format_data',
+            array(
+                'nonce' => wp_create_nonce( 'cnb_time_format' ),
+            )
+        );
 
-	    wp_register_script(
+        wp_register_script(
             CNB_SLUG . '-action-edit-fields',
             plugins_url('resources/js/action-edit-fields.js', CNB_PLUGINS_URL_BASE ),
             array( CNB_SLUG . '-call-now-button' ),
@@ -523,12 +523,12 @@ class CallNowButton {
             array( CNB_SLUG . '-call-now-button' ),
             CNB_VERSION,
             true );
-	    wp_register_script(
-		    CNB_SLUG . '-action-edit-viber',
-		    plugins_url('resources/js/action-edit-viber.js', CNB_PLUGINS_URL_BASE ),
-		    array( CNB_SLUG . '-call-now-button' ),
-		    CNB_VERSION,
-		    true );
+        wp_register_script(
+            CNB_SLUG . '-action-edit-viber',
+            plugins_url('resources/js/action-edit-viber.js', CNB_PLUGINS_URL_BASE ),
+            array( CNB_SLUG . '-call-now-button' ),
+            CNB_VERSION,
+            true );
         wp_register_script(
             CNB_SLUG . '-button-edit',
             plugins_url('resources/js/button-edit.js', CNB_PLUGINS_URL_BASE ),
@@ -621,52 +621,52 @@ class CallNowButton {
             '0.11.0',
             true );
 
-	    wp_register_script(
-		    CNB_SLUG . '-templates-react-compiled',
-		    plugins_url('build/index.js', CNB_PLUGINS_URL_BASE ),
-		    array(
-				'wp-element', // wp-element for React
-			    // 'react',
-			    'wp-block-editor', // wp-block-editor for @wordpress/components
-			    // 'wp-blocks',
-			    // 'wp-i18n',
-		    ),
-		    CNB_VERSION,
-		    true );
+        wp_register_script(
+            CNB_SLUG . '-templates-react-compiled',
+            plugins_url('build/index.js', CNB_PLUGINS_URL_BASE ),
+            array(
+                'wp-element', // wp-element for React
+                // 'react',
+                'wp-block-editor', // wp-block-editor for @wordpress/components
+                // 'wp-blocks',
+                // 'wp-i18n',
+            ),
+            CNB_VERSION,
+            true );
 
-	    wp_register_script(
-		    (new Template_Controller())->get_slug(),
-		    plugins_url('resources/js/templates.js', CNB_PLUGINS_URL_BASE ),
-		    array( CNB_SLUG . '-templates-react-compiled' ),
-		    CNB_VERSION,
-		    true );
-	    wp_register_script(
-		    CNB_SLUG . '-chat',
-		    plugins_url('resources/js/chat.js', CNB_PLUGINS_URL_BASE ),
-		    array(),
-		    CNB_VERSION,
-		    true );
-	    wp_localize_script(
-		    CNB_SLUG . '-chat',
-		    'cnb_create_chat_token_data',
-		    array(
-			    'nonce' => wp_create_nonce( 'cnb_create_chat_token' ),
-		    )
-	    );
+        wp_register_script(
+            (new Template_Controller())->get_slug(),
+            plugins_url('resources/js/templates.js', CNB_PLUGINS_URL_BASE ),
+            array( CNB_SLUG . '-templates-react-compiled' ),
+            CNB_VERSION,
+            true );
+        wp_register_script(
+            CNB_SLUG . '-chat',
+            plugins_url('resources/js/chat.js', CNB_PLUGINS_URL_BASE ),
+            array(),
+            CNB_VERSION,
+            true );
+        wp_localize_script(
+            CNB_SLUG . '-chat',
+            'cnb_create_chat_token_data',
+            array(
+                'nonce' => wp_create_nonce( 'cnb_create_chat_token' ),
+            )
+        );
 
     }
 
-	/**
-	 * Various utility actions
-	 *
-	 * These are subject to the same user/capability level as the CallNowButton plugin pages.
-	 *
-	 * @return void
-	 */
+    /**
+     * Various utility actions
+     *
+     * These are subject to the same user/capability level as the CallNowButton plugin pages.
+     *
+     * @return void
+     */
     public function register_global_actions() {
-	    if (!current_user_can('manage_options')) {
-		    return;
-	    }
+        if (!current_user_can('manage_options')) {
+            return;
+        }
 
         add_action( 'admin_menu', array( $this, 'register_admin_pages' ) );
         add_action( 'admin_menu', array( $this, 'register_welcome_page' ) );
@@ -694,30 +694,30 @@ class CallNowButton {
         $cnb_remote = new CnbAppRemote();
         add_action('cnb_init', array( $cnb_remote, 'init' ), 9);
 
-	    if ( CnbSettingsController::is_advanced_view() ) {
-		    $cnb_validation = new ValidationHooks();
-		    add_action( 'cnb_validation_notices', array( $cnb_validation, 'create_notice' ), 10, 2 );
-	    }
+        if ( CnbSettingsController::is_advanced_view() ) {
+            $cnb_validation = new ValidationHooks();
+            add_action( 'cnb_validation_notices', array( $cnb_validation, 'create_notice' ), 10, 2 );
+        }
 
-		$action_controller = new CnbActionController();
-	    add_filter( 'cnb_get_action_types', array( $action_controller, 'filter_chat_type' ) );
-	    add_filter( 'cnb_get_action_types', array( $action_controller, 'filter_booking_type' ) );
+        $action_controller = new CnbActionController();
+        add_filter( 'cnb_get_action_types', array( $action_controller, 'filter_chat_type' ) );
+        add_filter( 'cnb_get_action_types', array( $action_controller, 'filter_booking_type' ) );
 
-	    $admin_functions = new CnbAdminFunctions();
-	    add_filter( 'cnb_get_condition_types', array( $admin_functions, 'filter_condition_types' ) );
+        $admin_functions = new CnbAdminFunctions();
+        add_filter( 'cnb_get_condition_types', array( $admin_functions, 'filter_condition_types' ) );
     }
 
-	/**
-	 * Generic header and footer actions used throughout the various plugin pages
-	 *
-	 * These are subject to the same user/capability level as the CallNowButton plugin pages.
-	 *
-	 * @return void
-	 */
+    /**
+     * Generic header and footer actions used throughout the various plugin pages
+     *
+     * These are subject to the same user/capability level as the CallNowButton plugin pages.
+     *
+     * @return void
+     */
     public function register_header_and_footer() {
-	    if (!current_user_can('manage_options')) {
-		    return;
-	    }
+        if (!current_user_can('manage_options')) {
+            return;
+        }
 
         // Generic header/footer
         $header = new CnbHeader();
@@ -726,58 +726,58 @@ class CallNowButton {
         add_action( 'cnb_footer', array( $footer, 'render' ) );
     }
 
-	/**
-	 * Page specific "admin_post" actions to handle basic CRUD actions
-	 *
-	 * These are subject to the same user/capability level as the CallNowButton plugin pages.
-	 *
-	 * @return void
-	 */
+    /**
+     * Page specific "admin_post" actions to handle basic CRUD actions
+     *
+     * These are subject to the same user/capability level as the CallNowButton plugin pages.
+     *
+     * @return void
+     */
     public function register_admin_post_actions() {
-	    if (!current_user_can('manage_options')) {
-		    return;
-	    }
+        if (!current_user_can('manage_options')) {
+            return;
+        }
 
         $button_controller = new CnbButtonController();
-	    add_action( 'admin_post_cnb_create_button', array( $button_controller, 'create' ) );
+        add_action( 'admin_post_cnb_create_button', array( $button_controller, 'create' ) );
 
         add_action( 'admin_post_cnb_create_single_button', array( $button_controller, 'create' ) );
         add_action( 'admin_post_cnb_create_multi_button', array( $button_controller, 'create' ) );
-	    add_action( 'admin_post_cnb_create_full_button', array( $button_controller, 'create' ) );
-	    add_action( 'admin_post_cnb_create_dots_button', array( $button_controller, 'create' ) );
+        add_action( 'admin_post_cnb_create_full_button', array( $button_controller, 'create' ) );
+        add_action( 'admin_post_cnb_create_dots_button', array( $button_controller, 'create' ) );
 
         add_action( 'admin_post_cnb_update_single_button', array( $button_controller, 'update' ) );
         add_action( 'admin_post_cnb_update_multi_button', array( $button_controller, 'update' ) );
-	    add_action( 'admin_post_cnb_update_full_button', array( $button_controller, 'update' ) );
-	    add_action( 'admin_post_cnb_update_dots_button', array( $button_controller, 'update' ) );
+        add_action( 'admin_post_cnb_update_full_button', array( $button_controller, 'update' ) );
+        add_action( 'admin_post_cnb_update_dots_button', array( $button_controller, 'update' ) );
 
-	    add_action( 'admin_post_cnb_delete_button', array( $button_controller, 'delete' ) );
-	    add_action( 'admin_post_cnb_buttons_bulk', array( $button_controller, 'handle_bulk_actions' ) );
+        add_action( 'admin_post_cnb_delete_button', array( $button_controller, 'delete' ) );
+        add_action( 'admin_post_cnb_buttons_bulk', array( $button_controller, 'handle_bulk_actions' ) );
 
         $api_key_controller = new CnbApiKeyController();
-	    add_action( 'admin_post_cnb_apikey_create', array( $api_key_controller, 'create' ) );
-	    add_action( 'admin_post_cnb_apikey_validate_and_update', array( $api_key_controller, 'validate_and_update' ) );
+        add_action( 'admin_post_cnb_apikey_create', array( $api_key_controller, 'create' ) );
+        add_action( 'admin_post_cnb_apikey_validate_and_update', array( $api_key_controller, 'validate_and_update' ) );
         add_action( 'admin_post_cnb_apikey_bulk', array( $api_key_controller, 'handle_bulk_actions' ) );
-		// example GET: /wp-admin/admin-post.php?action=cnb_apikey_activate&api_key_ott=<key>>
-	    $ott_key_controller = new OttController();
-	    add_action( 'admin_post_cnb_apikey_activate', array( $ott_key_controller, 'activate' ) );
+        // example GET: /wp-admin/admin-post.php?action=cnb_apikey_activate&api_key_ott=<key>>
+        $ott_key_controller = new OttController();
+        add_action( 'admin_post_cnb_apikey_activate', array( $ott_key_controller, 'activate' ) );
 
         $condition_controller = new CnbConditionController();
         add_action( 'admin_post_cnb_create_condition', array( $condition_controller, 'create' ) );
-	    add_action( 'admin_post_cnb_update_condition', array( $condition_controller, 'update' ) );
-	    add_action( 'admin_post_cnb_delete_condition', array( $condition_controller, 'delete' ) );
+        add_action( 'admin_post_cnb_update_condition', array( $condition_controller, 'update' ) );
+        add_action( 'admin_post_cnb_delete_condition', array( $condition_controller, 'delete' ) );
         add_action( 'admin_post_cnb_conditions_bulk', array( $condition_controller, 'handle_bulk_actions' ) );
 
         $action_controller = new CnbActionController();
         add_action( 'admin_post_cnb_create_action', array( $action_controller, 'create' ) );
-	    add_action( 'admin_post_cnb_update_action', array( $action_controller, 'update' ) );
-	    add_action( 'admin_post_cnb_delete_action', array( $action_controller, 'delete' ) );
+        add_action( 'admin_post_cnb_update_action', array( $action_controller, 'update' ) );
+        add_action( 'admin_post_cnb_delete_action', array( $action_controller, 'delete' ) );
         add_action( 'admin_post_cnb_actions_bulk', array( $action_controller, 'handle_bulk_actions' ) );
 
         $domain_controller = new CnbDomainController();
         add_action( 'admin_post_cnb_create_domain', array( $domain_controller, 'create' ) );
-	    add_action( 'admin_post_cnb_update_domain', array( $domain_controller, 'update' ) );
-	    add_action( 'admin_post_cnb_delete_domain', array( $domain_controller, 'delete' ) );
+        add_action( 'admin_post_cnb_update_domain', array( $domain_controller, 'update' ) );
+        add_action( 'admin_post_cnb_delete_domain', array( $domain_controller, 'delete' ) );
         add_action( 'admin_post_cnb_domains_bulk', array( $domain_controller, 'handle_bulk_actions' ) );
 
         $profile_controller = new CnbProfileController();
@@ -791,17 +791,17 @@ class CallNowButton {
         }
     }
 
-	/**
-	 * Register the various AJAX calls that help manage the UI state.
-	 *
-	 * These are subject to the same user/capability level as the CallNowButton plugin pages.
-	 *
-	 * @return void
-	 */
+    /**
+     * Register the various AJAX calls that help manage the UI state.
+     *
+     * These are subject to the same user/capability level as the CallNowButton plugin pages.
+     *
+     * @return void
+     */
     public function register_ajax_actions() {
-	    if (!current_user_can('manage_options')) {
-		    return;
-	    }
+        if (!current_user_can('manage_options')) {
+            return;
+        }
 
         $ajax_controller = new CnbAdminAjax();
         add_action( 'wp_ajax_cnb_time_format', array( $ajax_controller, 'time_format' ) );
@@ -825,63 +825,63 @@ class CallNowButton {
         $admin_controller = CnbAdminNotices::get_instance();
         add_action( 'wp_ajax_cnb_hide_notice', array( $admin_controller, 'hide_notice' ) );
 
-	    $button_controller = new CnbButtonController();
-	    add_action( 'wp_ajax_cnb_create_button', array( $button_controller, 'create_ajax' ) );
+        $button_controller = new CnbButtonController();
+        add_action( 'wp_ajax_cnb_create_button', array( $button_controller, 'create_ajax' ) );
 
-		$user_controller = new CnbUserController();
-	    add_action( 'wp_ajax_cnb_set_user_storage_solution', array( $user_controller, 'set_storage_solution' ) );
+        $user_controller = new CnbUserController();
+        add_action( 'wp_ajax_cnb_set_user_storage_solution', array( $user_controller, 'set_storage_solution' ) );
 
-		$chat_controller = new CnbChatController();
-	    add_action( 'wp_ajax_cnb_create_chat_token', array( $chat_controller, 'create_chat_token_ajax' ) );
+        $chat_controller = new CnbChatController();
+        add_action( 'wp_ajax_cnb_create_chat_token', array( $chat_controller, 'create_chat_token_ajax' ) );
 
         // Register chat enable handler
         $chat_ajax_handler = new CnbChatAjaxHandler();
         $chat_ajax_handler->register();
     }
 
-	/**
-	 * Register the NowButtons dashboard widget
-	 *
-	 * This is only relevant to users that can actually manage the CallNowButtons plugin.
-	 *
-	 * @return void
-	 */
-	public function register_dashboard_widget() {
-		if ( ! current_user_can( 'manage_options' ) ) {
-			return;
-		}
+    /**
+     * Register the NowButtons dashboard widget
+     *
+     * This is only relevant to users that can actually manage the CallNowButtons plugin.
+     *
+     * @return void
+     */
+    public function register_dashboard_widget() {
+        if ( ! current_user_can( 'manage_options' ) ) {
+            return;
+        }
 
-		// Add dashboard widget
-		$dashboard_widget = new CnbDashboardWidget();
-		$dashboard_widget->register_dashboard();
-	}
+        // Add dashboard widget
+        $dashboard_widget = new CnbDashboardWidget();
+        $dashboard_widget->register_dashboard();
+    }
 
-	/**
-	 * Exclude the CallNowButtons actions from caching plugins
-	 *
-	 * This is only relevant to users that can actually manage the CallNowButtons plugin.
-	 *
-	 * @return void
-	 */
-	public function exclude_from_caching_plugins() {
-		if ( ! current_user_can( 'manage_options' ) ) {
-			return;
-		}
+    /**
+     * Exclude the CallNowButtons actions from caching plugins
+     *
+     * This is only relevant to users that can actually manage the CallNowButtons plugin.
+     *
+     * @return void
+     */
+    public function exclude_from_caching_plugins() {
+        if ( ! current_user_can( 'manage_options' ) ) {
+            return;
+        }
 
-		// Ensure we are excluded from certain Caching plugins
-		$cache_handler = new CacheHandler();
-		$cache_handler->register_exclude_actions();
-	}
+        // Ensure we are excluded from certain Caching plugins
+        $cache_handler = new CacheHandler();
+        $cache_handler->register_exclude_actions();
+    }
 
-	/**
-	 * Register the CallNowButton Cron jobs, which run regularly to update the internal state.
-	 *
-	 * This call can be done at any user/capability level.
-	 *
-	 * @return void
-	 */
-	public function register_cron() {
-		$cron = new Cron();
-		$cron->register_hook();
-	}
+    /**
+     * Register the CallNowButton Cron jobs, which run regularly to update the internal state.
+     *
+     * This call can be done at any user/capability level.
+     *
+     * @return void
+     */
+    public function register_cron() {
+        $cron = new Cron();
+        $cron->register_hook();
+    }
 }

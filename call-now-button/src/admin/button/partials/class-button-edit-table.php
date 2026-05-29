@@ -29,15 +29,15 @@ class Button_Edit_Table {
         global $cnb_domains, $wp_version;
         $adminFunctions = new CnbAdminFunctions();
 
-	    $cnb_single_image_url       = plugins_url( 'resources/images/button-new-single.png', CNB_PLUGINS_URL_BASE );
-	    $cnb_multi_image_url        = plugins_url( 'resources/images/button-new-multibutton.gif', CNB_PLUGINS_URL_BASE );
-	    $cnb_multi_flower_image_url = plugins_url( 'resources/images/button-new-flower.gif', CNB_PLUGINS_URL_BASE );
-	    $cnb_full_image_url         = plugins_url( 'resources/images/button-new-buttonbar.png', CNB_PLUGINS_URL_BASE );
-	    $cnb_full_single_image_url  = plugins_url( 'resources/images/button-new-full.png', CNB_PLUGINS_URL_BASE );
-	    $cnb_dots_image_url         = plugins_url( 'resources/images/button-new-dots.png', CNB_PLUGINS_URL_BASE );
+        $cnb_single_image_url       = plugins_url( 'resources/images/button-new-single.png', CNB_PLUGINS_URL_BASE );
+        $cnb_multi_image_url        = plugins_url( 'resources/images/button-new-multibutton.gif', CNB_PLUGINS_URL_BASE );
+        $cnb_multi_flower_image_url = plugins_url( 'resources/images/button-new-flower.gif', CNB_PLUGINS_URL_BASE );
+        $cnb_full_image_url         = plugins_url( 'resources/images/button-new-buttonbar.png', CNB_PLUGINS_URL_BASE );
+        $cnb_full_single_image_url  = plugins_url( 'resources/images/button-new-full.png', CNB_PLUGINS_URL_BASE );
+        $cnb_dots_image_url         = plugins_url( 'resources/images/button-new-dots.png', CNB_PLUGINS_URL_BASE );
 
-	    // Only for WordPress 5.2 and higher (Gutenberg + React 16.8)
-	    $has_gutenberg = version_compare( $wp_version, '5.2.0', '>=' );
+        // Only for WordPress 5.2 and higher (Gutenberg + React 16.8)
+        $has_gutenberg = version_compare( $wp_version, '5.2.0', '>=' );
 
         $url             = admin_url( 'admin.php' );
         $new_action_link =
@@ -85,12 +85,12 @@ class Button_Edit_Table {
                         class="cnb_toggle_state cnb_toggle_true">Active</span>
             </td>
         </tr>
-	    <?php if ( $button->id === 'new' ) {
+        <?php if ( $button->id === 'new' ) {
             $templates_link   =
-	        add_query_arg(
-		        array(
+            add_query_arg(
+                array(
                     'page'    => 'call-now-button-templates',
-		        ),
+                ),
                 admin_url( 'admin.php' ) );
             } ?>
         <tr class="cnb_button_name">
@@ -162,16 +162,16 @@ class Button_Edit_Table {
                         value="<?php echo esc_attr( $action->id ) ?>"/>
             <?php }
 
-	        /**
-	         * We don't actually need any action details in the modal - the only important piece is
+            /**
+             * We don't actually need any action details in the modal - the only important piece is
              * the Button details (and really, only the domain id and button type).
              *
              * This (hidden) form conflicts with the Button Controller and would create Actions
              * when none were needed/requested, so we're hiding/skipping this for the modal window
-	         */
-	        if ( !$hide_on_modal ) {
-		        ( new CnbActionViewEdit() )->render_main( $action, $button, $default_domain );
-	        }
+             */
+            if ( !$hide_on_modal ) {
+                ( new CnbActionViewEdit() )->render_main( $action, $button, $default_domain );
+            }
             if ( $hide_on_modal ) { ?>
                 </td>
                 </tr>
@@ -278,17 +278,17 @@ class Button_Edit_Table {
                             
                             <div style="text-align:center">
                                 Flower<span class="cnb-hide-on-mobile"> button</span>
-			                    <?php if ( $default_domain->type !== 'PRO' ) { ?><span
+                                <?php if ( $default_domain->type !== 'PRO' ) { ?><span
                                         class="cnb-pro-badge">Pro</span><?php } ?>
                             </div>
-		                    <?php if ( $default_domain->type !== 'PRO' ) { ?>
+                            <?php if ( $default_domain->type !== 'PRO' ) { ?>
                                 <div class="cnb-pro-overlay">
                                     <p class="description">
                                         Flower is a <span class="cnb-pro-badge">Pro</span> feature.
                                         <a href="<?php echo esc_url( $upgrade_link ) ?>">Upgrade</a> here.
                                     </p>
                                 </div>
-		                    <?php } ?>
+                            <?php } ?>
                         </div>
 
                         <div class="cnb_type_selector <?php if ( $default_domain->type === 'PRO' ) { ?>cnb_type_selector_item<?php } else { ?>cnb_type_only_pro<?php } ?> cnb_type_selector_full"
@@ -302,17 +302,17 @@ class Button_Edit_Table {
                             
                             <div style="text-align:center">
                                 Buttonbar
-	                            <?php if ( $default_domain->type !== 'PRO' ) { ?><span
+                                <?php if ( $default_domain->type !== 'PRO' ) { ?><span
                                         class="cnb-pro-badge">Pro</span><?php } ?>
                             </div>
-	                        <?php if ( $default_domain->type !== 'PRO' ) { ?>
+                            <?php if ( $default_domain->type !== 'PRO' ) { ?>
                                 <div class="cnb-pro-overlay">
                                     <p class="description">
                                         Buttonbar is a <span class="cnb-pro-badge">Pro</span> feature.
                                         <a href="<?php echo esc_url( $upgrade_link ) ?>">Upgrade</a> here.
                                     </p>
                                 </div>
-	                        <?php } ?>
+                            <?php } ?>
                         </div>
 
                         <div class="cnb_type_selector <?php if ( $default_domain->type === 'PRO' ) { ?>cnb_type_selector_item<?php } else { ?>cnb_type_only_pro<?php } ?> cnb_type_selector_dots"
@@ -327,17 +327,17 @@ class Button_Edit_Table {
                             
                             <div style="text-align:center">
                                 Dots
-			                    <?php if ( $default_domain->type !== 'PRO' ) { ?><span
+                                <?php if ( $default_domain->type !== 'PRO' ) { ?><span
                                         class="cnb-pro-badge">Pro</span><?php } ?>
                             </div>
-		                    <?php if ( $default_domain->type !== 'PRO' ) { ?>
+                            <?php if ( $default_domain->type !== 'PRO' ) { ?>
                                 <div class="cnb-pro-overlay">
                                     <p class="description">
                                         Dots is a <span class="cnb-pro-badge">Pro</span> feature.
                                         <a href="<?php echo esc_url( $upgrade_link ) ?>">Upgrade</a> here.
                                     </p>
                                 </div>
-		                    <?php } ?>
+                            <?php } ?>
                         </div>
                     </div>
                 </td>
@@ -370,14 +370,14 @@ class Button_Edit_Table {
             ),
                 admin_url( 'admin.php' ) );
 
-	    // Migration note:
-	    //- we move from button.options.iconBackgroundColor to action.backgroundColor
-	    //- we move from button.options.iconColor to action.iconColor
-	    // So for now, "button" take priority, but once the new value is saved, we blank the button options
-	    $backgroundColor = $this->get_background_color( $button, $action );
-	    $iconColor       = $this->get_icon_color( $button, $action );
+        // Migration note:
+        //- we move from button.options.iconBackgroundColor to action.backgroundColor
+        //- we move from button.options.iconColor to action.iconColor
+        // So for now, "button" take priority, but once the new value is saved, we blank the button options
+        $backgroundColor = $this->get_background_color( $button, $action );
+        $iconColor       = $this->get_icon_color( $button, $action );
 
-	    ?>
+        ?>
         <table class="form-table <?php echo esc_attr( $adminFunctions->is_active_tab( 'extra_options' ) ) ?>"
                 data-tab-name="extra_options">
             <?php if ( $button->type === 'FULL' ) { ?>
@@ -525,37 +525,37 @@ class Button_Edit_Table {
                     </td>
                 </tr>
             <?php } ?>
-	        <?php if ( $button->type === 'MULTI' ) { ?>
+            <?php if ( $button->type === 'MULTI' ) { ?>
                 <tr>
                     <th scope="row"><label for="multi_button_options_default_state">Default state</label>
-				        <?php if ( $button->domain->type !== 'PRO' ) { ?>
+                        <?php if ( $button->domain->type !== 'PRO' ) { ?>
                             <a href="<?php echo esc_url( $upgrade_link ) ?>"><span class="cnb-pro-badge">Pro</span></a>
-				        <?php } ?>
+                        <?php } ?>
                     </th>
                     <td>
                         <select
                                 name="button[multiButtonOptions][defaultState]"
                                 id="multi_button_options_default_state"
-						        <?php if ( $button->domain->type !== 'PRO' ) { ?>disabled="disabled"<?php } ?>
+                                <?php if ( $button->domain->type !== 'PRO' ) { ?>disabled="disabled"<?php } ?>
                         >
-					        <?php foreach ( CnbMultiButtonOptions::getDefaultStates() as $default_state_key => $default_state_value ) {?>
+                            <?php foreach ( CnbMultiButtonOptions::getDefaultStates() as $default_state_key => $default_state_value ) {?>
                                 <option value="<?php echo esc_attr( $default_state_key ) ?>"<?php selected( $default_state_key, $button->multiButtonOptions->defaultState ) ?>><?php echo esc_html( $default_state_value ) ?></option>
-					        <?php } ?>
+                            <?php } ?>
                         </select>
                     </td>
                 </tr>
-	        <?php } ?>
+            <?php } ?>
             <tr class="cnb_advanced_view">
                 <th scope="row"><label for="button_options_css_classes">CSS Classes</label>
-			        <?php if ( $button->domain->type !== 'PRO' ) { ?>
+                    <?php if ( $button->domain->type !== 'PRO' ) { ?>
                         <a href="<?php echo esc_url( $upgrade_link ) ?>"><span class="cnb-pro-badge">Pro</span></a>
-			        <?php } ?>
+                    <?php } ?>
                 </th>
                 <td>
                     <input
                             name="button[options][cssClasses]"
                             id="button_options_css_classes"
-					        type="text" <?php if ( $button->domain->type !== 'PRO' ) { ?>disabled="disabled"<?php } ?>
+                            type="text" <?php if ( $button->domain->type !== 'PRO' ) { ?>disabled="disabled"<?php } ?>
                             value="<?php echo esc_attr($button->options->cssClasses) ?>" />
                 </td>
             </tr>
@@ -650,11 +650,11 @@ class Button_Edit_Table {
 
             // Add hidden inputs for all condition IDs, regardless of pagination
             if ($button && isset($button->conditions) && is_array($button->conditions)) {
-	            foreach ($button->conditions as $condition) {
-		            if (isset($condition->id) && $condition->id !== 'new') {
-			            echo '<input type="hidden" name="conditions[][id]" value="' . esc_attr( $condition->id ) . '" />';
-		            }
-	            }
+                foreach ($button->conditions as $condition) {
+                    if (isset($condition->id) && $condition->id !== 'new') {
+                        echo '<input type="hidden" name="conditions[][id]" value="' . esc_attr( $condition->id ) . '" />';
+                    }
+                }
             }
 
             $view = new CnbConditionView();

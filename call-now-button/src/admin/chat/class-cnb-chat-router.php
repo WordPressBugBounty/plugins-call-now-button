@@ -6,26 +6,26 @@ namespace cnb\admin\chat;
 defined( 'ABSPATH' ) || die( '-1' );
 
 class CnbChatRouter {
-	/**
-	 * Decides to either render the overview or the edit view
-	 *
-	 * @return void
-	 */
-	public function render() {
-		do_action( 'cnb_init', __METHOD__ );
-		$view = new CnbChatView();
-		$view->render();
-		do_action( 'cnb_finish' );
-	}
+    /**
+     * Decides to either render the overview or the edit view
+     *
+     * @return void
+     */
+    public function render() {
+        do_action( 'cnb_init', __METHOD__ );
+        $view = new CnbChatView();
+        $view->render();
+        do_action( 'cnb_finish' );
+    }
 
-	public function render_marketing() {
-		do_action( 'cnb_init', __METHOD__ );
-		$view = new CnbChatMarketingView();
-		$view->render();
-		do_action( 'cnb_finish' );
-	}
+    public function render_marketing() {
+        do_action( 'cnb_init', __METHOD__ );
+        $view = new CnbChatMarketingView();
+        $view->render();
+        do_action( 'cnb_finish' );
+    }
 
-	public function get_slug() {
-		return CNB_SLUG . '-chat';
-	}
+    public function get_slug() {
+        return CNB_SLUG . '-chat';
+    }
 }

@@ -19,21 +19,21 @@ use cnb\utils\CnbUtils;
 use WP_Error;
 
 class CnbHeaderNotices {
-	/**
-	 * All notices that are prefixed with this string are Cloud notices specific to this plugin.
-	 *
-	 * @var string
-	 */
-	private $cnb_notice_prefix = 'call-now-button-notice-';
+    /**
+     * All notices that are prefixed with this string are Cloud notices specific to this plugin.
+     *
+     * @var string
+     */
+    private $cnb_notice_prefix = 'call-now-button-notice-';
 
-	/**
-	 * Create a unique ID for a notice, with a prefix specific to this plugin.
-	 *
-	 * @return string
-	 */
-	public function generate_notice_id() {
-		return $this->cnb_notice_prefix . wp_generate_uuid4();
-	}
+    /**
+     * Create a unique ID for a notice, with a prefix specific to this plugin.
+     *
+     * @return string
+     */
+    public function generate_notice_id() {
+        return $this->cnb_notice_prefix . wp_generate_uuid4();
+    }
 
     /**
      * @return CnbNotice[]|string[]
@@ -89,8 +89,8 @@ class CnbHeaderNotices {
             $this->render_is_timezone_valid( $cnb_domain );
             $this->render_is_debug_mode_enabled( $cnb_domain );
             $this->render_outstanding_invoice( $cnb_subscription_data );
-	        $this->render_pro_chat_notice( $cnb_user, $cnb_domain );
-	        $this->render_starter_chat_notice( $cnb_user, $cnb_domain );
+            $this->render_pro_chat_notice( $cnb_user, $cnb_domain );
+            $this->render_starter_chat_notice( $cnb_user, $cnb_domain );
 
         }
     }
@@ -173,11 +173,11 @@ class CnbHeaderNotices {
 
     private function cnb_settings_api_key_input() {
         $message = sprintf( '<form action="%1$s" method="POST" class="cnb-container">', esc_url( admin_url( 'admin-post.php' ) ) );
-	    $message .= '<input type="hidden" name="page" value="call-now-button" />';
-	    $message .= '<input type="hidden" name="action" value="cnb_apikey_validate_and_update" />';
+        $message .= '<input type="hidden" name="page" value="call-now-button" />';
+        $message .= '<input type="hidden" name="action" value="cnb_apikey_validate_and_update" />';
         $message .= '<div>';
         $message .= '<input type="text" required="required" class="cnb_activation_input_field" name="api_key" placeholder="Paste API key here"/>';
-	    $message .= '<input type="hidden" name="_wpnonce" value="' . esc_attr( wp_create_nonce( 'cnb_apikey_validate_and_update' ) ) . '"/>';
+        $message .= '<input type="hidden" name="_wpnonce" value="' . esc_attr( wp_create_nonce( 'cnb_apikey_validate_and_update' ) ) . '"/>';
         $message .= get_submit_button( __( 'Store API key' ), 'primary', 'submit', false );
         $message .= '</div>';
         $message .= '</form>';
@@ -481,27 +481,27 @@ class CnbHeaderNotices {
         CnbAdminNotices::get_instance()->error( $message );
     }
 
-	/**
-	 * @param SubscriptionStatus $cnb_subscription_status
-	 *
-	 * @return void
-	 */
-	private function render_outstanding_invoice( $cnb_subscription_status ) {
-		if ( ! $cnb_subscription_status || ! $cnb_subscription_status->has_outstanding_payment() ) {
-			return;
-		}
+    /**
+     * @param SubscriptionStatus $cnb_subscription_status
+     *
+     * @return void
+     */
+    private function render_outstanding_invoice( $cnb_subscription_status ) {
+        if ( ! $cnb_subscription_status || ! $cnb_subscription_status->has_outstanding_payment() ) {
+            return;
+        }
 
-		wp_enqueue_script( CNB_SLUG . '-billing-portal' );
-
-
-		$message = '<p style="font-size:18px; font-weight:bold;">Failed payment</p><p>Your PRO subscription is currently <strong>paused</strong> as we were unable to collect your subscription fee of ';
-		$message .= esc_html( CnbPlan::get_formatted_amount( $cnb_subscription_status->invoiceAmount / 100.0, $cnb_subscription_status->invoiceCurrency ) );
-		$message .= '. <p>Please remit payment at your earliest convenience. All PRO features are reactivated once the overdue invoice has been settled.';
-		$message .= '<p><a class="button button-primary button-large" href="' . esc_url( $cnb_subscription_status->invoiceUrl ) . '">Pay now</a></p>';
+        wp_enqueue_script( CNB_SLUG . '-billing-portal' );
 
 
-		CnbAdminNotices::get_instance()->error( $message, false, 'cnb-outstanding-invoice' );
-	}
+        $message = '<p style="font-size:18px; font-weight:bold;">Failed payment</p><p>Your PRO subscription is currently <strong>paused</strong> as we were unable to collect your subscription fee of ';
+        $message .= esc_html( CnbPlan::get_formatted_amount( $cnb_subscription_status->invoiceAmount / 100.0, $cnb_subscription_status->invoiceCurrency ) );
+        $message .= '. <p>Please remit payment at your earliest convenience. All PRO features are reactivated once the overdue invoice has been settled.';
+        $message .= '<p><a class="button button-primary button-large" href="' . esc_url( $cnb_subscription_status->invoiceUrl ) . '">Pay now</a></p>';
+
+
+        CnbAdminNotices::get_instance()->error( $message, false, 'cnb-outstanding-invoice' );
+    }
 
     private function get_cnb_generic_error_notice() {
         $cnb_utils   = new CnbUtils();
@@ -528,67 +528,67 @@ class CnbHeaderNotices {
      * @param $cnb_domain CnbDomain|WP_Error
      */
     private function render_pro_chat_notice( $cnb_user, $cnb_domain ) {
-	    // Check if chat is already enabled using the controller
-	    $chat_controller = new CnbChatController();
+        // Check if chat is already enabled using the controller
+        $chat_controller = new CnbChatController();
 
         if ( is_wp_error( $cnb_user ) || is_wp_error( $cnb_domain ) ) {
             return;
         }
 
-		// If this domain already has chat enabled, don't show the notice
+        // If this domain already has chat enabled, don't show the notice
         if ( $chat_controller->has_chat_enabled() ) {
             return;
         }
 
-	    // Check if domain is PRO (if not, don't show the notice)
-	    if ( ! $cnb_domain->is_pro() ) {
-		    return;
-	    }
+        // Check if domain is PRO (if not, don't show the notice)
+        if ( ! $cnb_domain->is_pro() ) {
+            return;
+        }
 
-		// Check if this domain type is allowed for chat
-	    if ( ! $chat_controller->is_domain_allowed_for_chat( $cnb_domain ) ) {
-		    return;
-	    }
+        // Check if this domain type is allowed for chat
+        if ( ! $chat_controller->is_domain_allowed_for_chat( $cnb_domain ) ) {
+            return;
+        }
 
         $message = '<p>✨ <strong>NEW:</strong> Try the Live Chat action while it\'s in beta! Connect with visitors in real-time, right on your website. ';
-	    $message .= '<a href="' . esc_url( admin_url( 'admin.php?page=' . CNB_SLUG . '-marketing-chat' ) ) . '">Enable Live Chat</a></p>';
+        $message .= '<a href="' . esc_url( admin_url( 'admin.php?page=' . CNB_SLUG . '-marketing-chat' ) ) . '">Enable Live Chat</a></p>';
         
         CnbAdminNotices::get_instance()->success( $message, true, 'cnb-pro-chat-notice' );
     }
 
-	/**
-	 * Show a notice for FREE / STARTER domains about the Chat feature availability
-	 *
-	 * @param $cnb_user CnbUser|WP_Error
-	 * @param $cnb_domain CnbDomain|WP_Error
-	 */
-	private function render_starter_chat_notice( $cnb_user, $cnb_domain ) {
-		// Check if chat is already enabled using the controller
-		$chat_controller = new CnbChatController();
+    /**
+     * Show a notice for FREE / STARTER domains about the Chat feature availability
+     *
+     * @param $cnb_user CnbUser|WP_Error
+     * @param $cnb_domain CnbDomain|WP_Error
+     */
+    private function render_starter_chat_notice( $cnb_user, $cnb_domain ) {
+        // Check if chat is already enabled using the controller
+        $chat_controller = new CnbChatController();
 
-		if ( is_wp_error( $cnb_user ) || is_wp_error( $cnb_domain ) ) {
-			return;
-		}
+        if ( is_wp_error( $cnb_user ) || is_wp_error( $cnb_domain ) ) {
+            return;
+        }
 
-		// If this domain already has chat enabled, don't show the notice
-		if ( $chat_controller->has_chat_enabled() ) {
-			return;
-		}
+        // If this domain already has chat enabled, don't show the notice
+        if ( $chat_controller->has_chat_enabled() ) {
+            return;
+        }
 
-		// Check if domain is STARTER or FREE (if not, don't show the notice)
-		if ( $cnb_domain->is_pro() ) {
-			return;
-		}
+        // Check if domain is STARTER or FREE (if not, don't show the notice)
+        if ( $cnb_domain->is_pro() ) {
+            return;
+        }
 
-		// Check if this domain type is allowed for chat
-		if ( ! $chat_controller->is_domain_allowed_for_chat( $cnb_domain ) ) {
-			return;
-		}
+        // Check if this domain type is allowed for chat
+        if ( ! $chat_controller->is_domain_allowed_for_chat( $cnb_domain ) ) {
+            return;
+        }
 
-		$message = '<p><span class="dashicons dashicons-format-chat"></span> ';
-		$message .= 'Great news! NowButtons now supports <strong>Live Chat</strong> features! ';
-		$message .= 'Read more about it on the <a href="' . esc_url( admin_url( 'admin.php?page=' . CNB_SLUG . '-chat-marketing' ) ) . '">Chat page</a></p>';
+        $message = '<p><span class="dashicons dashicons-format-chat"></span> ';
+        $message .= 'Great news! NowButtons now supports <strong>Live Chat</strong> features! ';
+        $message .= 'Read more about it on the <a href="' . esc_url( admin_url( 'admin.php?page=' . CNB_SLUG . '-chat-marketing' ) ) . '">Chat page</a></p>';
 
-		CnbAdminNotices::get_instance()->info( $message, true, 'cnb-starter-chat-notice' );
-	}
+        CnbAdminNotices::get_instance()->info( $message, true, 'cnb-starter-chat-notice' );
+    }
 }

@@ -286,13 +286,24 @@ class CnbProfileController {
 
     public function update() {
         do_action( 'cnb_init', __METHOD__ );
-        $nonce       = filter_input( INPUT_POST, '_wpnonce', @FILTER_SANITIZE_STRING );
-        $page_source = filter_input( INPUT_POST, 'page_source', @FILTER_SANITIZE_STRING );
+        if ( ! current_user_can( 'manage_options' ) ) {
+            do_action( 'cnb_finish' );
+            wp_die(
+                esc_html__( 'You do not have sufficient permissions to access this page.' ),
+                esc_html__( 'Unauthorized' ),
+                array( 'response' => 403 )
+            );
+        }
+        $nonce       = sanitize_text_field( filter_input( INPUT_POST, '_wpnonce' ) );
+        $page_source = sanitize_text_field( filter_input( INPUT_POST, 'page_source' ) );
         $profile     = filter_input(
             INPUT_POST,
             'user',
-            @FILTER_SANITIZE_STRING,
+            FILTER_DEFAULT,
             FILTER_REQUIRE_ARRAY | FILTER_FLAG_NO_ENCODE_QUOTES );
+        if ( ! is_array( $profile ) ) {
+            $profile = array();
+        }
         $user        = CnbUser::fromObject( $profile );
 
         $result = $this->update_user( $nonce, $user );
@@ -304,6 +315,7 @@ class CnbProfileController {
             set_transient( $transient_id, $notification, HOUR_IN_SECONDS );
 
             if ( $page_source === 'domain-upgrade' ) {
+                do_action( 'cnb_finish' );
                 return;
             }
             // Redirect

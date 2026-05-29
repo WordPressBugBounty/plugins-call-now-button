@@ -25,7 +25,7 @@ class CnbApiKeyActivatedView {
         $this->activation = get_transient('cnb_activation');
     }
 
-	/**
+    /**
      * @param $error WP_Error
      *
      * @return void
@@ -108,7 +108,7 @@ class CnbApiKeyActivatedView {
         echo '</div>';
     }
 
-	private function renderActivationSuccess($already = false) {
+    private function renderActivationSuccess($already = false) {
         echo '<div style="text-align: center;">';
         $this->accountConnectionSvg();
         echo '<h2>NowButtons.com account connection ' . ($already ? ' already ' : '') . ' successfully established!</h2>';
@@ -347,10 +347,10 @@ class CnbApiKeyActivatedView {
         }
 
         if ( ! $this->activation && ! is_wp_error( $user ) ) {
-	        $this->renderActivationSuccess(true);
+            $this->renderActivationSuccess(true);
         }
 
-	    if ( ! $this->activation && is_wp_error( $user ) ) {
+        if ( ! $this->activation && is_wp_error( $user ) ) {
             $this->renderActivationFailure( $user );
         }
     }

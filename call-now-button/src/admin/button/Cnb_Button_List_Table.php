@@ -189,7 +189,7 @@ class Cnb_Button_List_Table extends WP_List_Table {
      * @return string|void
      */
     function column_default( $item, $column_name ) {
-	    $adminFunctions = new CnbAdminFunctions();
+        $adminFunctions = new CnbAdminFunctions();
         switch ( $column_name ) {
             case 'id':
                 return '<code>' . esc_html( $item->id ) . '</code>';
@@ -198,21 +198,21 @@ class Cnb_Button_List_Table extends WP_List_Table {
                 switch ( $item->type ) {
                     case 'SINGLE':
                     case 'FULL':
-	                case 'MULTI':
-	                case 'DOTS':
+                    case 'MULTI':
+                    case 'DOTS':
                         $button_types   = $adminFunctions->cnb_get_button_types();
 
-	                    $flower = !empty( $item->options->cssClasses ) && str_contains($item->options->cssClasses, 'cnb-multi-flower');
+                        $flower = !empty( $item->options->cssClasses ) && str_contains($item->options->cssClasses, 'cnb-multi-flower');
                         return $button_types[ $item->type ] . ($flower ? ' (flower)' : '');
                     default:
                         return esc_html( $item->type );
                 }
             case 'displaymode':
-				$display_modes = $adminFunctions->get_display_modes();
+                $display_modes = $adminFunctions->get_display_modes();
                 switch ( $item->options->displayMode ) {
                     case 'MOBILE_ONLY':
-	                case 'DESKTOP_ONLY':
-	                case 'ALWAYS':
+                    case 'DESKTOP_ONLY':
+                    case 'ALWAYS':
                         return $display_modes[ $item->options->displayMode];
                     default:
                         return $display_modes['ALWAYS'];
@@ -247,10 +247,10 @@ class Cnb_Button_List_Table extends WP_List_Table {
         $actions = CnbAdminCloud::cnb_wp_get_actions_for_button( $item );
         foreach ( $actions as $action ) {
             $actionTypes = ( new CnbAdminFunctions() )->cnb_get_action_types();
-			// In case the action type is not found, display an error message
+            // In case the action type is not found, display an error message
             if ( !array_key_exists($action->actionType, $actionTypes) ) {
-	            $actionMsg   .= '<em> ' . esc_html($action->actionType) . ' is invalid</em><br />';
-				continue;
+                $actionMsg   .= '<em> ' . esc_html($action->actionType) . ' is invalid</em><br />';
+                continue;
             }
             $actionType  = $actionTypes[ $action->actionType ];
             $actionMsg   .= esc_html($actionType->name) . $this->get_action_value( $action ) . '<br />';
@@ -268,20 +268,20 @@ class Cnb_Button_List_Table extends WP_List_Table {
         return "$items$actionMsg$domain";
     }
 
-	/**
-	 * @param $action CnbAction
-	 *
-	 * @return string
-	 */
-	private function get_action_value( $action ) {
-		if ($action->actionType === 'CHAT') return '';
-		if ($action->actionType === 'BOOKING' ) {
-			$actionValue = $action->properties->{'booking-meeting-id'};
-			return ' (' . $actionValue . ')';
-		}
-		$actionValue = ! empty( $action->actionValue ) ? esc_html( $action->actionValue ) : '<em>No value</em>';
-		return ' (' . $actionValue . ')';
-	}
+    /**
+     * @param $action CnbAction
+     *
+     * @return string
+     */
+    private function get_action_value( $action ) {
+        if ($action->actionType === 'CHAT') return '';
+        if ($action->actionType === 'BOOKING' ) {
+            $actionValue = $action->properties->{'booking-meeting-id'};
+            return ' (' . $actionValue . ')';
+        }
+        $actionValue = ! empty( $action->actionValue ) ? esc_html( $action->actionValue ) : '<em>No value</em>';
+        return ' (' . $actionValue . ')';
+    }
 
     /**
      * @return CnbButton[]|WP_Error
@@ -407,7 +407,7 @@ class Cnb_Button_List_Table extends WP_List_Table {
         }
 
         $notices = ValidationMessage::get_validation_notices($item);
-	    do_action('cnb_validation_notices', $notices);
+        do_action('cnb_validation_notices', $notices);
 
         return sprintf(
             '%1$s %2$s',

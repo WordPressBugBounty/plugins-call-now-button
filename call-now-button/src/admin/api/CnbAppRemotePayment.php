@@ -32,7 +32,7 @@ class CnbAppRemotePayment {
         $body = array(
             'plan'        => $planId,
             'callbackUri' => $callbackUri,
-	        'currency'    => $currency,
+            'currency'    => $currency,
         );
 
         $rest_endpoint = '/v1/subscription/proAccount';

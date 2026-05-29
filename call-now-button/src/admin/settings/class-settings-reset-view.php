@@ -9,7 +9,7 @@ use cnb\notices\CnbAdminNotices;
 
 class Settings_Reset_view {
     private function render_success() {
-        $success = filter_input( INPUT_GET, 'success', @FILTER_SANITIZE_STRING );
+        $success = sanitize_text_field( filter_input( INPUT_GET, 'success' ) );
         $noticeHandler = CnbAdminNotices::get_instance();
         if ($success === '1') {
             $noticeHandler->renderSuccess('<p>Settings deleted.</p>');

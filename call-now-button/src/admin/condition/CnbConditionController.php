@@ -31,50 +31,60 @@ class CnbConditionController {
         return CnbAdminCloud::cnb_delete_condition( $ignore_notifications, $condition );
     }
 
-	/**
-	 * Via the quick action "Delete" (called admin_post_cnb_delete_condition), to be able to delete a Condition.
-	 *
-	 * Since "admin-post.php" is used, that means there is no output (and we can/should safely redirect to the Button overview after deleting).
-	 *
-	 * @return void
-	 */
+    /**
+     * Via the quick action "Delete" (called admin_post_cnb_delete_condition), to be able to delete a Condition.
+     *
+     * Since "admin-post.php" is used, that means there is no output (and we can/should safely redirect to the Button overview after deleting).
+     *
+     * @return void
+     */
 
-	function delete() {
-		$cnb_utils = new CnbUtils();
-		$id        = $cnb_utils->get_query_val( 'id', null );
-		$nonce     = $cnb_utils->get_query_val( '_wpnonce', null );
-		$action    = 'cnb_delete_condition';
+    public function delete() {
+        do_action( 'cnb_init', __METHOD__ );
+        if ( ! current_user_can( 'manage_options' ) ) {
+            do_action( 'cnb_finish' );
+            wp_die(
+                esc_html__( 'You do not have sufficient permissions to access this page.' ),
+                esc_html__( 'Unauthorized' ),
+                array( 'response' => 403 )
+            );
+        }
+        $cnb_utils = new CnbUtils();
+        $id        = $cnb_utils->get_query_val( 'id', null );
+        $nonce     = $cnb_utils->get_query_val( '_wpnonce', null );
+        $action    = 'cnb_delete_condition';
 
-		if ( ! wp_verify_nonce( $nonce, $action ) ) {
-			do_action( 'cnb_finish' );
-			wp_die( esc_html__( 'Invalid nonce specified' ), esc_html__( 'Error' ), array(
-				'response'  => 403,
-				'back_link' => true,
-			) );
-		}
+        if ( ! wp_verify_nonce( $nonce, $action ) ) {
+            do_action( 'cnb_finish' );
+            wp_die( esc_html__( 'Invalid nonce specified' ), esc_html__( 'Error' ), array(
+                'response'  => 403,
+                'back_link' => true,
+            ) );
+        }
 
-		$cnb_cloud_notifications = array();
-		$condition               = new CnbCondition();
-		$condition->id           = $id;
-		CnbAdminCloud::cnb_delete_condition( $cnb_cloud_notifications, $condition );
+        $cnb_cloud_notifications = array();
+        $condition               = new CnbCondition();
+        $condition->id           = $id;
+        CnbAdminCloud::cnb_delete_condition( $cnb_cloud_notifications, $condition );
 
-		// Save notices
-		$transient_id = (new CnbHeaderNotices())->generate_notice_id();
-		set_transient( $transient_id, $cnb_cloud_notifications, HOUR_IN_SECONDS );
+        // Save notices
+        $transient_id = (new CnbHeaderNotices())->generate_notice_id();
+        set_transient( $transient_id, $cnb_cloud_notifications, HOUR_IN_SECONDS );
 
-		// Create link
-		$redirect_link =
-			add_query_arg(
-				array(
-					'page'     => 'call-now-button-conditions',
-					'tid'      => $transient_id,
-					'_wpnonce' => wp_create_nonce( $transient_id ),
-				),
-				admin_url( 'admin.php' ) );
-		$redirect_url  = esc_url_raw( $redirect_link );
-		do_action( 'cnb_finish' );
-		wp_safe_redirect( $redirect_url );
-	}
+        // Create link
+        $redirect_link =
+            add_query_arg(
+                array(
+                    'page'     => 'call-now-button-conditions',
+                    'tid'      => $transient_id,
+                    '_wpnonce' => wp_create_nonce( $transient_id ),
+                ),
+                admin_url( 'admin.php' ) );
+        $redirect_url  = esc_url_raw( $redirect_link );
+        do_action( 'cnb_finish' );
+        wp_safe_redirect( $redirect_url );
+        exit;
+    }
 
     /**
      * Called via jQuery.post
@@ -84,10 +94,15 @@ class CnbConditionController {
     public function delete_ajax() {
         do_action( 'cnb_init', __METHOD__ );
 
-	    // Verify nonce (die immediately if failed)
-	    check_ajax_referer('cnb_delete_condition');
+        if ( ! current_user_can( 'manage_options' ) ) {
+            do_action( 'cnb_finish' );
+            wp_send_json_error( 'Unauthorized', 403 );
+        }
 
-	    $cnb_utils = new CnbUtils();
+        // Verify nonce (die immediately if failed)
+        check_ajax_referer('cnb_delete_condition');
+
+        $cnb_utils = new CnbUtils();
         $id        = $cnb_utils->get_post_val( 'id', null );
 
         $result     = $this->deleteWithId( $id );
@@ -96,9 +111,8 @@ class CnbConditionController {
         $return = array(
             'result' => $result,
         );
-        wp_send_json( $return );
         do_action( 'cnb_finish' );
-        wp_die();
+        wp_send_json( $return );
     }
 
     /**
@@ -149,14 +163,14 @@ class CnbConditionController {
     }
 
     private function create_and_update( $closure, $action ) {
-        $nonce          = filter_input( INPUT_POST, '_wpnonce', @FILTER_SANITIZE_STRING );
+        $nonce          = sanitize_text_field( filter_input( INPUT_POST, '_wpnonce' ) );
         $nonce_verified = wp_verify_nonce( $nonce, $action );
         if ( $nonce_verified ) {
             // sanitize the input
             $conditions = filter_input(
                 INPUT_POST,
                 'conditions',
-                @FILTER_SANITIZE_STRING,
+                FILTER_DEFAULT,
                 FILTER_REQUIRE_ARRAY | FILTER_FLAG_NO_ENCODE_QUOTES );
 
             $processed_conditions = array();
@@ -182,6 +196,14 @@ class CnbConditionController {
      */
     public function create() {
         do_action( 'cnb_init', __METHOD__ );
+        if ( ! current_user_can( 'manage_options' ) ) {
+            do_action( 'cnb_finish' );
+            wp_die(
+                esc_html__( 'You do not have sufficient permissions to access this page.' ),
+                esc_html__( 'Unauthorized' ),
+                array( 'response' => 403 )
+            );
+        }
         /**
          * @param $conditions CnbCondition[]
          *
@@ -223,6 +245,14 @@ class CnbConditionController {
      */
     public function update() {
         do_action( 'cnb_init', __METHOD__ );
+        if ( ! current_user_can( 'manage_options' ) ) {
+            do_action( 'cnb_finish' );
+            wp_die(
+                esc_html__( 'You do not have sufficient permissions to access this page.' ),
+                esc_html__( 'Unauthorized' ),
+                array( 'response' => 403 )
+            );
+        }
         /**
          * @param $conditions CnbCondition[]
          *
@@ -259,13 +289,21 @@ class CnbConditionController {
      */
     public function handle_bulk_actions() {
         do_action( 'cnb_init', __METHOD__ );
+        if ( ! current_user_can( 'manage_options' ) ) {
+            do_action( 'cnb_finish' );
+            wp_die(
+                esc_html__( 'You do not have sufficient permissions to access this page.' ),
+                esc_html__( 'Unauthorized' ),
+                array( 'response' => 403 )
+            );
+        }
         $cnb_utils      = new CnbUtils();
         $nonce          = $cnb_utils->get_post_val( '_wpnonce' );
         $action         = 'bulk-cnb_list_conditions';
         $nonce_verified = wp_verify_nonce( $nonce, $action );
 
         if ( $nonce_verified ) {
-            $entityIds = filter_input( INPUT_POST, 'cnb_list_condition', @FILTER_SANITIZE_STRING, FILTER_REQUIRE_ARRAY );
+            $entityIds = $cnb_utils->get_post_array( 'cnb_list_condition' );
             if ( $cnb_utils->get_post_val( 'bulk-action' ) === 'delete' ) {
                 $cnb_cloud_notifications = array();
                 foreach ( $entityIds as $entityId ) {

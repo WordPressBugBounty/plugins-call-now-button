@@ -12,57 +12,61 @@ use cnb\admin\user\CnbUserCache;
 
 class CnbChatController {
 
-	/**
-	 * Which domain types are allowed for chat?
-	 *
-	 * For now, we only allow PRO.
-	 *
-	 * STARTER and FREE domains can be added later to have chat enabled.
-	 *
-	 * @return string[]
-	 */
-	public function get_domain_types_allowed_for_chat() {
-		return array(
-			'PRO',
+    /**
+     * Which domain types are allowed for chat?
+     *
+     * For now, we only allow PRO.
+     *
+     * STARTER and FREE domains can be added later to have chat enabled.
+     *
+     * @return string[]
+     */
+    public function get_domain_types_allowed_for_chat() {
+        return array(
+            'PRO',
 //          'STARTER',
 //          'FREE',
-		);
-	}
+        );
+    }
 
-	/**
-	 * Is this domain allowed for chat?
-	 *
-	 * @param $domain CnbDomain
-	 *
-	 * @return bool
-	 */
-	public function is_domain_allowed_for_chat( $domain ) {
-		return in_array( $domain->type, $this->get_domain_types_allowed_for_chat() );
-	}
+    /**
+     * Is this domain allowed for chat?
+     *
+     * @param $domain CnbDomain
+     *
+     * @return bool
+     */
+    public function is_domain_allowed_for_chat( $domain ) {
+        return in_array( $domain->type, $this->get_domain_types_allowed_for_chat() );
+    }
 
-	public function has_chat_enabled() {
-		$user_cache = new CnbUserCache();
-		$cnb_user = $user_cache->get_user_data();
-		if ( $cnb_user instanceof CnbUser && $cnb_user->has_role('ROLE_CHAT_USER') ) {
-			return true;
-		}
-		return false;
-	}
+    public function has_chat_enabled() {
+        $user_cache = new CnbUserCache();
+        $cnb_user = $user_cache->get_user_data();
+        if ( $cnb_user instanceof CnbUser && $cnb_user->has_role('ROLE_CHAT_USER') ) {
+            return true;
+        }
+        return false;
+    }
 
-	public function create_chat_token_ajax() {
-		do_action( 'cnb_init', __METHOD__ );
+    public function create_chat_token_ajax() {
+        do_action( 'cnb_init', __METHOD__ );
 
-		// Verify nonce (die immediately if failed)
-		check_ajax_referer('cnb_create_chat_token');
+        if ( ! current_user_can( 'manage_options' ) ) {
+            do_action( 'cnb_finish' );
+            wp_send_json_error( 'Unauthorized', 403 );
+        }
 
-		$chat_api = new CnbMagicTokenController();
-		$token = $chat_api->create_chat_token();
+        // Verify nonce (die immediately if failed)
+        check_ajax_referer('cnb_create_chat_token');
 
-		wp_send_json_success( array(
-			'token' => $token,
-		) );
+        $chat_api = new CnbMagicTokenController();
+        $token = $chat_api->create_chat_token();
 
-		do_action( 'cnb_finish' );
+        do_action( 'cnb_finish' );
+        wp_send_json_success( array(
+            'token' => $token,
+        ) );
 
-	}
+    }
 }
