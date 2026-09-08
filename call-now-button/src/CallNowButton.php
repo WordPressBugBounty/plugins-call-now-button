@@ -745,11 +745,13 @@ class CallNowButton {
         add_action( 'admin_post_cnb_create_multi_button', array( $button_controller, 'create' ) );
         add_action( 'admin_post_cnb_create_full_button', array( $button_controller, 'create' ) );
         add_action( 'admin_post_cnb_create_dots_button', array( $button_controller, 'create' ) );
+        add_action( 'admin_post_cnb_create_flower_button', array( $button_controller, 'create' ) );
 
         add_action( 'admin_post_cnb_update_single_button', array( $button_controller, 'update' ) );
         add_action( 'admin_post_cnb_update_multi_button', array( $button_controller, 'update' ) );
         add_action( 'admin_post_cnb_update_full_button', array( $button_controller, 'update' ) );
         add_action( 'admin_post_cnb_update_dots_button', array( $button_controller, 'update' ) );
+        add_action( 'admin_post_cnb_update_flower_button', array( $button_controller, 'update' ) );
 
         add_action( 'admin_post_cnb_delete_button', array( $button_controller, 'delete' ) );
         add_action( 'admin_post_cnb_buttons_bulk', array( $button_controller, 'handle_bulk_actions' ) );

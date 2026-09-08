@@ -13,7 +13,10 @@ class Button_Label {
      */
     public function render( $button ) {
         $this->renderOpen( $button );
-        $this->renderClose( $button );
+        // FLOWER reuses multiButtonOptions but ignores the close-state labels, so it stays MULTI-only.
+        if ( $button->type !== 'FLOWER' ) {
+            $this->renderClose( $button );
+        }
     }
 
     /**

@@ -269,11 +269,7 @@ function cnb_button_overview_modal() {
 		const cnbType = jQuery(this).attr("data-cnb-selection")
 		jQuery('#button_type').val(cnbType)
 
-		// Special case for the css class for Multi Flower
 		jQuery('#button_options_css_classes').val("") // reset css to empty
-		if (jQuery(this).hasClass("cnb_type_selector_multi_flower")) {
-			jQuery('#button_options_css_classes').val("cnb-multi-flower")
-		}
 	})
 
 	jQuery(".cnb-button-overview-modal-add-new").on("click", function() {

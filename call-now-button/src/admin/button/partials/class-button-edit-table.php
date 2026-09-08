@@ -266,8 +266,8 @@ class Button_Edit_Table {
                             <?php } ?>
                         </div>
 
-                        <div class="cnb_type_selector <?php if ( $default_domain->type === 'PRO' ) { ?>cnb_type_selector_item<?php } else { ?>cnb_type_only_pro<?php } ?> cnb_type_selector_multi_flower"
-                            data-cnb-selection="multi">
+                        <div class="cnb_type_selector <?php if ( $default_domain->type === 'PRO' ) { ?>cnb_type_selector_item<?php } else { ?>cnb_type_only_pro<?php } ?>"
+                            data-cnb-selection="flower">
 
                             <div class="cnb-phone-outside">
                                 <div class="cnb-phone-inside">
@@ -420,7 +420,7 @@ class Button_Edit_Table {
                     </td>
                 </tr>
 
-            <?php } else if ( $button->type === 'MULTI' ) {
+            <?php } else if ( $button->type === 'MULTI' || $button->type === 'FLOWER' ) {
                 ?>
                 <tr>
                     <td colspan="2"></td>
@@ -525,7 +525,7 @@ class Button_Edit_Table {
                     </td>
                 </tr>
             <?php } ?>
-            <?php if ( $button->type === 'MULTI' ) { ?>
+            <?php if ( $button->type === 'MULTI' || $button->type === 'FLOWER' ) { ?>
                 <tr>
                     <th scope="row"><label for="multi_button_options_default_state">Default state</label>
                         <?php if ( $button->domain->type !== 'PRO' ) { ?>

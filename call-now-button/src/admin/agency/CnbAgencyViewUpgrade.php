@@ -49,12 +49,17 @@ class CnbAgencyViewUpgrade {
         $upgradeStatus     = sanitize_text_field( filter_input( INPUT_GET, 'upgrade' ) );
 
         /** @var CnbAgencyPlan[] $cnb_agency_plans */
-        global $cnb_agency_plans;
+        global $cnb_agency_plans, $cnb_user;
 
         $agency_20_plans = array_filter($cnb_agency_plans, function ($plan) {
             return $plan->seats === 20 && $plan->interval === 'monthly';
         });
         $agency_20_plan = array_shift($agency_20_plans);
+
+        $currency = 'eur';
+        if ( $cnb_user && ! is_wp_error( $cnb_user ) && isset( $cnb_user->stripeDetails ) && ! empty( $cnb_user->stripeDetails->currency ) ) {
+            $currency = $cnb_user->stripeDetails->currency;
+        }
 
         if ( $upgradeStatus === 'success?payment=cancelled' ) {
             wp_enqueue_script( CNB_SLUG . '-tally' ); ?>
@@ -78,7 +83,7 @@ class CnbAgencyViewUpgrade {
                 </div>
             </div>
             <div class="cnb_align_center">
-                <a class="button button-primary button-green button-large font-18" onclick="cnb_get_agency_checkout('<?php echo esc_js( $agency_20_plan->id ) ?>')" href="#">Complete Checkout</a></div>
+                <a class="button button-primary button-green button-large font-18" onclick="cnb_get_agency_checkout('<?php echo esc_js( $agency_20_plan->id ) ?>', '<?php echo esc_js( $currency ) ?>')" href="#">Complete Checkout</a></div>
             <div class="cnb-welcome-blocks  cnb_font_light">
                 <h1>Need PRO for <strong class="cnb-green">more than 20 domains?</strong></h1>
                 <div class="cnb-left">
@@ -98,7 +103,7 @@ class CnbAgencyViewUpgrade {
                     <p class="font-18">The PRO Account transforms how you manage client websites. Instead of juggling multiple licenses, everything is centralized and streamlined. The cost savings alone makes it a no-brainer for any agency.</p>
                 </div>
             </div>
-            <div class="cnb_align_center"><a class="button button-primary button-green button-large font-18" onclick="cnb_get_agency_checkout('<?php echo esc_js( $agency_20_plan->id ) ?>')" href="#">Complete Checkout</a></div>
+            <div class="cnb_align_center"><a class="button button-primary button-green button-large font-18" onclick="cnb_get_agency_checkout('<?php echo esc_js( $agency_20_plan->id ) ?>', '<?php echo esc_js( $currency ) ?>')" href="#">Complete Checkout</a></div>
             <div class="cnb-welcome-blocks  cnb_font_light">
                 <h1>Questions or Special Requirements?</strong></h1>
                 <div class="cnb-left">
@@ -125,7 +130,7 @@ class CnbAgencyViewUpgrade {
                         <li>Priority ticket handling </li>
                     </ul>
                     <p class="font-18 font-italic cnb_align_center">Ready to give your client's website a boost? Your PRO Account is just one click away.</p>
-                    <div class="cnb_align_center"><a class="button button-primary button-green button-large font-18" onclick="cnb_get_agency_checkout('<?php echo esc_js( $agency_20_plan->id ) ?>')" href="#">Complete Checkout</a></div>
+                    <div class="cnb_align_center"><a class="button button-primary button-green button-large font-18" onclick="cnb_get_agency_checkout('<?php echo esc_js( $agency_20_plan->id ) ?>', '<?php echo esc_js( $currency ) ?>')" href="#">Complete Checkout</a></div>
                 </div>
             </div>
             <br><br>

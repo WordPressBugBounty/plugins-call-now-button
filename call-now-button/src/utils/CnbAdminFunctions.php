@@ -43,6 +43,7 @@ class CnbAdminFunctions {
             'FULL'   => 'Buttonbar',
             'MULTI'  => 'Multibutton',
             'DOTS'   => 'Dots',
+            'FLOWER' => 'Flower',
         );
     }
 

@@ -170,109 +170,106 @@ class CnbButtonView {
                 $promoItem = $promoboxes[ $promoItemIndex ]; // converts the KEY to the VALUE (which we use below)
                 if ( $promoItem == 1 ) {
                     ( new CnbAdminFunctions() )->cnb_promobox('Meeting Scheduler',
-                            'green',
-                            'Bookings Made Easy',
-                            '<div class="cnb-promobox-feature">
-                                <div class="cnb-promobox-feature-check">✓</div>
-                                <span>Direct Google Calendar sync</span>
-                            </div>
-                            <div class="cnb-promobox-feature">
-                                <div class="cnb-promobox-feature-check">✓</div>
-                                <span>Flexible calendar widget</span>
-                            </div>
-                            <div class="cnb-promobox-feature">
-                                <div class="cnb-promobox-feature-check">✓</div>
-                                <span>Reduce back-and-forth emails</span>
-                            </div>',
-                            '📅',
-                            'Unlock with PRO',
-                            'Try 14 days free',
-                            'Upgrade Now',
-                            $upgrade_url
+                        'Scheduler',
+                        'green',
+                        'Smart Scheduling,<br>Smarter Conversions',
+                        '<div class="cnb-promobox-feature">
+                            <div class="cnb-promobox-feature-check">✓</div>
+                            <span>Automatically switch buttons based on your hours</span>
+                        </div>
+                        <div class="cnb-promobox-feature">
+                            <div class="cnb-promobox-feature-check">✓</div>
+                            <span>Never miss a lead again</span>
+                        </div>',
+                        '🕙',
+                        'Unlock with PRO',
+                        'Try 14 days free',
+                        'Upgrade  Now',
+                        $upgrade_url
                     );
                 } elseif ( $promoItem == 2 ) {
                     ( new CnbAdminFunctions() )->cnb_promobox(
-                            'Pro Power',
-                            'green',
-                            'Unlock Your Full Potential',
-                            '<div class="cnb-promobox-feature">
-                                <div class="cnb-promobox-feature-check">✓</div>
-                                <span>Smart button scheduler</span>
-                            </div>
-                            <div class="cnb-promobox-feature">
-                                <div class="cnb-promobox-feature-check">✓</div>
-                                <span>Multi-action buttons</span>
-                            </div>
-                            <div class="cnb-promobox-feature">
-                                <div class="cnb-promobox-feature-check">✓</div>
-                                <span>Custom icon library</span>
-                            </div>
-                            <div class="cnb-promobox-feature">
-                                <div class="cnb-promobox-feature-check">✓</div>
-                                <span>Advanced display rules</span>
-                            </div>
-                            <div class="cnb-promobox-feature">
-                                <div class="cnb-promobox-feature-check">✓</div>
-                                <span>Live Chat</span>
-                            </div>
-                            <div class="cnb-promobox-feature">
-                                <div class="cnb-promobox-feature-check">✓</div>
-                                <span>Meeting Scheduler (coming soon)</span>
-                            </div>
-                            <div class="cnb-promobox-feature">
-                                <div class="cnb-promobox-feature-check">✓</div>
-                                <span>Scroll triggers & more</span>
-                            </div>',
-                            '✨',
-                            'Unlock with PRO',
-                            'Try 14 days free',
-                            'Upgrade Now',
-                            $upgrade_url
+                        'Pro Power',
+                        'green',
+                        'Unlock Your Full Potential',
+                        '<div class="cnb-promobox-feature">
+                            <div class="cnb-promobox-feature-check">✓</div>
+                            <span>Smart button scheduler</span>
+                        </div>
+                        <div class="cnb-promobox-feature">
+                            <div class="cnb-promobox-feature-check">✓</div>
+                            <span>Multi-action buttons</span>
+                        </div>
+                        <div class="cnb-promobox-feature">
+                            <div class="cnb-promobox-feature-check">✓</div>
+                            <span>Custom icon library</span>
+                        </div>
+                        <div class="cnb-promobox-feature">
+                            <div class="cnb-promobox-feature-check">✓</div>
+                            <span>Advanced display rules</span>
+                        </div>
+                        <div class="cnb-promobox-feature">
+                            <div class="cnb-promobox-feature-check">✓</div>
+                            <span>Live Chat</span>
+                        </div>
+                        <div class="cnb-promobox-feature">
+                            <div class="cnb-promobox-feature-check">✓</div>
+                            <span>Meeting Scheduler (coming soon)</span>
+                        </div>
+                        <div class="cnb-promobox-feature">
+                            <div class="cnb-promobox-feature-check">✓</div>
+                            <span>Scroll triggers & more</span>
+                        </div>',
+                        '✨',
+                        'Unlock with PRO',
+                        'Try 14 days free',
+                        'Upgrade Now',
+                        $upgrade_url
                     );
                 } elseif ( $promoItem == 3 ) {
                     ( new CnbAdminFunctions() )->cnb_promobox(
-                            'Live Chat',
-                            'green',
-                            'Connect in Real-Time',
-                            '<div class="cnb-promobox-feature">
-                                <div class="cnb-promobox-feature-check">✓</div>
-                                <span>Instant on-site messaging</span>
-                            </div>
-                            <div class="cnb-promobox-feature">
-                                <div class="cnb-promobox-feature-check">✓</div>
-                                <span>Multi-agent support</span>
-                            </div>
-                            <div class="cnb-promobox-feature">
-                                <div class="cnb-promobox-feature-check">✓</div>
-                                <span>Canned responses</span>
-                            </div>',
-                            '💬',
-                            'Unlock with PRO',
-                            'Try 14 days free',
-                            'Upgrade Now',
-                            $upgrade_url
+                        'Live Chat',
+                        'green',
+                        'Connect in Real-Time',
+                        '<div class="cnb-promobox-feature">
+                            <div class="cnb-promobox-feature-check">✓</div>
+                            <span>Instant on-site messaging</span>
+                        </div>
+                        <div class="cnb-promobox-feature">
+                            <div class="cnb-promobox-feature-check">✓</div>
+                            <span>Multi-agent support</span>
+                        </div>
+                        <div class="cnb-promobox-feature">
+                            <div class="cnb-promobox-feature-check">✓</div>
+                            <span>Canned responses</span>
+                        </div>',
+                        '💬',
+                        'Unlock with PRO',
+                        'Try 14 days free',
+                        'Upgrade Now',
+                        $upgrade_url
                     );
                 } elseif ( $promoItem == 4 ) {
                     ( new CnbAdminFunctions() )->cnb_promobox(                            
-                            'Custom buttons',
-                            'green',
-                            'Make It Truly Yours',
-                            '<div class="cnb-promobox-feature-group">
-                                <div class="cnb-promobox-feature-icon">📸</div>
-                                <div class="cnb-promobox-feature-text">
-                                    Upload your own visuals
-                                </div>
-                            </div><div class="cnb-promobox-feature-group">
-                                <div class="cnb-promobox-feature-icon">🎭</div>
-                                <div class="cnb-promobox-feature-text">
-                                    Select different icons
-                                </div>
-                            </div>',
-                            '🎨',
-                            'Unlock with PRO',
-                            'Try 14 days free',
-                            'Upgrade Now',
-                            $upgrade_url
+                        'Custom buttons',
+                        'green',
+                        'Make It Truly Yours',
+                        '<div class="cnb-promobox-feature-group">
+                            <div class="cnb-promobox-feature-icon">📸</div>
+                            <div class="cnb-promobox-feature-text">
+                                Upload your own visuals
+                            </div>
+                        </div><div class="cnb-promobox-feature-group">
+                            <div class="cnb-promobox-feature-icon">🎭</div>
+                            <div class="cnb-promobox-feature-text">
+                                Select different icons
+                            </div>
+                        </div>',
+                        '🎨',
+                        'Unlock with PRO',
+                        'Try 14 days free',
+                        'Upgrade Now',
+                        $upgrade_url
                     );
                 } else {
                     ( new CnbAdminFunctions() )->cnb_promobox(

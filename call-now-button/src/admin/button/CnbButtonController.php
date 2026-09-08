@@ -47,7 +47,7 @@ class CnbButtonController {
             }
 
             // redirect the user to the appropriate page
-            $tab          = sanitize_text_field( filter_input( INPUT_POST, 'tab' ) );
+            $tab          = sanitize_key( filter_input( INPUT_POST, 'tab' ) );
             $transient_id = (new CnbHeaderNotices())->generate_notice_id();
             set_transient( $transient_id, $cnb_cloud_notifications, HOUR_IN_SECONDS );
 
@@ -107,7 +107,7 @@ class CnbButtonController {
             }
 
             // redirect the user to the appropriate page
-            $tab          = sanitize_text_field( filter_input( INPUT_POST, 'tab' ) );
+            $tab          = sanitize_key( filter_input( INPUT_POST, 'tab' ) );
             $transient_id = (new CnbHeaderNotices())->generate_notice_id();
             set_transient( $transient_id, $cnb_cloud_notifications, HOUR_IN_SECONDS );
 
@@ -166,7 +166,7 @@ class CnbButtonController {
             $result = CnbAdminCloud::cnb_update_button_and_conditions( $button, $actions, $conditions );
 
             // redirect the user to the appropriate page
-            $tab          = sanitize_text_field( filter_input( INPUT_POST, 'tab' ) );
+            $tab          = sanitize_key( filter_input( INPUT_POST, 'tab' ) );
             $transient_id = (new CnbHeaderNotices())->generate_notice_id();
             set_transient( $transient_id, $result, HOUR_IN_SECONDS );
 
@@ -194,61 +194,53 @@ class CnbButtonController {
     }
 
     private function create_and_update( $closure ) {
-        $nonce = sanitize_text_field( filter_input( INPUT_POST, '_wpnonce_button' ) );
-        if ( isset( $_POST['_wpnonce_button'] ) && wp_verify_nonce( $nonce, 'cnb-button-edit' ) ) {
+        check_admin_referer( 'cnb-button-edit', '_wpnonce_button' );
 
-            // sanitize the input
-            $button     = filter_input(
-                INPUT_POST,
-                'button',
-                FILTER_DEFAULT,
-                FILTER_REQUIRE_ARRAY | FILTER_FLAG_NO_ENCODE_QUOTES );
-            $actions    = filter_input(
-                INPUT_POST,
-                'actions',
-                FILTER_DEFAULT,
-                FILTER_REQUIRE_ARRAY | FILTER_FLAG_NO_ENCODE_QUOTES );
-            $conditions = filter_input(
-                INPUT_POST,
-                'conditions',
-                FILTER_DEFAULT,
-                FILTER_REQUIRE_ARRAY | FILTER_FLAG_NO_ENCODE_QUOTES );
+        // sanitize the input
+        $button     = filter_input(
+            INPUT_POST,
+            'button',
+            FILTER_DEFAULT,
+            FILTER_REQUIRE_ARRAY | FILTER_FLAG_NO_ENCODE_QUOTES );
+        $actions    = filter_input(
+            INPUT_POST,
+            'actions',
+            FILTER_DEFAULT,
+            FILTER_REQUIRE_ARRAY | FILTER_FLAG_NO_ENCODE_QUOTES );
+        $conditions = filter_input(
+            INPUT_POST,
+            'conditions',
+            FILTER_DEFAULT,
+            FILTER_REQUIRE_ARRAY | FILTER_FLAG_NO_ENCODE_QUOTES );
 
-            if ( $conditions === null ) {
-                $conditions = array();
-            }
-
-            /** @var CnbAction[] $processed_actions */
-            $processed_actions = array();
-            if ( is_array( $actions ) ) {
-                foreach ( $actions as $action ) {
-                    $processed_actions[] = CnbAction::fromObject( $action );
-                }
-            }
-
-            /** @var CnbCondition[] $processed_conditions */
-            $processed_conditions = array();
-            if ( is_array( $conditions ) ) {
-                foreach ( $conditions as $condition ) {
-                    $processed_conditions[] = CnbCondition::fromObject( $condition );
-                }
-            }
-
-            $button['id']         = isset($button['id']) && $button['id'] !== 'new' ? $button['id'] : null;
-            $button['actions']    = $processed_actions;
-            $button['conditions'] = $processed_conditions;
-            $processed_button     = CnbButton::fromObject( $button );
-
-            // processing
-            $closure( $processed_button, $processed_actions, $processed_conditions );
-            // end processing
-        } else {
-            do_action( 'cnb_finish' );
-            wp_die( esc_html__( 'Invalid nonce specified' ), esc_html__( 'Error' ), array(
-                'response'  => 403,
-                'back_link' => true,
-            ) );
+        if ( $conditions === null ) {
+            $conditions = array();
         }
+
+        /** @var CnbAction[] $processed_actions */
+        $processed_actions = array();
+        if ( is_array( $actions ) ) {
+            foreach ( $actions as $action ) {
+                $processed_actions[] = CnbAction::fromObject( $action );
+            }
+        }
+
+        /** @var CnbCondition[] $processed_conditions */
+        $processed_conditions = array();
+        if ( is_array( $conditions ) ) {
+            foreach ( $conditions as $condition ) {
+                $processed_conditions[] = CnbCondition::fromObject( $condition );
+            }
+        }
+
+        $button['id']         = isset($button['id']) && $button['id'] !== 'new' ? $button['id'] : null;
+        $button['actions']    = $processed_actions;
+        $button['conditions'] = $processed_conditions;
+        $processed_button     = CnbButton::fromObject( $button );
+
+        // processing
+        $closure( $processed_button, $processed_actions, $processed_conditions );
+        // end processing
     }
 
     /**
@@ -278,72 +270,57 @@ class CnbButtonController {
                 array( 'response' => 403 )
             );
         }
-        $cnb_utils      = new CnbUtils();
-        $cnb_remote     = new CnbAppRemote();
-        $nonce          = $cnb_utils->get_post_val( '_wpnonce' );
-        $action         = 'bulk-cnb_list_buttons';
-        $nonce_verified = wp_verify_nonce( $nonce, $action );
+        $cnb_utils  = new CnbUtils();
+        $cnb_remote = new CnbAppRemote();
+        check_admin_referer( 'bulk-cnb_list_buttons' );
+        $buttonIds      = $cnb_utils->get_post_array( 'cnb_list_button' );
+        $current_action = sanitize_key( filter_input( INPUT_POST, 'bulk-action' ) );
 
-        if ( $nonce_verified ) {
-            $buttonIds = $cnb_utils->get_post_array( 'cnb_list_button' );
-            $current_action = sanitize_text_field( filter_input( INPUT_POST, 'bulk-action' ) );
+        switch ( $current_action ) {
+            case 'enable':
+            case 'disable':
+                $cnb_cloud_notifications = array();
+                foreach ( $buttonIds as $buttonId ) {
+                    $button         = $cnb_remote->get_button( $buttonId );
+                    $button->active = $current_action === 'enable';
+                    CnbAdminCloud::cnb_update_button( $cnb_cloud_notifications, $button );
+                }
+                $action_name = $current_action . 'd';
 
-            switch ( $current_action ) {
-                case 'enable':
-                case 'disable':
-                    $cnb_cloud_notifications = array();
-                    foreach ( $buttonIds as $buttonId ) {
-                        $button         = $cnb_remote->get_button( $buttonId );
-                        $button->active = $current_action === 'enable';
-                        CnbAdminCloud::cnb_update_button( $cnb_cloud_notifications, $button );
-                    }
-                    $action_name = $current_action . 'd';
-
-                    // Create notice for link (and yes - we ignore the content of $cnb_cloud_notifications here, we just use it to count)
-                    $notice = new CnbNotice( 'success', '<p>' . count( $cnb_cloud_notifications ) . ' Buttons ' . $action_name . '.</p>' );
-                    break;
-                case 'delete':
-                    foreach ( $buttonIds as $buttonId ) {
-                        $button     = new CnbButton();
-                        $button->id = $buttonId;
-                        $cnb_remote->delete_button( $button );
-                    }
-                    $notice = new CnbNotice( 'success', '<p>' . count( $buttonIds ) . ' Button(s) deleted.</p>' );
-                    break;
-                default:
-                    $notice = null;
-            }
-            $transient_id = null;
-            if ( $notice ) {
-                $transient_id = (new CnbHeaderNotices())->generate_notice_id();
-                set_transient( $transient_id, array( $notice ), HOUR_IN_SECONDS );
-            }
-
-            // Create link
-            $url           = admin_url( 'admin.php' );
-            $redirect_link =
-                add_query_arg(
-                    array(
-                        'page'     => 'call-now-button',
-                        'tid'      => $transient_id,
-                        '_wpnonce' => wp_create_nonce( $transient_id ),
-                    ),
-                    $url );
-            $redirect_url  = esc_url_raw( $redirect_link );
-            do_action( 'cnb_finish' );
-            wp_safe_redirect( $redirect_url );
-            exit;
-        } else {
-            do_action( 'cnb_finish' );
-            wp_die(
-                esc_html__( 'Invalid nonce specified' ),
-                esc_html__( 'Error' ),
-                array(
-                    'response'  => 403,
-                    'back_link' => true,
-                )
-            );
+                // Create notice for link (and yes - we ignore the content of $cnb_cloud_notifications here, we just use it to count)
+                $notice = new CnbNotice( 'success', '<p>' . count( $cnb_cloud_notifications ) . ' Buttons ' . $action_name . '.</p>' );
+                break;
+            case 'delete':
+                foreach ( $buttonIds as $buttonId ) {
+                    $button     = new CnbButton();
+                    $button->id = $buttonId;
+                    $cnb_remote->delete_button( $button );
+                }
+                $notice = new CnbNotice( 'success', '<p>' . count( $buttonIds ) . ' Button(s) deleted.</p>' );
+                break;
+            default:
+                $notice = null;
         }
+        $transient_id = null;
+        if ( $notice ) {
+            $transient_id = (new CnbHeaderNotices())->generate_notice_id();
+            set_transient( $transient_id, array( $notice ), HOUR_IN_SECONDS );
+        }
+
+        // Create link
+        $url           = admin_url( 'admin.php' );
+        $redirect_link =
+            add_query_arg(
+                array(
+                    'page'     => 'call-now-button',
+                    'tid'      => $transient_id,
+                    '_wpnonce' => wp_create_nonce( $transient_id ),
+                ),
+                $url );
+        $redirect_url  = esc_url_raw( $redirect_link );
+        do_action( 'cnb_finish' );
+        wp_safe_redirect( $redirect_url );
+        exit;
     }
 
     /**
@@ -360,37 +337,28 @@ class CnbButtonController {
                 array( 'response' => 403 )
             );
         }
-        $cnb_utils = new CnbUtils();
+        $cnb_utils  = new CnbUtils();
         $cnb_remote = new CnbAppRemote();
+        check_admin_referer( 'cnb_enable_disable_button' );
         // "enable" or "disable"
-        $action         = $cnb_utils->get_query_val( 'action', null );
-        $id             = $cnb_utils->get_query_val( 'id', null );
-        $nonce          = $cnb_utils->get_query_val( '_wpnonce', null );
-        $nonce_verified = wp_verify_nonce( $nonce, 'cnb_enable_disable_button' );
-        if ( $nonce_verified ) {
-            $active      = $action === 'enable';
-            $action_verb = $active ? 'enable' : 'disable';
-            $action_name = $action_verb . 'd';
+        $action      = $cnb_utils->get_query_val( 'action', null );
+        $id          = $cnb_utils->get_query_val( 'id', null );
+        $active      = $action === 'enable';
+        $action_verb = $active ? 'enable' : 'disable';
+        $action_name = $action_verb . 'd';
 
-            $button         = $cnb_remote->get_button( $id );
-            $button->active = $active;
+        $button         = $cnb_remote->get_button( $id );
+        $button->active = $active;
 
-            $updated_button = $cnb_remote->update_button( $button );
+        $updated_button = $cnb_remote->update_button( $button );
 
-            if ( ! is_wp_error( $updated_button ) ) {
-                $notice = new CnbNotice( 'success', '<p>Button <strong>' . esc_html( $updated_button->name ) . '</strong> ' . $action_name . '.</p>', true );
-            } else {
-                $notice = CnbAdminCloud::cnb_admin_get_error_message( $action_verb, 'button', $updated_button );
-            }
-            CnbAdminNotices::get_instance()->notice( $notice );
-            do_action( 'cnb_finish' );
+        if ( ! is_wp_error( $updated_button ) ) {
+            $notice = new CnbNotice( 'success', '<p>Button <strong>' . esc_html( $updated_button->name ) . '</strong> ' . $action_name . '.</p>', true );
         } else {
-            do_action( 'cnb_finish' );
-            wp_die( esc_html__( 'Invalid nonce specified' ), esc_html__( 'Error' ), array(
-                'response'  => 403,
-                'back_link' => true,
-            ) );
+            $notice = CnbAdminCloud::cnb_admin_get_error_message( $action_verb, 'button', $updated_button );
         }
+        CnbAdminNotices::get_instance()->notice( $notice );
+        do_action( 'cnb_finish' );
     }
 
     /**
@@ -412,16 +380,8 @@ class CnbButtonController {
         }
         $cnb_utils = new CnbUtils();
         $id        = $cnb_utils->get_query_val( 'id', null );
-        $nonce     = $cnb_utils->get_query_val( '_wpnonce', null );
         $action    = 'cnb_delete_button';
-
-        if ( ! wp_verify_nonce( $nonce, $action ) ) {
-            do_action( 'cnb_finish' );
-            wp_die( esc_html__( 'Invalid nonce specified' ), esc_html__( 'Error' ), array(
-                'response'  => 403,
-                'back_link' => true,
-            ) );
-        }
+        check_admin_referer( $action );
 
         $cnb_cloud_notifications = array();
         $button                  = new CnbButton();

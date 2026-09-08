@@ -31,7 +31,7 @@ class CnbButton implements JsonSerializable {
     public $name;
 
     /**
-     * One of SINGLE, MULTI, FULL or DOTS
+     * One of SINGLE, MULTI, FULL, DOTS or FLOWER
      * @var string
      */
     public $type;

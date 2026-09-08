@@ -260,28 +260,23 @@ class CnbProfileController {
     }
 
     /**
-     * @param $nonce string
      * @param $user CnbUser
      *
-     * @return CnbUser|WP_Error|null
+     * @return CnbUser|WP_Error
      */
-    public function update_user( $nonce, $user ) {
+    public function update_user( $user ) {
         $cnb_remote = new CnbAppRemote();
-        if ( $nonce && wp_verify_nonce( $nonce, 'cnb-profile-edit' ) ) {
-            // If VAT is disabled, ensure the VAT number itself is blanked as well
-            if ( $user->euvatbusiness == 0 ) {
-                $user->taxIds[0]->value = '';
-            }
-
-            // We always override the ID/e-mail, since those cannot be changed anyway
-            $cnb_user    = $cnb_remote->get_user();
-            $user->id    = $cnb_user->id;
-            $user->email = $cnb_user->email;
-
-            return $cnb_remote->update_user( $user );
+        // If VAT is disabled, ensure the VAT number itself is blanked as well
+        if ( $user->euvatbusiness == 0 ) {
+            $user->taxIds[0]->value = '';
         }
 
-        return null;
+        // We always override the ID/e-mail, since those cannot be changed anyway
+        $cnb_user    = $cnb_remote->get_user();
+        $user->id    = $cnb_user->id;
+        $user->email = $cnb_user->email;
+
+        return $cnb_remote->update_user( $user );
     }
 
     public function update() {
@@ -294,8 +289,8 @@ class CnbProfileController {
                 array( 'response' => 403 )
             );
         }
-        $nonce       = sanitize_text_field( filter_input( INPUT_POST, '_wpnonce' ) );
-        $page_source = sanitize_text_field( filter_input( INPUT_POST, 'page_source' ) );
+        check_admin_referer( 'cnb-profile-edit' );
+        $page_source = sanitize_key( filter_input( INPUT_POST, 'page_source' ) );
         $profile     = filter_input(
             INPUT_POST,
             'user',
@@ -304,41 +299,33 @@ class CnbProfileController {
         if ( ! is_array( $profile ) ) {
             $profile = array();
         }
-        $user        = CnbUser::fromObject( $profile );
+        $user = CnbUser::fromObject( $profile );
+        $this->update_user( $user );
 
-        $result = $this->update_user( $nonce, $user );
-        if ( $result ) {
-            // Create notification
-            $notification   = array();
-            $notification[] = new CnbNotice( 'success', '<p>Your profile has been updated.</p>' );
-            $transient_id   = (new CnbHeaderNotices())->generate_notice_id();
-            set_transient( $transient_id, $notification, HOUR_IN_SECONDS );
+        // Create notification
+        $notification   = array();
+        $notification[] = new CnbNotice( 'success', '<p>Your profile has been updated.</p>' );
+        $transient_id   = (new CnbHeaderNotices())->generate_notice_id();
+        set_transient( $transient_id, $notification, HOUR_IN_SECONDS );
 
-            if ( $page_source === 'domain-upgrade' ) {
-                do_action( 'cnb_finish' );
-                return;
-            }
-            // Redirect
-            // Create link
-            $url           = admin_url( 'admin.php' );
-            $redirect_link =
-                add_query_arg(
-                    array(
-                        'page'     => CNB_SLUG . '-profile',
-                        'tid'      => $transient_id,
-                        '_wpnonce' => wp_create_nonce( $transient_id ),
-                    ),
-                    $url );
-            $redirect_url  = esc_url_raw( $redirect_link );
+        if ( $page_source === 'domain-upgrade' ) {
             do_action( 'cnb_finish' );
-            wp_safe_redirect( $redirect_url );
-            exit;
-        } else {
-            do_action( 'cnb_finish' );
-            wp_die( esc_html__( 'Invalid nonce specified' ), esc_html__( 'Error' ), array(
-                'response'  => 403,
-                'back_link' => true,
-            ) );
+            return;
         }
+        // Redirect
+        // Create link
+        $url           = admin_url( 'admin.php' );
+        $redirect_link =
+            add_query_arg(
+                array(
+                    'page'     => CNB_SLUG . '-profile',
+                    'tid'      => $transient_id,
+                    '_wpnonce' => wp_create_nonce( $transient_id ),
+                ),
+                $url );
+        $redirect_url  = esc_url_raw( $redirect_link );
+        do_action( 'cnb_finish' );
+        wp_safe_redirect( $redirect_url );
+        exit;
     }
 }

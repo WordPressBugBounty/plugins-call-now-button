@@ -29,7 +29,6 @@ docs/Model/ActionDeleteResponse.md
 docs/Model/ActionSchedule.md
 docs/Model/ActionUpdateRequest.md
 docs/Model/Address.md
-docs/Model/ApiServerException.md
 docs/Model/ApiServerExceptionResponse.md
 docs/Model/ApiServerExceptionWithErrorCode.md
 docs/Model/Apikey.md
@@ -85,7 +84,6 @@ docs/Model/CopyButtonResponse.md
 docs/Model/CreateMeetingRequest.md
 docs/Model/CreateQuickReplyRequest.md
 docs/Model/DeleteButtonResponse.md
-docs/Model/DeleteQuickReplyResponse.md
 docs/Model/DeleteWorkspaceResponse.md
 docs/Model/Domain.md
 docs/Model/DomainCreateRequest.md
@@ -112,10 +110,8 @@ docs/Model/MagicTokenAnonymousRequest.md
 docs/Model/MagicTokenRequest.md
 docs/Model/MagicTokenResponse.md
 docs/Model/Media.md
-docs/Model/MediaDeleteResponse.md
 docs/Model/MediaMinimal.md
 docs/Model/MediaUpdateMetadataRequest.md
-docs/Model/MediaUsageResponse.md
 docs/Model/Meeting.md
 docs/Model/MeetingStrategy.md
 docs/Model/MemberAddRequest.md
@@ -135,7 +131,6 @@ docs/Model/PrivateNoteRequest.md
 docs/Model/ProAccountCheckoutSessionCreateRequest.md
 docs/Model/ProAccountCheckoutSessionResponse.md
 docs/Model/PromotionCode.md
-docs/Model/QuickReply.md
 docs/Model/RequestBillingPortalResponse.md
 docs/Model/SchedulingStrategyConfig.md
 docs/Model/ScrollOptions.md
@@ -149,6 +144,8 @@ docs/Model/SettingsOptions.md
 docs/Model/SlotClaim.md
 docs/Model/SlotClaimResponse.md
 docs/Model/SlotFields.md
+docs/Model/SlugAvailability.md
+docs/Model/SlugUpdateRequest.md
 docs/Model/StripeAgencyPlan.md
 docs/Model/StripeAgencyPlanPrice.md
 docs/Model/StripeBillingPortal.md
@@ -176,6 +173,7 @@ docs/Model/ValidationResult.md
 docs/Model/Verification.md
 docs/Model/WordPressInfo.md
 docs/Model/WordPressSignupCreateRequest.md
+docs/Model/WordPressSignupCreateResponse.md
 docs/Model/Workspace.md
 docs/Model/WorkspaceCreateRequest.md
 docs/Model/WorkspaceDomainPersonaCreateRequest.md
@@ -213,7 +211,6 @@ lib/Model/ActionDeleteResponse.php
 lib/Model/ActionSchedule.php
 lib/Model/ActionUpdateRequest.php
 lib/Model/Address.php
-lib/Model/ApiServerException.php
 lib/Model/ApiServerExceptionResponse.php
 lib/Model/ApiServerExceptionWithErrorCode.php
 lib/Model/Apikey.php
@@ -269,7 +266,6 @@ lib/Model/CopyButtonResponse.php
 lib/Model/CreateMeetingRequest.php
 lib/Model/CreateQuickReplyRequest.php
 lib/Model/DeleteButtonResponse.php
-lib/Model/DeleteQuickReplyResponse.php
 lib/Model/DeleteWorkspaceResponse.php
 lib/Model/Domain.php
 lib/Model/DomainCreateRequest.php
@@ -296,10 +292,8 @@ lib/Model/MagicTokenAnonymousRequest.php
 lib/Model/MagicTokenRequest.php
 lib/Model/MagicTokenResponse.php
 lib/Model/Media.php
-lib/Model/MediaDeleteResponse.php
 lib/Model/MediaMinimal.php
 lib/Model/MediaUpdateMetadataRequest.php
-lib/Model/MediaUsageResponse.php
 lib/Model/Meeting.php
 lib/Model/MeetingStrategy.php
 lib/Model/MemberAddRequest.php
@@ -320,7 +314,6 @@ lib/Model/PrivateNoteRequest.php
 lib/Model/ProAccountCheckoutSessionCreateRequest.php
 lib/Model/ProAccountCheckoutSessionResponse.php
 lib/Model/PromotionCode.php
-lib/Model/QuickReply.php
 lib/Model/RequestBillingPortalResponse.php
 lib/Model/SchedulingStrategyConfig.php
 lib/Model/ScrollOptions.php
@@ -334,6 +327,8 @@ lib/Model/SettingsOptions.php
 lib/Model/SlotClaim.php
 lib/Model/SlotClaimResponse.php
 lib/Model/SlotFields.php
+lib/Model/SlugAvailability.php
+lib/Model/SlugUpdateRequest.php
 lib/Model/StripeAgencyPlan.php
 lib/Model/StripeAgencyPlanPrice.php
 lib/Model/StripeBillingPortal.php
@@ -361,6 +356,7 @@ lib/Model/ValidationResult.php
 lib/Model/Verification.php
 lib/Model/WordPressInfo.php
 lib/Model/WordPressSignupCreateRequest.php
+lib/Model/WordPressSignupCreateResponse.php
 lib/Model/Workspace.php
 lib/Model/WorkspaceCreateRequest.php
 lib/Model/WorkspaceDomainPersonaCreateRequest.php

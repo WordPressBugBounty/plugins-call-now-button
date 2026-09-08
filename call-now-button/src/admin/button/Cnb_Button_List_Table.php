@@ -200,6 +200,7 @@ class Cnb_Button_List_Table extends WP_List_Table {
                     case 'FULL':
                     case 'MULTI':
                     case 'DOTS':
+                    case 'FLOWER':
                         $button_types   = $adminFunctions->cnb_get_button_types();
 
                         $flower = !empty( $item->options->cssClasses ) && str_contains($item->options->cssClasses, 'cnb-multi-flower');

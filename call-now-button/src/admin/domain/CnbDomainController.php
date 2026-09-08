@@ -26,66 +26,56 @@ class CnbDomainController {
                 array( 'response' => 403 )
             );
         }
-        $nonce          = sanitize_text_field( filter_input( INPUT_POST, '_wpnonce' ) );
-        $action         = 'cnb_create_domain';
-        $nonce_verified = wp_verify_nonce( $nonce, $action );
-        if ( $nonce_verified ) {
-            // sanitize the input
-            $domain                  = filter_input(
-                INPUT_POST,
-                'domain',
-                FILTER_DEFAULT,
-                FILTER_REQUIRE_ARRAY | FILTER_FLAG_NO_ENCODE_QUOTES );
-            if ( ! is_array( $domain ) ) {
-                $domain = array();
-            }
-            $cnb_cloud_notifications = array();
+        check_admin_referer( 'cnb_create_domain' );
+        // sanitize the input
+        $domain                  = filter_input(
+            INPUT_POST,
+            'domain',
+            FILTER_DEFAULT,
+            FILTER_REQUIRE_ARRAY | FILTER_FLAG_NO_ENCODE_QUOTES );
+        if ( ! is_array( $domain ) ) {
+            $domain = array();
+        }
+        $cnb_cloud_notifications = array();
 
-            $processed_domain = CnbDomain::fromObject( $domain );
-            // Alligator alert - this is different from other update functions!!
-            $processed_domain->properties->zindex = $this->order_to_zindex( $processed_domain->properties->zindex );
-            // do the processing
-            $result = CnbAdminCloud::cnb_create_domain( $cnb_cloud_notifications, $processed_domain );
+        $processed_domain = CnbDomain::fromObject( $domain );
+        // Alligator alert - this is different from other update functions!!
+        $processed_domain->properties->zindex = $this->order_to_zindex( $processed_domain->properties->zindex );
+        // do the processing
+        $result = CnbAdminCloud::cnb_create_domain( $cnb_cloud_notifications, $processed_domain );
 
-            // Create link
-            $url = admin_url( 'admin.php' );
-            // redirect the user to the appropriate page
-            if ( is_wp_error( $result ) ) {
-                $transient_id = (new CnbHeaderNotices())->generate_notice_id();
-                $notice = CnbAdminCloud::cnb_admin_get_error_message('create', 'domain', $result);
-                set_transient( $transient_id, array( $notice ), HOUR_IN_SECONDS );
+        // Create link
+        $url = admin_url( 'admin.php' );
+        // redirect the user to the appropriate page
+        if ( is_wp_error( $result ) ) {
+            $transient_id = (new CnbHeaderNotices())->generate_notice_id();
+            $notice = CnbAdminCloud::cnb_admin_get_error_message('create', 'domain', $result);
+            set_transient( $transient_id, array( $notice ), HOUR_IN_SECONDS );
 
-                $redirect_link = add_query_arg(
+            $redirect_link = add_query_arg(
+                array(
+                    'page'     => CNB_SLUG . '-domains',
+                    'tid'      => $transient_id,
+                    '_wpnonce' => wp_create_nonce( $transient_id ),
+                ),
+                $url );
+            $redirect_url = esc_url_raw( $redirect_link );
+            do_action( 'cnb_finish' );
+            wp_safe_redirect( $redirect_url );
+            exit;
+        } else {
+            $redirect_link =
+                add_query_arg(
                     array(
-                        'page'     => CNB_SLUG . '-domains',
-                        'tid'      => $transient_id,
-                        '_wpnonce' => wp_create_nonce( $transient_id ),
+                        'page'   => CNB_SLUG . '-domains',
+                        'action' => 'edit',
+                        'id'     => $result->id,
                     ),
                     $url );
-                $redirect_url = esc_url_raw( $redirect_link );
-                do_action( 'cnb_finish' );
-                wp_safe_redirect( $redirect_url );
-                exit;
-            } else {
-                $redirect_link =
-                    add_query_arg(
-                        array(
-                            'page'   => CNB_SLUG . '-domains',
-                            'action' => 'edit',
-                            'id'     => $result->id,
-                        ),
-                        $url );
-                $redirect_url  = esc_url_raw( $redirect_link );
-                do_action( 'cnb_finish' );
-                wp_safe_redirect( $redirect_url );
-                exit;
-            }
-        } else {
+            $redirect_url  = esc_url_raw( $redirect_link );
             do_action( 'cnb_finish' );
-            wp_die( esc_html__( 'Invalid nonce specified' ), esc_html__( 'Error' ), array(
-                'response'  => 403,
-                'back_link' => true,
-            ) );
+            wp_safe_redirect( $redirect_url );
+            exit;
         }
     }
 
@@ -99,43 +89,33 @@ class CnbDomainController {
                 array( 'response' => 403 )
             );
         }
-        $nonce          = sanitize_text_field( filter_input( INPUT_POST, '_wpnonce' ) );
-        $action         = 'cnb_update_domain';
-        $nonce_verified = wp_verify_nonce( $nonce, $action );
-        if ( $nonce_verified ) {
-            $domain = $this->getDomainFromRequest();
-            // do the processing
-            $cnb_cloud_notifications = array();
-            $result                  = CnbAdminCloud::cnb_update_domain( $cnb_cloud_notifications, $domain );
+        check_admin_referer( 'cnb_update_domain' );
+        $domain = $this->getDomainFromRequest();
+        // do the processing
+        $cnb_cloud_notifications = array();
+        $result                  = CnbAdminCloud::cnb_update_domain( $cnb_cloud_notifications, $domain );
 
-            // redirect the user to the appropriate page
-            $transient_id = (new CnbHeaderNotices())->generate_notice_id();
-            set_transient( $transient_id, $cnb_cloud_notifications, HOUR_IN_SECONDS );
+        // redirect the user to the appropriate page
+        $transient_id = (new CnbHeaderNotices())->generate_notice_id();
+        set_transient( $transient_id, $cnb_cloud_notifications, HOUR_IN_SECONDS );
 
-            // Create link
-            $url = admin_url( 'admin.php' );
+        // Create link
+        $url = admin_url( 'admin.php' );
 
-            $redirect_link =
-                add_query_arg(
-                    array(
-                        'page'     => CNB_SLUG . '-domains',
-                        'action'   => 'edit',
-                        'id'       => $result->id,
-                        'tid'      => $transient_id,
-                        '_wpnonce' => wp_create_nonce( $transient_id ),
-                    ),
-                    $url );
-            $redirect_url  = esc_url_raw( $redirect_link );
-            do_action( 'cnb_finish' );
-            wp_safe_redirect( $redirect_url );
-            exit;
-        } else {
-            do_action( 'cnb_finish' );
-            wp_die( esc_html__( 'Invalid nonce specified' ), esc_html__( 'Error' ), array(
-                'response'  => 403,
-                'back_link' => true,
-            ) );
-        }
+        $redirect_link =
+            add_query_arg(
+                array(
+                    'page'     => CNB_SLUG . '-domains',
+                    'action'   => 'edit',
+                    'id'       => $result->id,
+                    'tid'      => $transient_id,
+                    '_wpnonce' => wp_create_nonce( $transient_id ),
+                ),
+                $url );
+        $redirect_url  = esc_url_raw( $redirect_link );
+        do_action( 'cnb_finish' );
+        wp_safe_redirect( $redirect_url );
+        exit;
     }
 
     /**
@@ -163,60 +143,45 @@ class CnbDomainController {
                 array( 'response' => 403 )
             );
         }
-        $cnb_utils      = new CnbUtils();
-        $nonce          = $cnb_utils->get_post_val( '_wpnonce' );
-        $action         = 'bulk-cnb_list_domains';
-        $nonce_verified = wp_verify_nonce( $nonce, $action );
-
-        if ( $nonce_verified ) {
-            $domainIds = $cnb_utils->get_post_array( 'cnb_list_domain' );
-            if ( $cnb_utils->get_post_val( 'bulk-action' ) === 'delete' ) {
-                $cnb_cloud_notifications = array();
-                foreach ( $domainIds as $domainId ) {
-                    $domain     = new CnbDomain();
-                    $domain->id = $domainId;
-                    CnbAdminCloud::cnb_delete_domain( $cnb_cloud_notifications, $domain );
-                }
-
-                // Create notice for link (and yes - we ignore the content of $cnb_cloud_notifications here, we just use it to count)
-                $notice       = new CnbNotice( 'success', '<p>' . count( $cnb_cloud_notifications ) . ' Domain(s) deleted.</p>' );
-                $transient_id = (new CnbHeaderNotices())->generate_notice_id();
-                set_transient( $transient_id, array( $notice ), HOUR_IN_SECONDS );
-
-                // Create link
-                $url           = admin_url( 'admin.php' );
-                $redirect_link =
-                    add_query_arg(
-                        array(
-                            'page'     => 'call-now-button-domains',
-                            'tid'      => $transient_id,
-                            '_wpnonce' => wp_create_nonce( $transient_id ),
-                        ),
-                        $url );
-                $redirect_url  = esc_url_raw( $redirect_link );
-                do_action( 'cnb_finish' );
-                wp_safe_redirect( $redirect_url );
-                exit;
-            } else {
-                do_action( 'cnb_finish' );
-                wp_die(
-                    esc_html__( 'Unknown Bulk action specified' ),
-                    esc_html__( 'Cannot process Bulk action' ),
-                    array(
-                        'response'  => 403,
-                        'link_text' => esc_html( 'Go back to the Domains overview' ),
-                        'link_url'  => esc_url_raw( admin_url( 'admin.php' ) . '?page=' . CNB_SLUG . '-domains' ),
-                    )
-                );
+        $cnb_utils = new CnbUtils();
+        check_admin_referer( 'bulk-cnb_list_domains' );
+        $domainIds = $cnb_utils->get_post_array( 'cnb_list_domain' );
+        if ( $cnb_utils->get_post_val( 'bulk-action' ) === 'delete' ) {
+            $cnb_cloud_notifications = array();
+            foreach ( $domainIds as $domainId ) {
+                $domain     = new CnbDomain();
+                $domain->id = $domainId;
+                CnbAdminCloud::cnb_delete_domain( $cnb_cloud_notifications, $domain );
             }
+
+            // Create notice for link (and yes - we ignore the content of $cnb_cloud_notifications here, we just use it to count)
+            $notice       = new CnbNotice( 'success', '<p>' . count( $cnb_cloud_notifications ) . ' Domain(s) deleted.</p>' );
+            $transient_id = (new CnbHeaderNotices())->generate_notice_id();
+            set_transient( $transient_id, array( $notice ), HOUR_IN_SECONDS );
+
+            // Create link
+            $url           = admin_url( 'admin.php' );
+            $redirect_link =
+                add_query_arg(
+                    array(
+                        'page'     => 'call-now-button-domains',
+                        'tid'      => $transient_id,
+                        '_wpnonce' => wp_create_nonce( $transient_id ),
+                    ),
+                    $url );
+            $redirect_url  = esc_url_raw( $redirect_link );
+            do_action( 'cnb_finish' );
+            wp_safe_redirect( $redirect_url );
+            exit;
         } else {
             do_action( 'cnb_finish' );
             wp_die(
-                esc_html__( 'Invalid nonce specified' ),
-                esc_html__( 'Error' ),
+                esc_html__( 'Unknown Bulk action specified' ),
+                esc_html__( 'Cannot process Bulk action' ),
                 array(
                     'response'  => 403,
-                    'back_link' => true,
+                    'link_text' => esc_html( 'Go back to the Domains overview' ),
+                    'link_url'  => esc_url_raw( admin_url( 'admin.php' ) . '?page=' . CNB_SLUG . '-domains' ),
                 )
             );
         }
@@ -292,16 +257,8 @@ class CnbDomainController {
         }
         $cnb_utils = new CnbUtils();
         $id        = $cnb_utils->get_query_val( 'id', null );
-        $nonce     = $cnb_utils->get_query_val( '_wpnonce', null );
         $action    = 'cnb_delete_domain';
-
-        if ( ! wp_verify_nonce( $nonce, $action ) ) {
-            do_action( 'cnb_finish' );
-            wp_die( esc_html__( 'Invalid nonce specified' ), esc_html__( 'Error' ), array(
-                'response'  => 403,
-                'back_link' => true,
-            ) );
-        }
+        check_admin_referer( $action );
 
         $cnb_cloud_notifications = array();
         $domain                  = new CnbDomain();

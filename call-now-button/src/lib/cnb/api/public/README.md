@@ -50,6 +50,9 @@ require_once(__DIR__ . '/vendor/autoload.php');
 
 
 
+// Configure OAuth2 access token for authorization: oauth2Scheme
+$config = cnb\api\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
 // Configure API key authorization: sessionCookieScheme
 $config = cnb\api\Configuration::getDefaultConfiguration()->setApiKey('SESSION', 'YOUR_API_KEY');
 // Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
@@ -120,14 +123,14 @@ Class | Method | HTTP request | Description
 *ChatApi* | [**createPersona**](docs/Api/ChatApi.md#createpersona) | **POST** /v1/chat/workspace/{workspaceId}/member/{memberId}/persona | create a Chat User profile for the provided WorkspaceMember.
 *ChatApi* | [**createPrivateNote**](docs/Api/ChatApi.md#createprivatenote) | **POST** /v1/chat/workspace/{workspaceId}/channel/{channelId}/notes | Create a new private note for a channel
 *ChatApi* | [**createQuickReply**](docs/Api/ChatApi.md#createquickreply) | **POST** /v1/chat/workspace/{workspaceId}/{domainId}/quickreply | Create a quick reply
-*ChatApi* | [**createWorkspaceDomainPersona**](docs/Api/ChatApi.md#createworkspacedomainpersona) | **POST** /v1/chat/workspace/{workspaceId}/domain/{domainId}/persona | 
+*ChatApi* | [**createWorkspaceDomainPersona**](docs/Api/ChatApi.md#createworkspacedomainpersona) | **POST** /v1/chat/workspace/{workspaceId}/domain/{domainId}/persona | Create a workspace domain persona.
 *ChatApi* | [**delete**](docs/Api/ChatApi.md#delete) | **DELETE** /v1/chat/workspace/{workspaceId}/channel/{channelId} | Deletes a Chat Channel of this user
 *ChatApi* | [**deleteQuickReply**](docs/Api/ChatApi.md#deletequickreply) | **DELETE** /v1/chat/workspace/{workspaceId}/{domainId}/quickreply/{quickReplyId} | Delete a quick reply
 *ChatApi* | [**deleteWorkspace**](docs/Api/ChatApi.md#deleteworkspace) | **DELETE** /v1/chat/workspace/{workspaceId} | Delete a Workspace. This is permanent and can only be done if a workspace does not contain any domains.
 *ChatApi* | [**disableChatUser**](docs/Api/ChatApi.md#disablechatuser) | **DELETE** /v1/chat/user/enable | Remove the chat user role from the current user
 *ChatApi* | [**enableChatUser**](docs/Api/ChatApi.md#enablechatuser) | **POST** /v1/chat/user/enable | Add the chat user role to the current user
 *ChatApi* | [**events**](docs/Api/ChatApi.md#events) | **GET** /v1/chat/workspace/{workspaceId}/channel/{channelId}/events | Gets all Events of this Channel, ordered by createdAt
-*ChatApi* | [**exportChatChannelAsHtml**](docs/Api/ChatApi.md#exportchatchannelashtml) | **GET** /v1/chat/workspace/{workspaceId}/channel/{channelId}/html | 
+*ChatApi* | [**exportChatChannelAsHtml**](docs/Api/ChatApi.md#exportchatchannelashtml) | **GET** /v1/chat/workspace/{workspaceId}/channel/{channelId}/html | Export chat channel as HTML
 *ChatApi* | [**exportChatChannelAsPdf**](docs/Api/ChatApi.md#exportchatchannelaspdf) | **GET** /v1/chat/workspace/{workspaceId}/channel/{channelId}/pdf | Export chat channel as PDF
 *ChatApi* | [**get**](docs/Api/ChatApi.md#get) | **GET** /v1/chat/workspace/{workspaceId}/channel/{channelId} | Get a chat channel for the user
 *ChatApi* | [**getAll**](docs/Api/ChatApi.md#getall) | **GET** /v1/chat/workspace/{workspaceId}/channels | Get all chat channels for the user
@@ -196,10 +199,10 @@ Class | Method | HTTP request | Description
 *MediaApi* | [**updateMetadata**](docs/Api/MediaApi.md#updatemetadata) | **PATCH** /v1/user/media/{id} | Update metadata for a file. Does not modify original file.
 *MeetApi* | [**createMeeting**](docs/Api/MeetApi.md#createmeeting) | **POST** /v1/meet/workspace/{workspaceId}/domain/{domainId}/meeting | Create a new meeting
 *MeetApi* | [**deleteMeeting**](docs/Api/MeetApi.md#deletemeeting) | **DELETE** /v1/meet/workspace/{workspaceId}/domain/{domainId}/meeting/{meetingId} | Delete a meeting
-*MeetApi* | [**disableMeeting**](docs/Api/MeetApi.md#disablemeeting) | **PATCH** /v1/meet/workspace/{workspaceId}/domain/{domainId}/meeting/{meetingId}/disable | 
-*MeetApi* | [**enableMeeting**](docs/Api/MeetApi.md#enablemeeting) | **PATCH** /v1/meet/workspace/{workspaceId}/domain/{domainId}/meeting/{meetingId}/enable | 
+*MeetApi* | [**disableMeeting**](docs/Api/MeetApi.md#disablemeeting) | **PATCH** /v1/meet/workspace/{workspaceId}/domain/{domainId}/meeting/{meetingId}/disable | Disable a meeting
+*MeetApi* | [**enableMeeting**](docs/Api/MeetApi.md#enablemeeting) | **PATCH** /v1/meet/workspace/{workspaceId}/domain/{domainId}/meeting/{meetingId}/enable | Enable a meeting
 *MeetApi* | [**getAllMeetings**](docs/Api/MeetApi.md#getallmeetings) | **GET** /v1/meet/workspace/{workspaceId}/meetings | Retrieve all meetings for the current user
-*MeetApi* | [**getMeeting**](docs/Api/MeetApi.md#getmeeting) | **GET** /v1/meet/workspace/{workspaceId}/domain/{domainId}/meeting{meetingId} | Retrieve a specific meeting by ID
+*MeetApi* | [**getMeeting**](docs/Api/MeetApi.md#getmeeting) | **GET** /v1/meet/workspace/{workspaceId}/domain/{domainId}/meeting/{meetingId} | Retrieve a specific meeting by ID
 *MeetApi* | [**updateMeeting**](docs/Api/MeetApi.md#updatemeeting) | **PATCH** /v1/meet/workspace/{workspaceId}/domain/{domainId}/meeting/{meetingId} | Update a meeting&#39;s strategy configuration
 *MeetApi* | [**updateMeetingFields**](docs/Api/MeetApi.md#updatemeetingfields) | **PATCH** /v1/meet/workspace/{workspaceId}/domain/{domainId}/meeting/{meetingId}/fields | Replace meeting fields
 *MeetPublicApi* | [**claimAvailableSlot**](docs/Api/MeetPublicApi.md#claimavailableslot) | **POST** /v1/meet/public/{workspaceSlug}/{meetId}/available-slot/{slotId} | Claim an available slot for this account
@@ -249,12 +252,14 @@ Class | Method | HTTP request | Description
 *WorkspaceApi* | [**get**](docs/Api/WorkspaceApi.md#get) | **GET** /v1/workspace/{workspaceId} | Retrieve a single &#x60;Workspace&#x60; by ID
 *WorkspaceApi* | [**getAll**](docs/Api/WorkspaceApi.md#getall) | **GET** /v1/workspace | Retrieve all workspaces for this user.
 *WorkspaceApi* | [**getAvailableDomains**](docs/Api/WorkspaceApi.md#getavailabledomains) | **GET** /v1/workspace/{workspaceId}/domains/available | List all potentially available &#x60;Domain&#x60;s for an &#x60;Workspace&#x60;.
+*WorkspaceApi* | [**isSlugAvailable**](docs/Api/WorkspaceApi.md#isslugavailable) | **GET** /v1/workspace/slug/{slug}/available | Check if a workspace slug is available.
 *WorkspaceApi* | [**leave**](docs/Api/WorkspaceApi.md#leave) | **DELETE** /v1/workspace/{workspaceId}/member/self | Leave a Workspace. This is useful for an Agent, to remove themselves from a Workspace.
 *WorkspaceApi* | [**removeDomain**](docs/Api/WorkspaceApi.md#removedomain) | **DELETE** /v1/workspace/{workspaceId}/domain/{domainId} | Remove a &#x60;Domain&#x60; association from a &#x60;Workspace&#x60;.
 *WorkspaceApi* | [**removeDomainPermission**](docs/Api/WorkspaceApi.md#removedomainpermission) | **DELETE** /v1/workspace/{workspaceId}/domain/{domainId}/permission/{permissionId} | Remove Permission from a Member for a Workspace.
 *WorkspaceApi* | [**removeMember**](docs/Api/WorkspaceApi.md#removemember) | **DELETE** /v1/workspace/{workspaceId}/member/{memberId} | Remove a Member from a Workspace.
 *WorkspaceApi* | [**update**](docs/Api/WorkspaceApi.md#update) | **PATCH** /v1/workspace/{workspaceId} | Update a workspace.
 *WorkspaceApi* | [**updateDomainOptions**](docs/Api/WorkspaceApi.md#updatedomainoptions) | **PATCH** /v1/workspace/{workspaceId}/domain/{domainId}/options | Modify the options on a Domain for a Workspace.
+*WorkspaceApi* | [**updateSlug**](docs/Api/WorkspaceApi.md#updateslug) | **PATCH** /v1/workspace/{workspaceId}/slug | Update the slug of a workspace.
 
 ## Models
 
@@ -265,7 +270,6 @@ Class | Method | HTTP request | Description
 - [ActionSchedule](docs/Model/ActionSchedule.md)
 - [ActionUpdateRequest](docs/Model/ActionUpdateRequest.md)
 - [Address](docs/Model/Address.md)
-- [ApiServerException](docs/Model/ApiServerException.md)
 - [ApiServerExceptionResponse](docs/Model/ApiServerExceptionResponse.md)
 - [ApiServerExceptionWithErrorCode](docs/Model/ApiServerExceptionWithErrorCode.md)
 - [Apikey](docs/Model/Apikey.md)
@@ -321,7 +325,6 @@ Class | Method | HTTP request | Description
 - [CreateMeetingRequest](docs/Model/CreateMeetingRequest.md)
 - [CreateQuickReplyRequest](docs/Model/CreateQuickReplyRequest.md)
 - [DeleteButtonResponse](docs/Model/DeleteButtonResponse.md)
-- [DeleteQuickReplyResponse](docs/Model/DeleteQuickReplyResponse.md)
 - [DeleteWorkspaceResponse](docs/Model/DeleteWorkspaceResponse.md)
 - [Domain](docs/Model/Domain.md)
 - [DomainCreateRequest](docs/Model/DomainCreateRequest.md)
@@ -348,10 +351,8 @@ Class | Method | HTTP request | Description
 - [MagicTokenRequest](docs/Model/MagicTokenRequest.md)
 - [MagicTokenResponse](docs/Model/MagicTokenResponse.md)
 - [Media](docs/Model/Media.md)
-- [MediaDeleteResponse](docs/Model/MediaDeleteResponse.md)
 - [MediaMinimal](docs/Model/MediaMinimal.md)
 - [MediaUpdateMetadataRequest](docs/Model/MediaUpdateMetadataRequest.md)
-- [MediaUsageResponse](docs/Model/MediaUsageResponse.md)
 - [Meeting](docs/Model/Meeting.md)
 - [MeetingStrategy](docs/Model/MeetingStrategy.md)
 - [MemberAddRequest](docs/Model/MemberAddRequest.md)
@@ -371,7 +372,6 @@ Class | Method | HTTP request | Description
 - [ProAccountCheckoutSessionCreateRequest](docs/Model/ProAccountCheckoutSessionCreateRequest.md)
 - [ProAccountCheckoutSessionResponse](docs/Model/ProAccountCheckoutSessionResponse.md)
 - [PromotionCode](docs/Model/PromotionCode.md)
-- [QuickReply](docs/Model/QuickReply.md)
 - [RequestBillingPortalResponse](docs/Model/RequestBillingPortalResponse.md)
 - [SchedulingStrategyConfig](docs/Model/SchedulingStrategyConfig.md)
 - [ScrollOptions](docs/Model/ScrollOptions.md)
@@ -385,6 +385,8 @@ Class | Method | HTTP request | Description
 - [SlotClaim](docs/Model/SlotClaim.md)
 - [SlotClaimResponse](docs/Model/SlotClaimResponse.md)
 - [SlotFields](docs/Model/SlotFields.md)
+- [SlugAvailability](docs/Model/SlugAvailability.md)
+- [SlugUpdateRequest](docs/Model/SlugUpdateRequest.md)
 - [StripeAgencyPlan](docs/Model/StripeAgencyPlan.md)
 - [StripeAgencyPlanPrice](docs/Model/StripeAgencyPlanPrice.md)
 - [StripeBillingPortal](docs/Model/StripeBillingPortal.md)
@@ -412,6 +414,7 @@ Class | Method | HTTP request | Description
 - [Verification](docs/Model/Verification.md)
 - [WordPressInfo](docs/Model/WordPressInfo.md)
 - [WordPressSignupCreateRequest](docs/Model/WordPressSignupCreateRequest.md)
+- [WordPressSignupCreateResponse](docs/Model/WordPressSignupCreateResponse.md)
 - [Workspace](docs/Model/Workspace.md)
 - [WorkspaceCreateRequest](docs/Model/WorkspaceCreateRequest.md)
 - [WorkspaceDomainPersonaCreateRequest](docs/Model/WorkspaceDomainPersonaCreateRequest.md)
@@ -438,6 +441,16 @@ Authentication schemes defined for the API:
 - **Location**: HTTP header
 
 
+### oauth2Scheme
+
+- **Type**: `OAuth`
+- **Flow**: `accessCode`
+- **Authorization URL**: `https://account-dev.nowbuttons.com/oauth2/authorize`
+- **Scopes**: 
+    - **openid**: OpenID Connect
+    - **user**: Access the authenticated user's resources
+    - **chat**: Access chat resources
+
 ## Tests
 
 To run the tests, use:
@@ -455,6 +468,6 @@ support@nowbuttons.com
 
 This PHP package is automatically generated by the [OpenAPI Generator](https://openapi-generator.tech) project:
 
-- API version: `0.0.221-local`
+- API version: `0.0.223-development`
     - Generator version: `7.12.0`
 - Build package: `org.openapitools.codegen.languages.PhpClientCodegen`

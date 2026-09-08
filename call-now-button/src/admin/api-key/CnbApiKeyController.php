@@ -26,48 +26,40 @@ class CnbApiKeyController {
                 array( 'response' => 403 )
             );
         }
-        $nonce = sanitize_text_field( filter_input( INPUT_POST, '_wpnonce' ) );
-        if ( isset( $_POST['_wpnonce'] ) && wp_verify_nonce( $nonce, 'cnb_apikey_create' ) ) {
+        check_admin_referer( 'cnb_apikey_create' );
 
-            // sanitize the input
-            $apikey_data = filter_input(
-                INPUT_POST,
-                'apikey',
-                FILTER_DEFAULT,
-                FILTER_REQUIRE_ARRAY );
+        // sanitize the input
+        $apikey_data = filter_input(
+            INPUT_POST,
+            'apikey',
+            FILTER_DEFAULT,
+            FILTER_REQUIRE_ARRAY );
 
-            $apikey       = new CnbApiKey();
-            $apikey->name = sanitize_text_field( $apikey_data['name'] ?? '' );
+        $apikey       = new CnbApiKey();
+        $apikey->name = sanitize_text_field( $apikey_data['name'] ?? '' );
 
-            // do the processing
-            $cnb_cloud_notifications = array();
-            CnbAdminCloud::cnb_create_apikey( $cnb_cloud_notifications, $apikey );
+        // do the processing
+        $cnb_cloud_notifications = array();
+        CnbAdminCloud::cnb_create_apikey( $cnb_cloud_notifications, $apikey );
 
-            // redirect the user to the appropriate page
-            $transient_id = (new CnbHeaderNotices())->generate_notice_id();
-            set_transient( $transient_id, $cnb_cloud_notifications, HOUR_IN_SECONDS );
+        // redirect the user to the appropriate page
+        $transient_id = (new CnbHeaderNotices())->generate_notice_id();
+        set_transient( $transient_id, $cnb_cloud_notifications, HOUR_IN_SECONDS );
 
-            // Create link
-            $url           = admin_url( 'admin.php' );
-            $redirect_link =
-                add_query_arg(
-                    array(
-                        'page'     => 'call-now-button-apikeys',
-                        'tid'      => $transient_id,
-                        '_wpnonce' => wp_create_nonce( $transient_id ),
-                    ),
-                    $url );
-            $redirect_url  = esc_url_raw( $redirect_link );
-            do_action( 'cnb_finish' );
-            wp_safe_redirect( $redirect_url );
-            exit;
-        } else {
-            do_action( 'cnb_finish' );
-            wp_die( esc_html__( 'Invalid nonce specified' ), esc_html__( 'Error' ), array(
-                'response'  => 403,
-                'back_link' => true,
-            ) );
-        }
+        // Create link
+        $url           = admin_url( 'admin.php' );
+        $redirect_link =
+            add_query_arg(
+                array(
+                    'page'     => 'call-now-button-apikeys',
+                    'tid'      => $transient_id,
+                    '_wpnonce' => wp_create_nonce( $transient_id ),
+                ),
+                $url );
+        $redirect_url  = esc_url_raw( $redirect_link );
+        do_action( 'cnb_finish' );
+        wp_safe_redirect( $redirect_url );
+        exit;
     }
 
     /**
@@ -86,14 +78,7 @@ class CnbApiKeyController {
                 array( 'response' => 403 )
             );
         }
-        $nonce = sanitize_text_field( filter_input( INPUT_POST, '_wpnonce' ) );
-        if ( !wp_verify_nonce( $nonce, 'cnb_apikey_validate_and_update' ) ) {
-            do_action( 'cnb_finish' );
-            wp_die( esc_html__( 'Invalid nonce specified' ), esc_html__( 'Error' ), array(
-                'response'  => 403,
-                'back_link' => true,
-            ) );
-        }
+        check_admin_referer( 'cnb_apikey_validate_and_update' );
 
         $apikey = sanitize_text_field( filter_input( INPUT_POST, 'api_key' ) );
         $admin_cloud = new CnbAdminCloud();
@@ -172,27 +157,18 @@ class CnbApiKeyController {
                 array( 'response' => 403 )
             );
         }
-        $cnb_utils      = new CnbUtils();
-        $id             = $cnb_utils->get_query_val( 'id', null );
-        $nonce          = $cnb_utils->get_query_val( '_wpnonce', null );
-        $action         = 'cnb_delete_apikey';
-        $nonce_verified = wp_verify_nonce( $nonce, $action );
-        if ( $nonce_verified ) {
-            $cnb_cloud_notifications = array();
-            $apikey                  = new CnbApiKey();
-            $adminNotices            = CnbAdminNotices::get_instance();
-            $apikey->id              = $id;
-            CnbAdminCloud::cnb_delete_apikey( $cnb_cloud_notifications, $apikey );
+        $cnb_utils = new CnbUtils();
+        $id        = $cnb_utils->get_query_val( 'id', null );
+        $action    = 'cnb_delete_apikey';
+        check_admin_referer( $action );
+        $cnb_cloud_notifications = array();
+        $apikey                  = new CnbApiKey();
+        $adminNotices            = CnbAdminNotices::get_instance();
+        $apikey->id              = $id;
+        CnbAdminCloud::cnb_delete_apikey( $cnb_cloud_notifications, $apikey );
 
-            $adminNotices->notices( $cnb_cloud_notifications );
-            do_action( 'cnb_finish' );
-        } else {
-            do_action( 'cnb_finish' );
-            wp_die( esc_html__( 'Invalid nonce specified' ), esc_html__( 'Error' ), array(
-                'response'  => 403,
-                'back_link' => true,
-            ) );
-        }
+        $adminNotices->notices( $cnb_cloud_notifications );
+        do_action( 'cnb_finish' );
     }
 
     /**
@@ -220,59 +196,45 @@ class CnbApiKeyController {
                 array( 'response' => 403 )
             );
         }
-        $cnb_utils      = new CnbUtils();
-        $cnb_remote     = new CnbAppRemote();
-        $nonce          = $cnb_utils->get_post_val( '_wpnonce' );
-        $action         = 'bulk-cnb_list_apikeys';
-        $nonce_verified = wp_verify_nonce( $nonce, $action );
-        if ( $nonce_verified ) {
-            $entityIds = $cnb_utils->get_post_array( 'cnb_list_apikey' );
-            if ( $cnb_utils->get_post_val( 'bulk-action' ) === 'delete' ) {
-                foreach ( $entityIds as $entityId ) {
-                    $apikey     = new CnbApiKey();
-                    $apikey->id = $entityId;
-                    $cnb_remote->delete_apikey( $apikey );
-                }
-
-                // Create notice for link
-                $notice       = new CnbNotice( 'success', '<p>' . count( $entityIds ) . ' Api key(s) deleted.</p>' );
-                $transient_id = (new CnbHeaderNotices())->generate_notice_id();
-                set_transient( $transient_id, array( $notice ), HOUR_IN_SECONDS );
-
-                // Create link
-                $url           = admin_url( 'admin.php' );
-                $redirect_link =
-                    add_query_arg(
-                        array(
-                            'page'     => 'call-now-button-apikeys',
-                            'tid'      => $transient_id,
-                            '_wpnonce' => wp_create_nonce( $transient_id ),
-                        ),
-                        $url );
-                $redirect_url  = esc_url_raw( $redirect_link );
-                do_action( 'cnb_finish' );
-                wp_safe_redirect( $redirect_url );
-                exit;
-            } else {
-                do_action( 'cnb_finish' );
-                wp_die(
-                    esc_html__( 'Unknown Bulk action specified' ),
-                    esc_html__( 'Cannot process Bulk action' ),
-                    array(
-                        'response'  => 403,
-                        'link_text' => esc_html( 'Go back to the API Key overview' ),
-                        'link_url'  => esc_url_raw( admin_url( 'admin.php' ) . '?page=' . CNB_SLUG . '-apikeys' ),
-                    )
-                );
+        $cnb_utils  = new CnbUtils();
+        $cnb_remote = new CnbAppRemote();
+        check_admin_referer( 'bulk-cnb_list_apikeys' );
+        $entityIds = $cnb_utils->get_post_array( 'cnb_list_apikey' );
+        if ( $cnb_utils->get_post_val( 'bulk-action' ) === 'delete' ) {
+            foreach ( $entityIds as $entityId ) {
+                $apikey     = new CnbApiKey();
+                $apikey->id = $entityId;
+                $cnb_remote->delete_apikey( $apikey );
             }
+
+            // Create notice for link
+            $notice       = new CnbNotice( 'success', '<p>' . count( $entityIds ) . ' Api key(s) deleted.</p>' );
+            $transient_id = (new CnbHeaderNotices())->generate_notice_id();
+            set_transient( $transient_id, array( $notice ), HOUR_IN_SECONDS );
+
+            // Create link
+            $url           = admin_url( 'admin.php' );
+            $redirect_link =
+                add_query_arg(
+                    array(
+                        'page'     => 'call-now-button-apikeys',
+                        'tid'      => $transient_id,
+                        '_wpnonce' => wp_create_nonce( $transient_id ),
+                    ),
+                    $url );
+            $redirect_url  = esc_url_raw( $redirect_link );
+            do_action( 'cnb_finish' );
+            wp_safe_redirect( $redirect_url );
+            exit;
         } else {
             do_action( 'cnb_finish' );
             wp_die(
-                esc_html__( 'Invalid nonce specified' ),
-                esc_html__( 'Error' ),
+                esc_html__( 'Unknown Bulk action specified' ),
+                esc_html__( 'Cannot process Bulk action' ),
                 array(
                     'response'  => 403,
-                    'back_link' => true,
+                    'link_text' => esc_html( 'Go back to the API Key overview' ),
+                    'link_url'  => esc_url_raw( admin_url( 'admin.php' ) . '?page=' . CNB_SLUG . '-apikeys' ),
                 )
             );
         }

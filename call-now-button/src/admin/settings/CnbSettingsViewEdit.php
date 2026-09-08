@@ -545,26 +545,22 @@ class CnbSettingsViewEdit {
                 );
             } elseif ( $promoItem == 4 ) {
                 ( new CnbAdminFunctions() )->cnb_promobox(
-                        'Meeting Slots',
-                        'green',
-                        'Bookings Made Easy',
-                        '<div class="cnb-promobox-feature">
-                            <div class="cnb-promobox-feature-check">✓</div>
-                            <span>Direct Google Calendar sync</span>
-                        </div>
-                        <div class="cnb-promobox-feature">
-                            <div class="cnb-promobox-feature-check">✓</div>
-                            <span>One-click meeting booking</span>
-                        </div>
-                        <div class="cnb-promobox-feature">
-                            <div class="cnb-promobox-feature-check">✓</div>
-                            <span>Reduce back-and-forth emails</span>
-                        </div>',
-                        '📅',
-                        'Try PRO 14 days free',
-                        'Live Chat',
-                        'Upgrade Now',
-                        $upgrade_url
+                    'Scheduler',
+                    'green',
+                    'Smart Scheduling,<br>Smarter Conversions',
+                    '<div class="cnb-promobox-feature">
+                        <div class="cnb-promobox-feature-check">✓</div>
+                        <span>Automatically switch buttons based on your hours</span>
+                    </div>
+                    <div class="cnb-promobox-feature">
+                        <div class="cnb-promobox-feature-check">✓</div>
+                        <span>Never miss a lead again</span>
+                    </div>',
+                    '🕙',
+                    'Unlock with PRO',
+                    'Try 14 days free',
+                    'Upgrade  Now',
+                    $upgrade_url
                 );
             } else {
                 ( new CnbAdminFunctions() )->cnb_promobox(
@@ -704,7 +700,12 @@ class CnbSettingsViewEdit {
         wp_enqueue_script( CNB_SLUG . '-settings' );
         wp_enqueue_script( CNB_SLUG . '-premium-activation' );
         wp_enqueue_script( CNB_SLUG . '-timezone-picker-fix' );
-        wp_enqueue_script( CNB_SLUG . '-tally' );
+        // Not enqueued here: the Settings page never renders a `data-tally-src`
+        // element itself. The two pages that do (CnbDomainViewUpgradeOverview,
+        // CnbAgencyViewUpgrade) already enqueue `-tally` themselves. Loading it
+        // unconditionally here fetched https://tally.so/widgets/embed.js in
+        // every admin's browser, even for users who never connected an account
+        // (see #1437).
         wp_enqueue_script( CNB_SLUG . '-domain-upgrade' );
         wp_enqueue_script( CNB_SLUG . '-billing-portal' );
         wp_enqueue_script( CNB_SLUG . '-chat-marketing' );

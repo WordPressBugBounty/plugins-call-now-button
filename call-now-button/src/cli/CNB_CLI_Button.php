@@ -112,6 +112,7 @@ class CNB_CLI_Button extends WP_CLI_Command {
      *   - SINGLE
      *   - FULL
      *   - MULTI
+     *   - FLOWER
      * ---
      *
      * [--active=<action>]

@@ -83,16 +83,9 @@ class CnbActionController {
 
         $cnb_utils = new CnbUtils();
         $id        = $cnb_utils->get_query_val( 'id', null );
-        $nonce     = $cnb_utils->get_query_val( '_wpnonce', null );
         $action    = 'cnb_delete_action';
 
-        if ( ! wp_verify_nonce( $nonce, $action ) ) {
-            do_action( 'cnb_finish' );
-            wp_die( esc_html__( 'Invalid nonce specified' ), esc_html__( 'Error' ), array(
-                'response'  => 403,
-                'back_link' => true,
-            ) );
-        }
+        check_admin_referer( $action );
 
         $cnb_cloud_notifications = array();
         $action                  = new CnbAction();
@@ -135,81 +128,71 @@ class CnbActionController {
         }
 
         $cnb_cloud_notifications = array();
-        $nonce                   = sanitize_text_field( filter_input( INPUT_POST, '_wpnonce' ) );
-        $action                  = 'cnb-action-edit';
-        $nonce_verified          = wp_verify_nonce( $nonce, $action );
-        $cbn_utils               = new CnbUtils();
-        $cnb_remote              = new CnbAppRemote();
-        if ( $nonce_verified ) {
-            $actions   = filter_input(
-                INPUT_POST,
-                'actions',
-                FILTER_DEFAULT,
-                FILTER_REQUIRE_ARRAY );
-            $action_id = sanitize_text_field( filter_input( INPUT_POST, 'action_id' ) );
-            $action    = CnbAction::fromObject( is_array( $actions ) ? ( $actions[ $action_id ] ?? null ) : null );
+        check_admin_referer( 'cnb-action-edit' );
+        $cbn_utils  = new CnbUtils();
+        $cnb_remote = new CnbAppRemote();
+        $actions    = filter_input(
+            INPUT_POST,
+            'actions',
+            FILTER_DEFAULT,
+            FILTER_REQUIRE_ARRAY );
+        $action_id  = sanitize_text_field( filter_input( INPUT_POST, 'action_id' ) );
+        $action     = CnbAction::fromObject( is_array( $actions ) ? ( $actions[ $action_id ] ?? null ) : null );
 
-            // Do the processing
-            $new_action    = CnbAdminCloud::cnb_create_action( $cnb_cloud_notifications, $action );
-            $new_action_id = $new_action->id;
+        // Do the processing
+        $new_action    = CnbAdminCloud::cnb_create_action( $cnb_cloud_notifications, $action );
+        $new_action_id = $new_action->id;
 
-            $bid = sanitize_text_field( filter_input( INPUT_POST, 'bid' ) );
-            if ( ! empty( $bid ) ) {
-                // Tie this new Action to the provided Button
-                $button = $cnb_remote->get_button( $bid );
-                if ( ! ( $button instanceof WP_Error ) ) {
-                    $button->actions[] = $new_action;
+        $bid = sanitize_text_field( filter_input( INPUT_POST, 'bid' ) );
+        if ( ! empty( $bid ) ) {
+            // Tie this new Action to the provided Button
+            $button = $cnb_remote->get_button( $bid );
+            if ( ! ( $button instanceof WP_Error ) ) {
+                $button->actions[] = $new_action;
 
-                    CnbAdminCloud::cnb_update_button( $cnb_cloud_notifications, $button );
-                } else {
-                    $message                   = CnbAdminCloud::cnb_admin_get_error_message( 'create', 'action', $button );
-                    $cnb_cloud_notifications[] = $message;
-                }
-            }
-
-            // redirect the user to the appropriate page
-            $transient_id = ( new CnbHeaderNotices() )->generate_notice_id();
-            set_transient( $transient_id, $cnb_cloud_notifications, HOUR_IN_SECONDS );
-
-            // Create link
-            $bid = $cbn_utils->get_query_val( 'bid', null );
-            $url = admin_url( 'admin.php' );
-
-            if ( ! empty( $bid ) ) {
-                $redirect_link =
-                    add_query_arg(
-                        array(
-                            'page'     => 'call-now-button',
-                            'action'   => 'edit',
-                            'id'       => $bid,
-                            'tid'      => $transient_id,
-                            '_wpnonce' => wp_create_nonce( $transient_id ),
-                        ),
-                        $url );
+                CnbAdminCloud::cnb_update_button( $cnb_cloud_notifications, $button );
             } else {
-                $redirect_link =
-                    add_query_arg(
-                        array(
-                            'page'     => 'call-now-button-actions',
-                            'action'   => 'edit',
-                            'id'       => $new_action_id,
-                            'tid'      => $transient_id,
-                            'bid'      => $bid,
-                            '_wpnonce' => wp_create_nonce( $transient_id ),
-                        ),
-                        $url );
+                $message                   = CnbAdminCloud::cnb_admin_get_error_message( 'create', 'action', $button );
+                $cnb_cloud_notifications[] = $message;
             }
-            $redirect_url = esc_url_raw( $redirect_link );
-            do_action( 'cnb_finish' );
-            wp_safe_redirect( $redirect_url );
-            exit;
-        } else {
-            do_action( 'cnb_finish' );
-            wp_die( esc_html__( 'Invalid nonce specified' ), esc_html__( 'Error' ), array(
-                'response'  => 403,
-                'back_link' => true,
-            ) );
         }
+
+        // redirect the user to the appropriate page
+        $transient_id = ( new CnbHeaderNotices() )->generate_notice_id();
+        set_transient( $transient_id, $cnb_cloud_notifications, HOUR_IN_SECONDS );
+
+        // Create link
+        $bid = $cbn_utils->get_query_val( 'bid', null );
+        $url = admin_url( 'admin.php' );
+
+        if ( ! empty( $bid ) ) {
+            $redirect_link =
+                add_query_arg(
+                    array(
+                        'page'     => 'call-now-button',
+                        'action'   => 'edit',
+                        'id'       => $bid,
+                        'tid'      => $transient_id,
+                        '_wpnonce' => wp_create_nonce( $transient_id ),
+                    ),
+                    $url );
+        } else {
+            $redirect_link =
+                add_query_arg(
+                    array(
+                        'page'     => 'call-now-button-actions',
+                        'action'   => 'edit',
+                        'id'       => $new_action_id,
+                        'tid'      => $transient_id,
+                        'bid'      => $bid,
+                        '_wpnonce' => wp_create_nonce( $transient_id ),
+                    ),
+                    $url );
+        }
+        $redirect_url = esc_url_raw( $redirect_link );
+        do_action( 'cnb_finish' );
+        wp_safe_redirect( $redirect_url );
+        exit;
     }
 
     public function update() {
@@ -224,75 +207,65 @@ class CnbActionController {
             );
         }
 
-        $nonce          = sanitize_text_field( filter_input( INPUT_POST, '_wpnonce' ) );
-        $action         = 'cnb-action-edit';
-        $nonce_verified = wp_verify_nonce( $nonce, $action );
-        $cnb_utils      = new CnbUtils();
-        if ( $nonce_verified ) {
-            // sanitize the input
-            $actions                 = filter_input(
-                INPUT_POST,
-                'actions',
-                FILTER_DEFAULT,
-                FILTER_REQUIRE_ARRAY );
-            if ( ! is_array( $actions ) ) {
-                $actions = array();
-            }
-            $result                  = '';
-            $cnb_cloud_notifications = array();
-
-            foreach ( $actions as $action ) {
-                $processed_action = CnbAction::fromObject( $action );
-                if ( is_wp_error( $processed_action ) ) {
-                    $cnb_cloud_notifications[] = CnbAdminCloud::cnb_admin_get_error_message( 'update', 'action', $processed_action );
-                } else {
-                    // do the processing
-                    $result = CnbAdminCloud::cnb_update_action( $cnb_cloud_notifications, $processed_action );
-                }
-            }
-
-            // redirect the user to the appropriate page
-            $transient_id = ( new CnbHeaderNotices() )->generate_notice_id();
-            set_transient( $transient_id, $cnb_cloud_notifications, HOUR_IN_SECONDS );
-
-            // Create link
-            $bid = $cnb_utils->get_query_val( 'bid', null );
-            $url = admin_url( 'admin.php' );
-            if ( ! empty( $bid ) ) {
-                $redirect_link =
-                    add_query_arg(
-                        array(
-                            'page'     => 'call-now-button',
-                            'action'   => 'edit',
-                            'id'       => $bid,
-                            'tid'      => $transient_id,
-                            '_wpnonce' => wp_create_nonce( $transient_id ),
-                        ),
-                        $url );
-            } else {
-                $redirect_link =
-                    add_query_arg(
-                        array(
-                            'page'     => CNB_SLUG . '-actions',
-                            'action'   => 'edit',
-                            'id'       => $result->id,
-                            'tid'      => $transient_id,
-                            'bid'      => $bid,
-                            '_wpnonce' => wp_create_nonce( $transient_id ),
-                        ),
-                        $url );
-            }
-            $redirect_url = esc_url_raw( $redirect_link );
-            do_action( 'cnb_finish' );
-            wp_safe_redirect( $redirect_url );
-            exit;
-        } else {
-            do_action( 'cnb_finish' );
-            wp_die( esc_html__( 'Invalid nonce specified' ), esc_html__( 'Error' ), array(
-                'response'  => 403,
-                'back_link' => true,
-            ) );
+        check_admin_referer( 'cnb-action-edit' );
+        $cnb_utils = new CnbUtils();
+        // sanitize the input
+        $actions = filter_input(
+            INPUT_POST,
+            'actions',
+            FILTER_DEFAULT,
+            FILTER_REQUIRE_ARRAY );
+        if ( ! is_array( $actions ) ) {
+            $actions = array();
         }
+        $result                  = '';
+        $cnb_cloud_notifications = array();
+
+        foreach ( $actions as $action ) {
+            $processed_action = CnbAction::fromObject( $action );
+            if ( is_wp_error( $processed_action ) ) {
+                $cnb_cloud_notifications[] = CnbAdminCloud::cnb_admin_get_error_message( 'update', 'action', $processed_action );
+            } else {
+                // do the processing
+                $result = CnbAdminCloud::cnb_update_action( $cnb_cloud_notifications, $processed_action );
+            }
+        }
+
+        // redirect the user to the appropriate page
+        $transient_id = ( new CnbHeaderNotices() )->generate_notice_id();
+        set_transient( $transient_id, $cnb_cloud_notifications, HOUR_IN_SECONDS );
+
+        // Create link
+        $bid = $cnb_utils->get_query_val( 'bid', null );
+        $url = admin_url( 'admin.php' );
+        if ( ! empty( $bid ) ) {
+            $redirect_link =
+                add_query_arg(
+                    array(
+                        'page'     => 'call-now-button',
+                        'action'   => 'edit',
+                        'id'       => $bid,
+                        'tid'      => $transient_id,
+                        '_wpnonce' => wp_create_nonce( $transient_id ),
+                    ),
+                    $url );
+        } else {
+            $redirect_link =
+                add_query_arg(
+                    array(
+                        'page'     => CNB_SLUG . '-actions',
+                        'action'   => 'edit',
+                        'id'       => $result->id,
+                        'tid'      => $transient_id,
+                        'bid'      => $bid,
+                        '_wpnonce' => wp_create_nonce( $transient_id ),
+                    ),
+                    $url );
+        }
+        $redirect_url = esc_url_raw( $redirect_link );
+        do_action( 'cnb_finish' );
+        wp_safe_redirect( $redirect_url );
+        exit;
     }
 
     /**
@@ -322,58 +295,44 @@ class CnbActionController {
             );
         }
 
-        $cnb_utils      = new CnbUtils();
-        $nonce          = $cnb_utils->get_post_val( '_wpnonce' );
-        $action         = 'bulk-cnb_list_actions';
-        $nonce_verified = wp_verify_nonce( $nonce, $action );
-        if ( $nonce_verified ) {
-            $actionIds = $cnb_utils->get_post_array( 'cnb_list_action' );
-            if ( $cnb_utils->get_post_val( 'bulk-action' ) === 'delete' ) {
-                $cnb_cloud_notifications = array();
-                foreach ( $actionIds as $actionId ) {
-                    $cnbAction     = new CnbAction();
-                    $cnbAction->id = $actionId;
-                    CnbAdminCloud::cnb_delete_action( $cnb_cloud_notifications, $cnbAction );
-                }
-                // Create notice for link (and yes - we ignore the content of $cnb_cloud_notifications here, we just use it to count)
-                $notice       = new CnbNotice( 'success', '<p>' . count( $cnb_cloud_notifications ) . ' Action(s) deleted.</p>' );
-                $transient_id = ( new CnbHeaderNotices() )->generate_notice_id();
-                set_transient( $transient_id, array( $notice ), HOUR_IN_SECONDS );
-
-                // Create link
-                $url           = admin_url( 'admin.php' );
-                $redirect_link =
-                    add_query_arg(
-                        array(
-                            'page'     => 'call-now-button-actions',
-                            'tid'      => $transient_id,
-                            '_wpnonce' => wp_create_nonce( $transient_id ),
-                        ),
-                        $url );
-                $redirect_url  = esc_url_raw( $redirect_link );
-                do_action( 'cnb_finish' );
-                wp_safe_redirect( $redirect_url );
-                exit;
-            } else {
-                do_action( 'cnb_finish' );
-                wp_die(
-                    esc_html__( 'Unknown Bulk action specified' ),
-                    esc_html__( 'Cannot process Bulk action' ),
-                    array(
-                        'response'  => 403,
-                        'link_text' => esc_html( 'Go back to the Actions overview' ),
-                        'link_url'  => esc_url_raw( admin_url( 'admin.php' ) . '?page=' . CNB_SLUG . '-actions' ),
-                    )
-                );
+        $cnb_utils = new CnbUtils();
+        check_admin_referer( 'bulk-cnb_list_actions' );
+        $actionIds = $cnb_utils->get_post_array( 'cnb_list_action' );
+        if ( $cnb_utils->get_post_val( 'bulk-action' ) === 'delete' ) {
+            $cnb_cloud_notifications = array();
+            foreach ( $actionIds as $actionId ) {
+                $cnbAction     = new CnbAction();
+                $cnbAction->id = $actionId;
+                CnbAdminCloud::cnb_delete_action( $cnb_cloud_notifications, $cnbAction );
             }
+            // Create notice for link (and yes - we ignore the content of $cnb_cloud_notifications here, we just use it to count)
+            $notice       = new CnbNotice( 'success', '<p>' . count( $cnb_cloud_notifications ) . ' Action(s) deleted.</p>' );
+            $transient_id = ( new CnbHeaderNotices() )->generate_notice_id();
+            set_transient( $transient_id, array( $notice ), HOUR_IN_SECONDS );
+
+            // Create link
+            $url           = admin_url( 'admin.php' );
+            $redirect_link =
+                add_query_arg(
+                    array(
+                        'page'     => 'call-now-button-actions',
+                        'tid'      => $transient_id,
+                        '_wpnonce' => wp_create_nonce( $transient_id ),
+                    ),
+                    $url );
+            $redirect_url  = esc_url_raw( $redirect_link );
+            do_action( 'cnb_finish' );
+            wp_safe_redirect( $redirect_url );
+            exit;
         } else {
             do_action( 'cnb_finish' );
             wp_die(
-                esc_html__( 'Invalid nonce specified' ),
-                esc_html__( 'Error' ),
+                esc_html__( 'Unknown Bulk action specified' ),
+                esc_html__( 'Cannot process Bulk action' ),
                 array(
                     'response'  => 403,
-                    'back_link' => true,
+                    'link_text' => esc_html( 'Go back to the Actions overview' ),
+                    'link_url'  => esc_url_raw( admin_url( 'admin.php' ) . '?page=' . CNB_SLUG . '-actions' ),
                 )
             );
         }

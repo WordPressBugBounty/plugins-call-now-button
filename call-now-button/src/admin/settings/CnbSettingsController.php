@@ -44,7 +44,10 @@ class CnbSettingsController {
             'advanced_view'               => 0,
             'show_all_buttons_for_domain' => 0,
             'footer_show_traces'          => 0,
-            'reporting_enabled'           => 0,
+            // Named to match the key CnbUtils::is_reporting_enabled() and
+            // CnbSentry actually read. A stale 'reporting_enabled' key here
+            // (never read anywhere) used to make the defaults misleading.
+            'error_reporting'             => 0,
             'displaymode'                 => 'MOBILE_ONLY',
         );
 
@@ -285,38 +288,33 @@ class CnbSettingsController {
                 array( 'response' => 403 )
             );
         }
-        $nonce = sanitize_text_field( filter_input( INPUT_POST, '_wpnonce' ) );
-        $success = 0;
-        if ( $nonce && wp_verify_nonce( $nonce, 'cnb_delete_all_settings' ) ) {
+        check_admin_referer( 'cnb_delete_all_settings' );
 
-            // Delete known options
-            $option_names = array( 'cnb', 'cnb_cloud_migration_done' );
+        // Delete known options
+        $option_names = array( 'cnb', 'cnb_cloud_migration_done' );
 
-            foreach ( $option_names as $option_name ) {
-                // Delete the standard options
-                delete_option( $option_name );
+        foreach ( $option_names as $option_name ) {
+            // Delete the standard options
+            delete_option( $option_name );
 
-                // Delete site options in Multisite
-                delete_site_option( $option_name );
-            }
-            Activation::onActivation( null, false );
-
-            // Delete notice dismissals
-            $options_slug = 'call-now-button';
-
-            global $wpdb;
-            // phpcs:ignore WordPress.DB.DirectDatabaseQuery
-            $wpdb->query(
-                $wpdb->prepare(
-                    "DELETE FROM $wpdb->options
-                           WHERE option_name
-                           LIKE %s",
-                    $options_slug . '_dismissed_%' )
-            );
-            $success = 1;
+            // Delete site options in Multisite
+            delete_site_option( $option_name );
         }
-        // Always redirect back, even when not successful
-        $this->redirect_to_delete_all_settings($success);
+        Activation::onActivation( null, false );
+
+        // Delete notice dismissals
+        $options_slug = 'call-now-button';
+
+        global $wpdb;
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+        $wpdb->query(
+            $wpdb->prepare(
+                "DELETE FROM $wpdb->options
+                       WHERE option_name
+                       LIKE %s",
+                $options_slug . '_dismissed_%' )
+        );
+        $this->redirect_to_delete_all_settings( 1 );
     }
 
     /**
@@ -334,14 +332,9 @@ class CnbSettingsController {
                 array( 'response' => 403 )
             );
         }
-        $nonce   = sanitize_text_field( filter_input( INPUT_POST, '_wpnonce' ) );
-        $success = 0;
-        if ( $nonce && wp_verify_nonce( $nonce, 'cnb_set_default_settings' ) ) {
-            Activation::onActivation( null, false );
-            $success = 2;
-        }
-        // Always redirect back, even when not successful
-        $this->redirect_to_delete_all_settings($success);
+        check_admin_referer( 'cnb_set_default_settings' );
+        Activation::onActivation( null, false );
+        $this->redirect_to_delete_all_settings( 2 );
     }
 
     /**
@@ -359,16 +352,11 @@ class CnbSettingsController {
                 array( 'response' => 403 )
             );
         }
-        $nonce   = sanitize_text_field( filter_input( INPUT_POST, '_wpnonce' ) );
-        $success = 0;
-        if ( $nonce && wp_verify_nonce( $nonce, 'cnb_set_default_settings' ) ) {
-            $changelog_version   = sanitize_text_field( filter_input( INPUT_POST, 'changelog_version' ) );
-            $options = array( 'changelog_version' => $changelog_version );
-            update_option('cnb', $options);
-            $success = 3;
-        }
-        // Always redirect back, even when not successful
-        $this->redirect_to_delete_all_settings($success);
+        check_admin_referer( 'cnb_set_default_settings' );
+        $changelog_version = sanitize_text_field( filter_input( INPUT_POST, 'changelog_version' ) );
+        $options           = array( 'changelog_version' => $changelog_version );
+        update_option( 'cnb', $options );
+        $this->redirect_to_delete_all_settings( 3 );
     }
 
     private function redirect_to_delete_all_settings($success = 0) {

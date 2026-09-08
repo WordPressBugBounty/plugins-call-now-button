@@ -24,7 +24,7 @@ class CnbButtonViewEdit {
             $name = $button->name;
         } else {
             $name = 'New Button';
-            $type = strtoupper( sanitize_text_field( filter_input( INPUT_GET, 'type' ) ) );
+            $type = strtoupper( sanitize_key( filter_input( INPUT_GET, 'type' ) ) );
         }
 
         // In case no type or Button could be found, bail early
@@ -139,7 +139,7 @@ class CnbButtonViewEdit {
                 $button = $button_new;
             }
         } elseif ( $button->id === 'new' ) {
-            $button->type   = strtoupper( sanitize_text_field( filter_input( INPUT_GET, 'type' ) ) );
+            $button->type   = strtoupper( sanitize_key( filter_input( INPUT_GET, 'type' ) ) );
             $button->domain = $cnb_domain;
         }
         if ( is_wp_error( $button ) || $button->actions === null ) {

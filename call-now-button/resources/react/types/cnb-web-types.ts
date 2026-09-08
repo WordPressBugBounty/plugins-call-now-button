@@ -136,7 +136,7 @@ export type BUTTON_PLACEMENT =
 
 export type BUTTON_POSITION = "DEFAULT" | "ABSOLUTE" | "FIXED";
 
-export type BUTTON_TYPE = "FULL" | "MULTI" | "SINGLE" | "DOTS";
+export type BUTTON_TYPE = "FULL" | "MULTI" | "SINGLE" | "DOTS" | "FLOWER";
 
 export interface ICON_TYPE {
     DEFAULT: "DEFAULT"; // == FONT

@@ -51,16 +51,8 @@ class CnbConditionController {
         }
         $cnb_utils = new CnbUtils();
         $id        = $cnb_utils->get_query_val( 'id', null );
-        $nonce     = $cnb_utils->get_query_val( '_wpnonce', null );
         $action    = 'cnb_delete_condition';
-
-        if ( ! wp_verify_nonce( $nonce, $action ) ) {
-            do_action( 'cnb_finish' );
-            wp_die( esc_html__( 'Invalid nonce specified' ), esc_html__( 'Error' ), array(
-                'response'  => 403,
-                'back_link' => true,
-            ) );
-        }
+        check_admin_referer( $action );
 
         $cnb_cloud_notifications = array();
         $condition               = new CnbCondition();
@@ -163,31 +155,22 @@ class CnbConditionController {
     }
 
     private function create_and_update( $closure, $action ) {
-        $nonce          = sanitize_text_field( filter_input( INPUT_POST, '_wpnonce' ) );
-        $nonce_verified = wp_verify_nonce( $nonce, $action );
-        if ( $nonce_verified ) {
-            // sanitize the input
-            $conditions = filter_input(
-                INPUT_POST,
-                'conditions',
-                FILTER_DEFAULT,
-                FILTER_REQUIRE_ARRAY | FILTER_FLAG_NO_ENCODE_QUOTES );
+        check_admin_referer( $action );
+        // sanitize the input
+        $conditions = filter_input(
+            INPUT_POST,
+            'conditions',
+            FILTER_DEFAULT,
+            FILTER_REQUIRE_ARRAY | FILTER_FLAG_NO_ENCODE_QUOTES );
 
-            $processed_conditions = array();
-            if ( is_array( $conditions ) ) {
-                foreach ( $conditions as $condition ) {
-                    $processed_conditions[] = CnbCondition::fromObject( $condition );
-                }
+        $processed_conditions = array();
+        if ( is_array( $conditions ) ) {
+            foreach ( $conditions as $condition ) {
+                $processed_conditions[] = CnbCondition::fromObject( $condition );
             }
-
-            $closure( $processed_conditions );
-        } else {
-            do_action( 'cnb_finish' );
-            wp_die( esc_html__( 'Invalid nonce specified' ), esc_html__( 'Error' ), array(
-                'response'  => 403,
-                'back_link' => true,
-            ) );
         }
+
+        $closure( $processed_conditions );
     }
 
     /**
@@ -297,60 +280,45 @@ class CnbConditionController {
                 array( 'response' => 403 )
             );
         }
-        $cnb_utils      = new CnbUtils();
-        $nonce          = $cnb_utils->get_post_val( '_wpnonce' );
-        $action         = 'bulk-cnb_list_conditions';
-        $nonce_verified = wp_verify_nonce( $nonce, $action );
-
-        if ( $nonce_verified ) {
-            $entityIds = $cnb_utils->get_post_array( 'cnb_list_condition' );
-            if ( $cnb_utils->get_post_val( 'bulk-action' ) === 'delete' ) {
-                $cnb_cloud_notifications = array();
-                foreach ( $entityIds as $entityId ) {
-                    $condition     = new CnbCondition();
-                    $condition->id = $entityId;
-                    CnbAdminCloud::cnb_delete_condition( $cnb_cloud_notifications, $condition );
-                }
-
-                // Create notice for link (and yes - we ignore the content of $cnb_cloud_notifications here, we just use it to count)
-                $notice       = new CnbNotice( 'success', '<p>' . count( $cnb_cloud_notifications ) . ' Condition(s) deleted.</p>' );
-                $transient_id = (new CnbHeaderNotices())->generate_notice_id();
-                set_transient( $transient_id, array( $notice ), HOUR_IN_SECONDS );
-
-                // Create link
-                $url           = admin_url( 'admin.php' );
-                $redirect_link =
-                    add_query_arg(
-                        array(
-                            'page'     => 'call-now-button-conditions',
-                            'tid'      => $transient_id,
-                            '_wpnonce' => wp_create_nonce( $transient_id ),
-                        ),
-                        $url );
-                $redirect_url  = esc_url_raw( $redirect_link );
-                do_action( 'cnb_finish' );
-                wp_safe_redirect( $redirect_url );
-                exit;
-            } else {
-                do_action( 'cnb_finish' );
-                wp_die(
-                    esc_html__( 'Unknown Bulk action specified' ),
-                    esc_html__( 'Cannot process Bulk action' ),
-                    array(
-                        'response'  => 403,
-                        'link_text' => esc_html( 'Go back to the Conditions overview' ),
-                        'link_url'  => esc_url_raw( admin_url( 'admin.php' ) . '?page=' . CNB_SLUG . '-conditions' ),
-                    )
-                );
+        $cnb_utils = new CnbUtils();
+        check_admin_referer( 'bulk-cnb_list_conditions' );
+        $entityIds = $cnb_utils->get_post_array( 'cnb_list_condition' );
+        if ( $cnb_utils->get_post_val( 'bulk-action' ) === 'delete' ) {
+            $cnb_cloud_notifications = array();
+            foreach ( $entityIds as $entityId ) {
+                $condition     = new CnbCondition();
+                $condition->id = $entityId;
+                CnbAdminCloud::cnb_delete_condition( $cnb_cloud_notifications, $condition );
             }
+
+            // Create notice for link (and yes - we ignore the content of $cnb_cloud_notifications here, we just use it to count)
+            $notice       = new CnbNotice( 'success', '<p>' . count( $cnb_cloud_notifications ) . ' Condition(s) deleted.</p>' );
+            $transient_id = (new CnbHeaderNotices())->generate_notice_id();
+            set_transient( $transient_id, array( $notice ), HOUR_IN_SECONDS );
+
+            // Create link
+            $url           = admin_url( 'admin.php' );
+            $redirect_link =
+                add_query_arg(
+                    array(
+                        'page'     => 'call-now-button-conditions',
+                        'tid'      => $transient_id,
+                        '_wpnonce' => wp_create_nonce( $transient_id ),
+                    ),
+                    $url );
+            $redirect_url  = esc_url_raw( $redirect_link );
+            do_action( 'cnb_finish' );
+            wp_safe_redirect( $redirect_url );
+            exit;
         } else {
             do_action( 'cnb_finish' );
             wp_die(
-                esc_html__( 'Invalid nonce specified' ),
-                esc_html__( 'Error' ),
+                esc_html__( 'Unknown Bulk action specified' ),
+                esc_html__( 'Cannot process Bulk action' ),
                 array(
                     'response'  => 403,
-                    'back_link' => true,
+                    'link_text' => esc_html( 'Go back to the Conditions overview' ),
+                    'link_url'  => esc_url_raw( admin_url( 'admin.php' ) . '?page=' . CNB_SLUG . '-conditions' ),
                 )
             );
         }

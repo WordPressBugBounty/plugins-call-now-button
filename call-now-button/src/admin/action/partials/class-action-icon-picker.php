@@ -298,9 +298,9 @@ class ActionIconPicker {
         </tr>
         <?php
 
-        // Actions on a Single or Multi button are not allowed to hide their Icon.
+        // Actions on a Single, Multi, Dots or Flower button are not allowed to hide their Icon.
         // Only the Actions on a Full (Buttonbar) are allowed to hide their Icon.
-        if ( $button && ($button->type === 'MULTI' || $button->type === 'DOTS') ) { ?>
+        if ( $button && ($button->type === 'MULTI' || $button->type === 'DOTS' || $button->type === 'FLOWER') ) { ?>
             <input name="actions[<?php echo esc_attr( $action->id ) ?>][iconEnabled]" type="hidden" value="1"/>
         <?php } else { ?>
             <tr>

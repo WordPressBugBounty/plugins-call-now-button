@@ -407,6 +407,11 @@ class CnbHeaderNotices {
             return;
         }
 
+        // The scheduler is only available on PRO plan, so don't show the timezone notice for non-PRO users
+        if ( ! $domain->is_pro() ) {
+            return;
+        }
+
         $url           = admin_url( 'admin.php' );
         $redirect_link =
             add_query_arg(
@@ -435,6 +440,11 @@ class CnbHeaderNotices {
      */
     public function render_is_timezone_valid( $domain ) {
         if ( $this->is_timezone_valid( $domain ) ) {
+            return true;
+        }
+
+        // The scheduler is only available on PRO plan, so don't show the timezone notice for non-PRO users
+        if ( $domain && ! is_wp_error( $domain ) && ! $domain->is_pro() ) {
             return true;
         }
 
