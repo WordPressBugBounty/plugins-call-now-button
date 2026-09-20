@@ -70,7 +70,7 @@ class Button_Label {
                 <input name="button[multiButtonOptions][labelBackgroundColorOpen]"
                         id="button-multiButtonOptions-labelBackgroundColorOpen" type="text"
                         value="<?php echo esc_attr( $labelBackgroundColorOpen ); ?>"
-                        class="cnb-color-field" data-default-color="#3c434a"/>
+                        class="cnb-color-field" maxlength="255" data-default-color="#3c434a"/>
             </td>
         </tr>
         <tr class="cnb_advanced_view">
@@ -83,7 +83,7 @@ class Button_Label {
                 <input name="button[multiButtonOptions][labelTextColorOpen]"
                         id="button-multiButtonOptions-labelTextColorOpen" type="text"
                         value="<?php echo esc_attr( $labelTextColorOpen ); ?>"
-                        class="cnb-color-field" data-default-color="#000000"/>
+                        class="cnb-color-field" maxlength="255" data-default-color="#000000"/>
             </td>
         </tr>
         <?php
@@ -120,7 +120,7 @@ class Button_Label {
                 <input name="button[multiButtonOptions][labelBackgroundColorClose]"
                         id="button-multiButtonOptions-labelBackgroundColorClose" type="text"
                         value="<?php echo esc_attr( $labelBackgroundColorClose ); ?>"
-                        class="cnb-color-field" data-default-color="#3c434a"/>
+                        class="cnb-color-field" maxlength="255" data-default-color="#3c434a"/>
             </td>
         </tr>
         <tr class="cnb_advanced_view">
@@ -133,7 +133,7 @@ class Button_Label {
                 <input name="button[multiButtonOptions][labelTextColorClose]"
                         id="button-multiButtonOptions-labelTextColorClose" type="text"
                         value="<?php echo esc_attr( $labelTextColorClose ); ?>"
-                        class="cnb-color-field" data-default-color="#000000"/>
+                        class="cnb-color-field" maxlength="255" data-default-color="#000000"/>
             </td>
         </tr>
         <?php

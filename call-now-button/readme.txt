@@ -4,7 +4,7 @@ Tags: call button, click to call, whatsapp, contact button, floating button
 Requires at least: 6.1
 Requires PHP: 7.4
 Tested up to: 7.1
-Stable tag: 2.0.3
+Stable tag: 2.0.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -187,6 +187,12 @@ Yes, you can connect the plugin to our cloud service. That already enables a bun
 9. The Multibutton with 7 actions (PRO)
 
 == Changelog ==
+= 2.0.4 =
+* Click tracking is now a simple on/off toggle for Google Analytics 4 (gtag.js)
+* Fixed a blank page when opening an activation link while signed out of WordPress; you are now sent to the login screen first
+* Fixed the styling of the activation buttons and the confirmation message after requesting an activation email
+* Fixed the day and time selector on the button preview, which did not update the preview
+
 = 2.0.3 =
 * Tested with WordPress 7.1
 * The form provider's script no longer loads on the settings pages unless a form is shown

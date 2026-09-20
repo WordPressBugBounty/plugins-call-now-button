@@ -162,8 +162,30 @@ function cnb_sentry_event_has_own_frame(event, allowUrls) {
     })
 }
 
-function cnb_sentry_onload() {
-    Sentry.onLoad(function () {
+/**
+ * Runs once Sentry.onLoad() reports the real SDK is ready.
+ *
+ * This callback runs detached from the cnb_sentry_wait() promise chain (see
+ * cnb_sentry_onload() below), so nothing thrown in here is ever caught by the
+ * `.catch()` attached to cnb_capture_js_errors() - it would otherwise surface
+ * as an uncaught global error, which is exactly what Sentry itself would then
+ * report (see WP-PLUGIN-XP: `TypeError: Sentry.setContext is not a function`).
+ *
+ * The CDN Loader Script's shim briefly exposes only a limited proxy/queue API
+ * on window.Sentry before the real @sentry/browser SDK swaps in; that swap
+ * isn't guaranteed to make every SDK method (e.g. Sentry.setContext, a
+ * Scope-forwarding convenience export, or even Sentry.init itself) available
+ * in the same tick this callback fires. Rather than guard each individual
+ * call - which would just move the same race to whichever call is added
+ * next - the whole body is wrapped in one try/catch, so any method that
+ * turns out to be missing/not-yet-ready degrades to a logged no-op, the same
+ * way the rest of this optional feature already degrades.
+ */
+function cnb_sentry_on_real_sdk_ready() {
+    try {
+        // The three data-* attributes read below are set on this element in
+        // src/admin/partials/CnbFooter.php - if that markup ever drops or
+        // renames one, update both call sites together.
         const data = jQuery('#cnb-data')
         if (data.length) {
             // Derived once so both filter layers are guaranteed to agree.
@@ -180,7 +202,14 @@ function cnb_sentry_onload() {
                 version: data.data('wordpressVersion'),
             })
         }
-    })
+    } catch (e) {
+        // Ignore, same as the top-level .catch() in cnb_capture_js_errors().
+        console.debug('Could not fully initialize Sentry, client side JS errors will not be sent', e)
+    }
+}
+
+function cnb_sentry_onload() {
+    Sentry.onLoad(cnb_sentry_on_real_sdk_ready)
     return true
 }
 
@@ -201,5 +230,6 @@ if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
         cnb_sentry_allow_urls,
         cnb_sentry_make_before_send,
+        cnb_sentry_on_real_sdk_ready,
     }
 }

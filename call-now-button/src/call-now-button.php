@@ -27,6 +27,7 @@ function cnb_add_actions() {
     add_action( 'plugins_loaded', array( $call_now_button, 'register_global_actions' ) );
     add_action( 'plugins_loaded', array( $call_now_button, 'register_header_and_footer' ) );
     add_action( 'plugins_loaded', array( $call_now_button, 'register_admin_post_actions' ) );
+    add_action( 'plugins_loaded', array( $call_now_button, 'register_admin_post_nopriv_actions' ) );
     add_action( 'plugins_loaded', array( $call_now_button, 'register_ajax_actions' ) );
     add_action( 'plugins_loaded', array( $call_now_button, 'register_dashboard_widget' ) );
     add_action( 'plugins_loaded', array( $call_now_button, 'exclude_from_caching_plugins' ) );

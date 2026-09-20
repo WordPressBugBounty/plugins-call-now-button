@@ -82,7 +82,7 @@ class Button_Icon_Picker {
                 <input name="button[multiButtonOptions][iconBackgroundColorOpen]"
                         id="button-multiButtonOptions-iconBackgroundColorOpen" type="text"
                         value="<?php echo esc_attr( $iconBackgroundColorOpen ); ?>"
-                        class="cnb-color-field" data-default-color="#009900"/>
+                        class="cnb-color-field" maxlength="255" data-default-color="#009900"/>
             </td>
         </tr>
         <tr>
@@ -94,7 +94,7 @@ class Button_Icon_Picker {
             <td>
                 <input name="button[multiButtonOptions][iconColorOpen]" id="button-multiButtonOptions-iconColorOpen"
                         type="text" value="<?php echo esc_attr( $iconColorOpen ); ?>"
-                        class="cnb-color-field" data-default-color="#FFFFFF"/>
+                        class="cnb-color-field" maxlength="255" data-default-color="#FFFFFF"/>
             </td>
         </tr>
         <tr>
@@ -227,7 +227,7 @@ class Button_Icon_Picker {
                 <input name="button[multiButtonOptions][iconBackgroundColorClose]"
                         id="button-multiButtonOptions-iconBackgroundColorClose" type="text"
                         value="<?php echo esc_attr( $iconBackgroundColorClose ); ?>"
-                        class="cnb-color-field" data-default-color="#009900"/>
+                        class="cnb-color-field" maxlength="255" data-default-color="#009900"/>
             </td>
         </tr>
         <tr class="cnb_advanced_view">
@@ -239,7 +239,7 @@ class Button_Icon_Picker {
             <td>
                 <input name="button[multiButtonOptions][iconColorClose]" id="button-multiButtonOptions-iconColorClose"
                         type="text" value="<?php echo esc_attr( $iconColorClose ); ?>"
-                        class="cnb-color-field" data-default-color="#FFFFFF"/>
+                        class="cnb-color-field" maxlength="255" data-default-color="#FFFFFF"/>
             </td>
         </tr>
         <tr class="cnb_advanced_view">

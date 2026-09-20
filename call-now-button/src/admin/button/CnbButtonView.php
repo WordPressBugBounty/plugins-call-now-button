@@ -124,7 +124,7 @@ class CnbButtonView {
             $views        = $wp_list_table->get_views();
             $active_views = isset( $views['active'] ) ? $views['active'] : '';
             if ( false !== strpos( $active_views, '(0)' ) ) {
-                $message = '<p><span class="dashicons dashicons-info-outline"></span> You have no active buttons!</p>';
+                $message = '<p>You have no active buttons!</p>';
                 CnbAdminNotices::get_instance()->warning( $message );
             }
         }

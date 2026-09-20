@@ -406,7 +406,7 @@ class Button_Edit_Table {
                     <td>
                         <input name="actions[<?php echo esc_attr( $action->id ) ?>][backgroundColor]"
                                 id="actions-options-iconBackgroundColor" type="text"
-                                value="<?php echo esc_attr( $backgroundColor ); ?>" class="cnb-color-field"
+                                value="<?php echo esc_attr( $backgroundColor ); ?>" class="cnb-color-field" maxlength="255"
                                 data-default-color="#009900"/>
                     </td>
                 </tr>
@@ -415,7 +415,7 @@ class Button_Edit_Table {
                     <td>
                         <input name="actions[<?php echo esc_attr( $action->id ) ?>][iconColor]"
                                 id="actions-options-iconColor" type="text"
-                                value="<?php echo esc_attr( $iconColor ); ?>" class="cnb-color-field"
+                                value="<?php echo esc_attr( $iconColor ); ?>" class="cnb-color-field" maxlength="255"
                                 data-default-color="#FFFFFF"/>
                     </td>
                 </tr>

@@ -84,6 +84,7 @@ docs/Model/CopyButtonResponse.md
 docs/Model/CreateMeetingRequest.md
 docs/Model/CreateQuickReplyRequest.md
 docs/Model/DeleteButtonResponse.md
+docs/Model/DeleteQuickReplyResponse.md
 docs/Model/DeleteWorkspaceResponse.md
 docs/Model/Domain.md
 docs/Model/DomainCreateRequest.md
@@ -110,8 +111,10 @@ docs/Model/MagicTokenAnonymousRequest.md
 docs/Model/MagicTokenRequest.md
 docs/Model/MagicTokenResponse.md
 docs/Model/Media.md
+docs/Model/MediaDeleteResponse.md
 docs/Model/MediaMinimal.md
 docs/Model/MediaUpdateMetadataRequest.md
+docs/Model/MediaUsageResponse.md
 docs/Model/Meeting.md
 docs/Model/MeetingStrategy.md
 docs/Model/MemberAddRequest.md
@@ -131,6 +134,7 @@ docs/Model/PrivateNoteRequest.md
 docs/Model/ProAccountCheckoutSessionCreateRequest.md
 docs/Model/ProAccountCheckoutSessionResponse.md
 docs/Model/PromotionCode.md
+docs/Model/QuickReply.md
 docs/Model/RequestBillingPortalResponse.md
 docs/Model/SchedulingStrategyConfig.md
 docs/Model/ScrollOptions.md
@@ -266,6 +270,7 @@ lib/Model/CopyButtonResponse.php
 lib/Model/CreateMeetingRequest.php
 lib/Model/CreateQuickReplyRequest.php
 lib/Model/DeleteButtonResponse.php
+lib/Model/DeleteQuickReplyResponse.php
 lib/Model/DeleteWorkspaceResponse.php
 lib/Model/Domain.php
 lib/Model/DomainCreateRequest.php
@@ -292,8 +297,10 @@ lib/Model/MagicTokenAnonymousRequest.php
 lib/Model/MagicTokenRequest.php
 lib/Model/MagicTokenResponse.php
 lib/Model/Media.php
+lib/Model/MediaDeleteResponse.php
 lib/Model/MediaMinimal.php
 lib/Model/MediaUpdateMetadataRequest.php
+lib/Model/MediaUsageResponse.php
 lib/Model/Meeting.php
 lib/Model/MeetingStrategy.php
 lib/Model/MemberAddRequest.php
@@ -314,6 +321,7 @@ lib/Model/PrivateNoteRequest.php
 lib/Model/ProAccountCheckoutSessionCreateRequest.php
 lib/Model/ProAccountCheckoutSessionResponse.php
 lib/Model/PromotionCode.php
+lib/Model/QuickReply.php
 lib/Model/RequestBillingPortalResponse.php
 lib/Model/SchedulingStrategyConfig.php
 lib/Model/ScrollOptions.php

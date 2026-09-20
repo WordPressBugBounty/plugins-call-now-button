@@ -77,8 +77,9 @@ async function livePreview() {
             multiButtonOptions: {},
         }
     }
-    if (typeof cnb_options !== 'undefined') {
-        parsedData.options = cnb_preview_data.options
+    const previewOptions = cnb_get_preview_options()
+    if (previewOptions) {
+        parsedData.options = previewOptions
     }
 
     // Ensure it is always visible
@@ -274,7 +275,7 @@ function verifyAction(action) {
 
 /*** Scheduler: Day and Time selector **/
 
-function updateScheduler(day, hour, minute) {
+function cnb_calculate_scheduler_date(day, hour, minute) {
     const date = new Date()
     date.setHours(hour)
     date.setMinutes(minute)
@@ -285,7 +286,32 @@ function updateScheduler(day, hour, minute) {
     const distance = day - currentDay
     date.setDate(date.getDate() + distance)
 
-    cnb_options.date = date.getTime()
+    return date
+}
+
+// `cnb_preview_data` (localized via wp_localize_script(), see
+// src/admin/partials/preview.php) is the only object that actually carries
+// preview options from PHP to JS. There is no separate `cnb_options` global -
+// referencing one directly used to throw "ReferenceError: cnb_options is not
+// defined" (see https://github.com/callnowbutton/wp-plugin/issues/1450).
+// The options (including the scheduler date) that livePreview() hands to the
+// renderer. This used to check a never-declared `cnb_options` global, so the
+// scheduler date was silently dropped from every preview (#1450).
+function cnb_get_preview_options() {
+    if (typeof cnb_preview_data !== 'undefined' && cnb_preview_data.options) {
+        return cnb_preview_data.options
+    }
+    return undefined
+}
+
+function cnb_apply_scheduler_date(date) {
+    cnb_preview_data.options = cnb_preview_data.options || {}
+    cnb_preview_data.options.date = date.getTime()
+}
+
+function updateScheduler(day, hour, minute) {
+    const date = cnb_calculate_scheduler_date(day, hour, minute)
+    cnb_apply_scheduler_date(date)
 
     // Trigger a rerender
     livePreview()
@@ -327,10 +353,23 @@ function initButtonEdit() {
     })
 }
 
-jQuery(() => {
-    // This enables the scheduler (which can be disabled on a per-screen basis)
-    window.cnb_ignore_schedule = false
+if (typeof jQuery !== 'undefined') {
+    jQuery(() => {
+        // This enables the scheduler (which can be disabled on a per-screen basis)
+        window.cnb_ignore_schedule = false
 
-    initButtonEdit()
-    initPreviewDayAndTimeSelector()
-})
+        initButtonEdit()
+        initPreviewDayAndTimeSelector()
+    })
+}
+
+// Exposed for the unit tests, which load this file in Node (see
+// tests/js/preview.test.js). No-op in the browser, where `module` is
+// undefined and this file runs as a plain global script.
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        cnb_calculate_scheduler_date,
+        cnb_apply_scheduler_date,
+        cnb_get_preview_options,
+    }
+}

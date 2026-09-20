@@ -1643,9 +1643,9 @@ span.cnb-pro-badge {
     max-width: 550px;
 }
 
-.cnb-welcome-blocks .cnb-signup-box .cnb_activation_input_field {
+/* .cnb-welcome-blocks .cnb-signup-box .cnb_activation_input_field {
     padding: 8.5px 10px;
-}
+} */
 
 .cnb-welcome-blocks .cnb-features-list p {
     font-size: 14px;
@@ -1667,8 +1667,8 @@ span.cnb-pro-badge {
 .button.button-primary.button-green {
     background: #009900;
     border-color: #009900;
-    font-size: 16px;
-    padding: 5px 30px;
+    /* font-size: 16px; */
+    /* padding: 5px 30px; */
 }
 
 .cnb-chat-cta .button.button-primary:hover,

@@ -280,7 +280,7 @@ class ActionIconPicker {
                 <input name="actions[<?php echo esc_attr( $action->id ) ?>][backgroundColor]"
                         id="actions[<?php echo esc_attr( $action->id ) ?>][backgroundColor]" type="text"
                         value="<?php echo esc_attr( $action->backgroundColor ) ?>"
-                        class="cnb-color-field" data-default-color="#009900"/>
+                        class="cnb-color-field" maxlength="255" data-default-color="#009900"/>
             </td>
         </tr>
         <tr>
@@ -293,7 +293,7 @@ class ActionIconPicker {
                 <input name="actions[<?php echo esc_attr( $action->id ) ?>][iconColor]"
                         id="actions[<?php echo esc_attr( $action->id ) ?>][iconColor]" type="text"
                         value="<?php echo esc_attr( $action->iconColor ) ?>"
-                        class="cnb-color-field" data-default-color="#FFFFFF"/>
+                        class="cnb-color-field" maxlength="255" data-default-color="#FFFFFF"/>
             </td>
         </tr>
         <?php

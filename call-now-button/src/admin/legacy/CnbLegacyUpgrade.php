@@ -137,7 +137,7 @@ class CnbLegacyUpgrade {
 
             .cnb-body-content .benefits-section-signup form.cnb-container input[type=text] {
                 max-width: calc(100% - 190px);
-                font-size: 26px;
+                /* font-size: 26px; */
                 box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
             } 
 
@@ -197,8 +197,8 @@ class CnbLegacyUpgrade {
             }
 
             .cnb-compare-features .benefits-section-signup .button-primary {
-            font-size: 20px;
-            padding: 4px 10px;
+            /* font-size: 20px;
+            padding: 4px 10px; */
             box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
             }
             @media screen and (max-width: 782px) {

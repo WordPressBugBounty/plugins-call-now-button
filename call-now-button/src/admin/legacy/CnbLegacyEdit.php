@@ -45,26 +45,16 @@ class CnbLegacyEdit {
                     <span class="dashicons dashicons-editor-help"></span>
                 </a></th>
             <td>
-                <div class="cnb-radio-item">
-                    <input id="tracking3" type="radio" name="cnb[tracking]"
-                            value="0" <?php checked( '0', $cnb_options['tracking'] ); ?> />
-                    <label for="tracking3">Disabled</label>
-                </div>
-                <div class="cnb-radio-item">
-                    <input id="tracking4" type="radio" name="cnb[tracking]"
-                            value="3" <?php checked( '3', $cnb_options['tracking'] ); ?> />
-                    <label for="tracking4">Latest Google Analytics (gtag.js)</label>
-                </div>
-                <div class="cnb-radio-item">
-                    <input id="tracking1" type="radio" name="cnb[tracking]"
-                            value="2" <?php checked( '2', $cnb_options['tracking'] ); ?> />
-                    <label for="tracking1">Google Universal Analytics (analytics.js)</label>
-                </div>
-                <div class="cnb-radio-item">
-                    <input id="tracking2" type="radio" name="cnb[tracking]"
-                            value="1" <?php checked( '1', $cnb_options['tracking'] ); ?> />
-                    <label for="tracking2">Classic Google Analytics (ga.js)</label>
-                </div>
+                <input type="hidden" name="cnb[tracking]" value="0"/>
+                <input id="cnb_tracking" class="cnb_toggle_checkbox" name="cnb[tracking]"
+                        type="checkbox"
+                        value="3" <?php checked( '3', $cnb_options['tracking'] ); ?> />
+                <label for="cnb_tracking" class="cnb_toggle_label">Enable click tracking</label>
+                <span data-cnb_toggle_state_label="cnb_tracking"
+                        class="cnb_toggle_state cnb_toggle_false">(Disabled)</span>
+                <span data-cnb_toggle_state_label="cnb_tracking"
+                        class="cnb_toggle_state cnb_toggle_true">Active</span>
+                <p class="description">Sends a click event to Google Analytics 4 (gtag.js).</p>
                 <p class="description">Using Google Tag Manager? Set up click tracking in GTM. <a
                             href="<?php echo esc_url( $cnb_utils->get_support_url( 'wordpress-free/settings/google-tag-manager-event-tracking/', 'legacy-settings-description', 'google-tag-manager-event-tracking', 'legacy' ) ) ?>"
                             target="_blank">Learn how to do this...</a></p>
